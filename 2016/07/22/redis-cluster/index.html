@@ -3,17 +3,21 @@
 <head>
   <meta charset="utf-8">
   
-  <title>橘子不酸的博客</title>
+  <title>redis集群搭建 | 橘子不酸的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记录生活点滴">
-<meta property="og:type" content="website">
-<meta property="og:title" content="橘子不酸的博客">
-<meta property="og:url" content="https://yangzhiw.github.io/index.html">
+  <meta name="description" content="123456789搭建的是一个1主3从的redis+3个哨兵集群的环境，由于是在一台物理机上，所有我们用端口区分。物理机IP：192.168.0.12主节点master端口：6301从节点slave1端口：6315从节点slave2端口：6316从节点slave3端口：6317哨兵sentinel1端口：26301哨兵sentinel2端口：26302哨兵sentinel3端口：26303
+下载r">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis集群搭建">
+<meta property="og:url" content="https://yangzhiw.github.io/2016/07/22/redis-cluster/index.html">
 <meta property="og:site_name" content="橘子不酸的博客">
-<meta property="og:description" content="记录生活点滴">
+<meta property="og:description" content="123456789搭建的是一个1主3从的redis+3个哨兵集群的环境，由于是在一台物理机上，所有我们用端口区分。物理机IP：192.168.0.12主节点master端口：6301从节点slave1端口：6315从节点slave2端口：6316从节点slave3端口：6317哨兵sentinel1端口：26301哨兵sentinel2端口：26302哨兵sentinel3端口：26303
+下载r">
+<meta property="og:updated_time" content="2016-07-22T03:24:32.525Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="橘子不酸的博客">
-<meta name="twitter:description" content="记录生活点滴">
+<meta name="twitter:title" content="redis集群搭建">
+<meta name="twitter:description" content="123456789搭建的是一个1主3从的redis+3个哨兵集群的环境，由于是在一台物理机上，所有我们用端口区分。物理机IP：192.168.0.12主节点master端口：6301从节点slave1端口：6315从节点slave2端口：6316从节点slave3端口：6317哨兵sentinel1端口：26301哨兵sentinel2端口：26302哨兵sentinel3端口：26303
+下载r">
   
     <link rel="alternate" href="/atom.xml" title="橘子不酸的博客" type="application/atom+xml">
   
@@ -66,82 +70,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-markDown" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/07/22/markDown/" class="article-date">
-  <time datetime="2016-07-22T06:08:08.000Z" itemprop="datePublished">2016-07-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/22/markDown/">markDown 的使用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 一级标题</span></div><div class="line"><span class="comment">## 二级标题</span></div><div class="line">依次类推</div></pre></td></tr></table></figure>
-<h1 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">在 Markdown 下，列表的显示只需要在文字前加上 - 或 * 即可变为无序列表，</div><div class="line">有序列表则直接在文字前加 <span class="number">1.</span> <span class="number">2.</span> <span class="number">3.</span> 符号要和文字之间加上一个字符的空格。</div></pre></td></tr></table></figure>
-<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">只需要在文本前加入 &gt; 这种尖括号（大于号）即可</div></pre></td></tr></table></figure>
-<h1 id="图片与链接"><a href="#图片与链接" class="headerlink" title="图片与链接"></a>图片与链接</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">插入链接与插入图片的语法很像，区别在一个 !号</div></pre></td></tr></table></figure>
-<h1 id="粗体与斜体"><a href="#粗体与斜体" class="headerlink" title="粗体与斜体"></a>粗体与斜体</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Markdown 的粗体和斜体也非常简单，用两个 * 包含一段文本就是粗体的语法，</div><div class="line">用一个 * 包含一段文本就是斜体的语法。</div></pre></td></tr></table></figure>
-<p><strong>我只粗体</strong>，<em>我是斜体</em>。</p>
-<h1 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h1><p>表格是我觉得 Markdown 比较累人的地方，例子如下：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">| Tables        | Are           | Cool  <span class="string">|</span></div><div class="line">| ------------- |:-------------:| -----:|</div><div class="line">| col 3 is      | right-aligned | $1600 |</div><div class="line">| col 2 is      | centered      |   $12 |</div><div class="line">| zebra stripes | are neat      |    $1 |</div></pre></td></tr></table></figure></p>
-<table>
-<thead>
-<tr>
-<th>Tables</th>
-<th style="text-align:center">Are</th>
-<th style="text-align:right">Cool</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>col 3 is</td>
-<td style="text-align:center">right-aligned</td>
-<td style="text-align:right">$1600</td>
-</tr>
-<tr>
-<td>col 2 is</td>
-<td style="text-align:center">centered</td>
-<td style="text-align:right">$12</td>
-</tr>
-<tr>
-<td>zebra stripes</td>
-<td style="text-align:center">are neat</td>
-<td style="text-align:right">$1</td>
-</tr>
-</tbody>
-</table>
-<h1 id="分割线"><a href="#分割线" class="headerlink" title="分割线"></a>分割线</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">分割线的语法只需要另起一行，连续输入三个星号 *** 即可。</div></pre></td></tr></table></figure>
-<hr>
-<h1 id="代码框"><a href="#代码框" class="headerlink" title="代码框"></a>代码框</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">如果你是个程序猿，需要在文章里优雅的引用代码框，在 Markdown 下实现也非常简单，</div><div class="line">只需要用两个 ` 把中间的代码包裹起来.</div><div class="line"></div><div class="line">如 `System.out.println()`</div></pre></td></tr></table></figure>
-<p><code>System.out.println()</code></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/22/markDown/" data-id="ciqxcwacw0002psot6ofco0uu" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-redis-cluster" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-redis-cluster" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/07/22/redis-cluster/" class="article-date">
   <time datetime="2016-07-22T02:39:35.000Z" itemprop="datePublished">2016-07-22</time>
@@ -154,8 +83,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/22/redis-cluster/">redis集群搭建</a>
+    <h1 class="article-title" itemprop="name">
+      redis集群搭建
     </h1>
   
 
@@ -179,99 +108,28 @@
     </footer>
   </div>
   
-</article>
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-logback" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/07/21/logback/" class="article-date">
-  <time datetime="2016-07-21T07:33:33.000Z" itemprop="datePublished">2016-07-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
+    <a href="/2016/07/22/markDown/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/21/logback/">logback 日志配置</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="写入文件配置"><a href="#写入文件配置" class="headerlink" title="写入文件配置"></a>写入文件配置</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;appender name=<span class="string">"FILE"</span> class=<span class="string">"ch.qos.logback.core.rolling.RollingFileAppender"</span><span class="string">&gt;</span></div><div class="line">    &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"&gt;</div><div class="line">        &lt;fileNamePattern&gt;logFile.%d&#123;yyyy-MM-dd&#125;.log&lt;/fileNamePattern&gt;</div><div class="line">        &lt;maxHistory&gt;90&lt;/maxHistory&gt;</div><div class="line">    &lt;/rollingPolicy&gt;</div><div class="line">    &lt;encoder&gt;</div><div class="line">        &lt;charset&gt;utf-8&lt;/charset&gt;</div><div class="line">        &lt;Pattern&gt;%d %-5level [%thread] %logger&#123;0&#125;: %msg%n&lt;/Pattern&gt;</div><div class="line">    &lt;/encoder&gt;</div><div class="line">&lt;/appender&gt;</div></pre></td></tr></table></figure>
-<h1 id="写入mysql数据库配置"><a href="#写入mysql数据库配置" class="headerlink" title="写入mysql数据库配置"></a>写入mysql数据库配置</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;appender name=<span class="string">"DB"</span> class=<span class="string">"ch.qos.logback.classic.db.DBAppender"</span><span class="string">&gt;</span></div><div class="line">     &lt;!--日志异步到数据库 --&gt;</div><div class="line">     &lt;connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource"&gt;</div><div class="line">         &lt;!--连接池 --&gt;</div><div class="line">         &lt;dataSource class="org.springframework.jdbc.datasource.DriverManagerDataSource"&gt;</div><div class="line">             &lt;driverClassName&gt;com.mysql.jdbc.Driver&lt;/driverClassName&gt;</div><div class="line">             &lt;url&gt;jdbc:mysql://localhost:3306/DB&lt;/url&gt;</div><div class="line">             &lt;username &gt;root&lt;/username&gt;</div><div class="line">             &lt;password&gt;root&lt;/password&gt;</div><div class="line">         &lt;/dataSource&gt;</div><div class="line">     &lt;/connectionSource&gt;</div><div class="line"> &lt;/appender&gt;</div></pre></td></tr></table></figure>
-<h1 id="写入控制台配置"><a href="#写入控制台配置" class="headerlink" title="写入控制台配置"></a>写入控制台配置</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;appender name=<span class="string">"STDOUT"</span> class=<span class="string">"ch.qos.logback.core.ConsoleAppender"</span><span class="string">&gt;</span></div><div class="line">     &lt;!-- 日志输出编码 --&gt;  </div><div class="line">     &lt;Encoding&gt;UTF-8&lt;/Encoding&gt;   </div><div class="line">      &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;   </div><div class="line">           &lt;!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符--&gt; </div><div class="line">          &lt;pattern&gt;%d&#123;yyyy-MM-dd HH:mm:ss.SSS&#125; [%thread] %-5level %logger&#123;50&#125; - %msg%n   </div><div class="line">          &lt;/pattern&gt;   </div><div class="line">      &lt;/layout&gt;   </div><div class="line"> &lt;/appender&gt;</div></pre></td></tr></table></figure>
-<h1 id="异步写入"><a href="#异步写入" class="headerlink" title="异步写入"></a>异步写入</h1><pre><code class="yaml">&lt;appender name=<span class="string">"ASYNC"</span> class=<span class="string">"ch.qos.logback.classic.AsyncAppender"</span><span class="string">&gt;
-      &lt;queueSize&gt;512&lt;/queueSize&gt;
-      &lt;appender-ref ref="FILE"/&gt;
-&lt;/appender&gt;</span>
-</code></pre>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/21/logback/" data-id="ciqxcwacd0001psot7d64asol" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/07/21/hello-world/" class="article-date">
-  <time datetime="2016-07-21T01:23:45.705Z" itemprop="datePublished">2016-07-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
+          markDown 的使用
         
+      </div>
+    </a>
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/21/hello-world/">Hello World</a>
-    </h1>
   
+    <a href="/2016/07/21/logback/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">logback 日志配置</div>
+    </a>
+  
+</nav>
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/21/hello-world/" data-id="ciqxcwabg0000psotmqkgzbf8" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
   
 </article>
-
-
-  
 
 </section>
         
