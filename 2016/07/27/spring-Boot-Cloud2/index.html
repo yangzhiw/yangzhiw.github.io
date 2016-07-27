@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>spring Boot Cloud2 | 橘子不酸的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Spring Cloud介绍Spring Cloud是一个基于Spring Boot实现的云应用开发工具，它为基于JVM的云应用开发中的配置管理、服务发现、断路器、智能路由、微代理、控制总线、全局锁、决策竞选、分布式会话和集群状态管理等操作提供了一种简单的开发方式。
+Spring Cloud与Dubbo对比它们两都具备分布式服务治理相关的功能，都能够提供服务注册、发现、路由、负载均衡等。说到这，D">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring Boot Cloud2">
+<meta property="og:url" content="https://yangzhiw.github.io/2016/07/27/spring-Boot-Cloud2/index.html">
+<meta property="og:site_name" content="橘子不酸的博客">
+<meta property="og:description" content="Spring Cloud介绍Spring Cloud是一个基于Spring Boot实现的云应用开发工具，它为基于JVM的云应用开发中的配置管理、服务发现、断路器、智能路由、微代理、控制总线、全局锁、决策竞选、分布式会话和集群状态管理等操作提供了一种简单的开发方式。
+Spring Cloud与Dubbo对比它们两都具备分布式服务治理相关的功能，都能够提供服务注册、发现、路由、负载均衡等。说到这，D">
+<meta property="og:image" content="https://yangzhiw.github.io/2016/07/27/spring-Boot-Cloud2/spring_cloud.jpg">
+<meta property="og:updated_time" content="2016-07-27T08:51:28.791Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="spring Boot Cloud2">
+<meta name="twitter:description" content="Spring Cloud介绍Spring Cloud是一个基于Spring Boot实现的云应用开发工具，它为基于JVM的云应用开发中的配置管理、服务发现、断路器、智能路由、微代理、控制总线、全局锁、决策竞选、分布式会话和集群状态管理等操作提供了一种简单的开发方式。
+Spring Cloud与Dubbo对比它们两都具备分布式服务治理相关的功能，都能够提供服务注册、发现、路由、负载均衡等。说到这，D">
+<meta name="twitter:image" content="https://yangzhiw.github.io/2016/07/27/spring-Boot-Cloud2/spring_cloud.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="橘子不酸的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">橘子不酸的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一天进步一点</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://yangzhiw.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-spring-Boot-Cloud2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/07/27/spring-Boot-Cloud2/" class="article-date">
+  <time datetime="2016-07-27T07:39:34.000Z" itemprop="datePublished">2016-07-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      spring Boot Cloud2
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Spring-Cloud介绍"><a href="#Spring-Cloud介绍" class="headerlink" title="Spring Cloud介绍"></a>Spring Cloud介绍</h1><p>Spring Cloud是一个基于Spring Boot实现的云应用开发工具，它为基于JVM的云应用开发中的配置管理、服务发现、断路器、<br>智能路由、微代理、控制总线、全局锁、决策竞选、分布式会话和集群状态管理等操作提供了一种简单的开发方式。</p>
+<h1 id="Spring-Cloud与Dubbo对比"><a href="#Spring-Cloud与Dubbo对比" class="headerlink" title="Spring Cloud与Dubbo对比"></a>Spring Cloud与Dubbo对比</h1><p>它们两都具备分布式服务治理相关的功能，都能够提供服务注册、发现、路由、负载均衡等。说到这，Dubbo的功能好像<br>也就这么多了，但是Spring Cloud是提供了一整套企业级分布式云应用的完美解决方案，能够结合Spring Boot，<br>Docker实现快速开发的目的，所以说Dubbo只有Spring Cloud的一部分RPC功能，而且也谈不上谁好谁坏。不过，<br>Dubbo项目现已停止了更新，淘宝内部由hsf替代dubbo，我想这会有更多人倾向Spring Cloud了。<br>从开发角度上说，Dubbo常与Spring、zookeeper结合，而且实现只是通过xml来配置服务地址、名称、端口，<br>代码的侵入性是很小的，相对Spring Cloud，它的实现需要类注解等，多少具有一定侵入性。</p>
+<h1 id="Spring-Cloud子项目"><a href="#Spring-Cloud子项目" class="headerlink" title="Spring Cloud子项目"></a>Spring Cloud子项目</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Spring Cloud包含了多个子项目（针对分布式系统中涉及的多个不同开源产品），之前在第一章节也介绍这些，</div><div class="line">比如：Spring Cloud Config、Spring Cloud Netflix、Spring Cloud CloudFoundry、Spring Cloud AWS、</div><div class="line">Spring Cloud Security、Spring Cloud Commons、Spring Cloud Zookeeper、Spring Cloud CLI等项目。</div></pre></td></tr></table></figure>
+<h2 id="配置服务"><a href="#配置服务" class="headerlink" title="配置服务"></a>配置服务</h2><p>Spring Cloud通过Netflix OSS的Eureka来实现服务发现，服务发现的主要目的是为了让每个服务之间可以互相通信。<br>Eureka Server为微服务的注册中心。谈到Spring Cloud Netflix，它是Spring Cloud的子项目之一，主要提供的模块包括：<br>服务发现（Eureka），断路器（Hystrix），智能路由（Zuul），客户端负载均衡（Ribbon）等。<br>Spring Cloud使用注解的方式提供了Eureka服务端（@EnableEurekaServer）和客户端（@EnableEurekaClient）。</p>
+<h2 id="路由网关"><a href="#路由网关" class="headerlink" title="路由网关"></a>路由网关</h2><p>路由网关的主要目的是为了让所有的微服务对外只有一个接口，我们只需访问一个网关地址，即可由网关将所有的请求代理<br>到不同的服务中。Spring Cloud是通过Zuul来实现的，支持自动路由映射到在Eureka Server上注册的服务。<br>Spring Cloud提供了注解@EnableZuulProxy来启用路由代理。</p>
+<h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>Spring Cloud提供了Ribbon和Feign作为客户端的负载均衡。在Spring Cloud下，使用Ribbon直接注入一个RestTemplate<br>对象即可，此RestTemplate已做好负载均衡的配置；而使用Feign只需定义个注解，有@FeignClient注解的接口，<br>然后使用@RequestMapping注解在方法上映射远程的REST服务，此方法也是做好了负载均衡配置。</p>
+<h2 id="路断器"><a href="#路断器" class="headerlink" title="路断器"></a>路断器</h2><p>断路器（Circuit Breaker）主要是为了解决当某个方法调用失败的时候，调用后备方法来替代失败的方法，<br>已达到容错／阻止级联错误的功能。Spring Cloud使用@EnableCircuitBreaker来启用断路器支持，<br>使用@HystrixCommand的fallbackMethod来指定后备方法。（@HystrixCommand(fallbackMethod=”fallbackOper”)）<br>Spring Cloud还提供了一个控制台来监控断路器的运行情况，通过@EnableHystrixDashboard注解开启。</p>
+<p>Spring Cloud依赖<br><img src="/2016/07/27/spring-Boot-Cloud2/spring_cloud.jpg" alt="spring_cloud" title="spring_cloud"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/07/27/spring-Boot-Cloud2/" data-id="cir4q3kls0004doot8hnbyksy" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/07/27/Docker-应用/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Docker 应用
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/07/27/spring-Boot-Cloud/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">spring Boot Cloud 学习1</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/07/27/Docker-应用/">Docker 应用</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/27/spring-Boot-Cloud2/">spring Boot Cloud2</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/27/spring-Boot-Cloud/">spring Boot Cloud 学习1</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/22/markDown/">markDown 的使用</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/22/redis-cluster/">redis集群搭建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

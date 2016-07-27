@@ -3,21 +3,17 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hello World | 橘子不酸的博客</title>
+  <title>橘子不酸的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="https://yangzhiw.github.io/2016/07/21/hello-world/index.html">
+  <meta name="description" content="记录生活点滴">
+<meta property="og:type" content="website">
+<meta property="og:title" content="橘子不酸的博客">
+<meta property="og:url" content="https://yangzhiw.github.io/page/2/index.html">
 <meta property="og:site_name" content="橘子不酸的博客">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
-<meta property="og:updated_time" content="2016-07-21T02:08:07.130Z">
+<meta property="og:description" content="记录生活点滴">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
+<meta name="twitter:title" content="橘子不酸的博客">
+<meta name="twitter:description" content="记录生活点滴">
   
     <link rel="alternate" href="/atom.xml" title="橘子不酸的博客" type="application/atom+xml">
   
@@ -70,7 +66,53 @@ Quick">
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main">
+  
+    <article id="post-logback" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/07/21/logback/" class="article-date">
+  <time datetime="2016-07-21T07:33:33.000Z" itemprop="datePublished">2016-07-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/21/logback/">logback 日志配置</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="写入文件配置"><a href="#写入文件配置" class="headerlink" title="写入文件配置"></a>写入文件配置</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;appender name=<span class="string">"FILE"</span> class=<span class="string">"ch.qos.logback.core.rolling.RollingFileAppender"</span><span class="string">&gt;</span></div><div class="line">    &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"&gt;</div><div class="line">        &lt;fileNamePattern&gt;logFile.%d&#123;yyyy-MM-dd&#125;.log&lt;/fileNamePattern&gt;</div><div class="line">        &lt;maxHistory&gt;90&lt;/maxHistory&gt;</div><div class="line">    &lt;/rollingPolicy&gt;</div><div class="line">    &lt;encoder&gt;</div><div class="line">        &lt;charset&gt;utf-8&lt;/charset&gt;</div><div class="line">        &lt;Pattern&gt;%d %-5level [%thread] %logger&#123;0&#125;: %msg%n&lt;/Pattern&gt;</div><div class="line">    &lt;/encoder&gt;</div><div class="line">&lt;/appender&gt;</div></pre></td></tr></table></figure>
+<h1 id="写入mysql数据库配置"><a href="#写入mysql数据库配置" class="headerlink" title="写入mysql数据库配置"></a>写入mysql数据库配置</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;appender name=<span class="string">"DB"</span> class=<span class="string">"ch.qos.logback.classic.db.DBAppender"</span><span class="string">&gt;</span></div><div class="line">     &lt;!--日志异步到数据库 --&gt;</div><div class="line">     &lt;connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource"&gt;</div><div class="line">         &lt;!--连接池 --&gt;</div><div class="line">         &lt;dataSource class="org.springframework.jdbc.datasource.DriverManagerDataSource"&gt;</div><div class="line">             &lt;driverClassName&gt;com.mysql.jdbc.Driver&lt;/driverClassName&gt;</div><div class="line">             &lt;url&gt;jdbc:mysql://localhost:3306/DB&lt;/url&gt;</div><div class="line">             &lt;username &gt;root&lt;/username&gt;</div><div class="line">             &lt;password&gt;root&lt;/password&gt;</div><div class="line">         &lt;/dataSource&gt;</div><div class="line">     &lt;/connectionSource&gt;</div><div class="line"> &lt;/appender&gt;</div></pre></td></tr></table></figure>
+<h1 id="写入控制台配置"><a href="#写入控制台配置" class="headerlink" title="写入控制台配置"></a>写入控制台配置</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;appender name=<span class="string">"STDOUT"</span> class=<span class="string">"ch.qos.logback.core.ConsoleAppender"</span><span class="string">&gt;</span></div><div class="line">     &lt;!-- 日志输出编码 --&gt;  </div><div class="line">     &lt;Encoding&gt;UTF-8&lt;/Encoding&gt;   </div><div class="line">      &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;   </div><div class="line">           &lt;!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符--&gt; </div><div class="line">          &lt;pattern&gt;%d&#123;yyyy-MM-dd HH:mm:ss.SSS&#125; [%thread] %-5level %logger&#123;50&#125; - %msg%n   </div><div class="line">          &lt;/pattern&gt;   </div><div class="line">      &lt;/layout&gt;   </div><div class="line"> &lt;/appender&gt;</div></pre></td></tr></table></figure>
+<h1 id="异步写入"><a href="#异步写入" class="headerlink" title="异步写入"></a>异步写入</h1><pre><code class="yaml">&lt;appender name=<span class="string">"ASYNC"</span> class=<span class="string">"ch.qos.logback.classic.AsyncAppender"</span><span class="string">&gt;
+      &lt;queueSize&gt;512&lt;/queueSize&gt;
+      &lt;appender-ref ref="FILE"/&gt;
+&lt;/appender&gt;</span>
+</code></pre>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/07/21/logback/" data-id="cir4q3kll0003dootbzij5nnx" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/07/21/hello-world/" class="article-date">
   <time datetime="2016-07-21T01:23:45.705Z" itemprop="datePublished">2016-07-21</time>
@@ -83,8 +125,8 @@ Quick">
       <header class="article-header">
         
   
-    <h1 class="article-title" itemprop="name">
-      Hello World
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/21/hello-world/">Hello World</a>
     </h1>
   
 
@@ -111,24 +153,15 @@ Quick">
     </footer>
   </div>
   
-    
-<nav id="article-nav">
-  
-    <a href="/2016/07/21/logback/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          logback 日志配置
-        
-      </div>
-    </a>
-  
-  
-</nav>
-
-  
 </article>
 
+
+  
+
+
+  <nav id="page-nav">
+    <a class="extend prev" rel="prev" href="/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
 </section>
         
           <aside id="sidebar">

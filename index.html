@@ -68,6 +68,179 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Docker-应用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/07/27/Docker-应用/" class="article-date">
+  <time datetime="2016-07-27T09:20:21.000Z" itemprop="datePublished">2016-07-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/27/Docker-应用/">Docker 应用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="应用Docker部署"><a href="#应用Docker部署" class="headerlink" title="应用Docker部署"></a>应用Docker部署</h1><p>在项目的根目录下建立一个Dockerfile文件<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">FROM maven:<span class="number">3.3</span><span class="number">.3</span>  </div><div class="line">  </div><div class="line">ADD pom.xml /tmp/build/  </div><div class="line">RUN cd /tmp/build &amp;&amp; mvn -q dependency:resolve  </div><div class="line">  </div><div class="line">ADD src /tmp/build/src  </div><div class="line">        <span class="comment">#构建应用  </span></div><div class="line">RUN cd /tmp/build &amp;&amp; mvn -q -DskipTests=<span class="literal">true</span> package \  </div><div class="line">        <span class="comment">#拷贝编译结果到指定目录  </span></div><div class="line">        &amp;&amp; mv target/*.jar /app.jar \  </div><div class="line">        <span class="comment">#清理编译痕迹  </span></div><div class="line">        &amp;&amp; cd / &amp;&amp; rm -rf /tmp/build  </div><div class="line">  </div><div class="line">VOLUME /tmp  </div><div class="line">EXPOSE <span class="number">8080</span>  </div><div class="line">ENTRYPOINT [<span class="string">"java"</span>,<span class="string">"-Djava.security.egd=file:/dev/./urandom"</span>,<span class="string">"-jar"</span>,<span class="string">"/app.jar"</span>]</div></pre></td></tr></table></figure></p>
+<p>因为 Spring Boot 框架打包的应用是一个包含依赖的 jar 文件，内嵌了 Tomcat 和 Jetty 支持，所以我们只需要使用包含 Java<br>的 Maven 镜像即可，不需要 Tomcat 镜像。<br>为了减少镜像大小，在执行 Maven 构建之后，清理了构建痕迹。<br>在 Dockerfile 文件的最后，使用 ENTRYPOINT 指令执行启动 Java 应用的操作。</p>
+<h1 id="构建-Docker-镜像"><a href="#构建-Docker-镜像" class="headerlink" title="构建 Docker 镜像"></a>构建 Docker 镜像</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker build -t docker-demo-spring-boot .   ／／注意后面的 . 表示当前路径下</div></pre></td></tr></table></figure>
+<h1 id="从镜像启动容器"><a href="#从镜像启动容器" class="headerlink" title="从镜像启动容器"></a>从镜像启动容器</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d -p <span class="number">8080</span>:<span class="number">8080</span> docker-demo-spring-boot</div></pre></td></tr></table></figure>
+<h1 id="完成部署："><a href="#完成部署：" class="headerlink" title="完成部署："></a>完成部署：</h1><p>URL访问，可通过docker ip查看应用的虚拟地址。</p>
+<h1 id="Docker-Compose编排"><a href="#Docker-Compose编排" class="headerlink" title="Docker Compose编排"></a>Docker Compose编排</h1><p>Docker Compose是用于定义和组装运行多容器分布式应用的工具，<br>它提供一个简单的基于YAML语言的docker－compose.yml配置文件。 通常，我们使用docker定义和运行复杂的应用，<br>使用docker compose，在一个文件里定义多容器应用的启动顺序，起到服务编排的作用。</p>
+<h2 id="编写-docker-compose-yaml-文件"><a href="#编写-docker-compose-yaml-文件" class="headerlink" title="编写 docker-compose.yaml 文件"></a>编写 docker-compose.yaml 文件</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="attr">web:</span>  </div><div class="line"><span class="attr">  build:</span> .  </div><div class="line"><span class="attr">  ports:</span>  </div><div class="line"><span class="bullet">    -</span> <span class="string">"8080:8080"</span>  </div><div class="line"><span class="attr">  links:</span>  </div><div class="line"><span class="attr">    - mongodb:</span>mongodb  </div><div class="line">  </div><div class="line"><span class="attr">mongodb:</span>  </div><div class="line"><span class="attr">  image:</span> daocloud.io/library/mongo:latest  </div><div class="line"><span class="attr">  ports:</span>  </div><div class="line"><span class="bullet">    -</span> <span class="string">"27017:27017"</span></div></pre></td></tr></table></figure>
+<p>这里以MongoDB数据库提供服务的demo，在该文件中，我们定于了两个服务：</p>
+<pre><code>基于我们应用构建的 docker-demo-java-mongo 镜像，用来提供 Web 服务
+基于 DaoCloud 提供的 MongoDB 镜像，提供存储服务
+通过 links 为 web 关联 mongo 服务
+</code></pre><h2 id="启动-Docker-Compose"><a href="#启动-Docker-Compose" class="headerlink" title="启动 Docker Compose"></a>启动 Docker Compose</h2><pre><code class="yaml">docker-compose up
+</code></pre>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/07/27/Docker-应用/" data-id="cir4q3kkd0000dootht5mnq1f" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-spring-Boot-Cloud2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/07/27/spring-Boot-Cloud2/" class="article-date">
+  <time datetime="2016-07-27T07:39:34.000Z" itemprop="datePublished">2016-07-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/27/spring-Boot-Cloud2/">spring Boot Cloud2</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Spring-Cloud介绍"><a href="#Spring-Cloud介绍" class="headerlink" title="Spring Cloud介绍"></a>Spring Cloud介绍</h1><p>Spring Cloud是一个基于Spring Boot实现的云应用开发工具，它为基于JVM的云应用开发中的配置管理、服务发现、断路器、<br>智能路由、微代理、控制总线、全局锁、决策竞选、分布式会话和集群状态管理等操作提供了一种简单的开发方式。</p>
+<h1 id="Spring-Cloud与Dubbo对比"><a href="#Spring-Cloud与Dubbo对比" class="headerlink" title="Spring Cloud与Dubbo对比"></a>Spring Cloud与Dubbo对比</h1><p>它们两都具备分布式服务治理相关的功能，都能够提供服务注册、发现、路由、负载均衡等。说到这，Dubbo的功能好像<br>也就这么多了，但是Spring Cloud是提供了一整套企业级分布式云应用的完美解决方案，能够结合Spring Boot，<br>Docker实现快速开发的目的，所以说Dubbo只有Spring Cloud的一部分RPC功能，而且也谈不上谁好谁坏。不过，<br>Dubbo项目现已停止了更新，淘宝内部由hsf替代dubbo，我想这会有更多人倾向Spring Cloud了。<br>从开发角度上说，Dubbo常与Spring、zookeeper结合，而且实现只是通过xml来配置服务地址、名称、端口，<br>代码的侵入性是很小的，相对Spring Cloud，它的实现需要类注解等，多少具有一定侵入性。</p>
+<h1 id="Spring-Cloud子项目"><a href="#Spring-Cloud子项目" class="headerlink" title="Spring Cloud子项目"></a>Spring Cloud子项目</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Spring Cloud包含了多个子项目（针对分布式系统中涉及的多个不同开源产品），之前在第一章节也介绍这些，</div><div class="line">比如：Spring Cloud Config、Spring Cloud Netflix、Spring Cloud CloudFoundry、Spring Cloud AWS、</div><div class="line">Spring Cloud Security、Spring Cloud Commons、Spring Cloud Zookeeper、Spring Cloud CLI等项目。</div></pre></td></tr></table></figure>
+<h2 id="配置服务"><a href="#配置服务" class="headerlink" title="配置服务"></a>配置服务</h2><p>Spring Cloud通过Netflix OSS的Eureka来实现服务发现，服务发现的主要目的是为了让每个服务之间可以互相通信。<br>Eureka Server为微服务的注册中心。谈到Spring Cloud Netflix，它是Spring Cloud的子项目之一，主要提供的模块包括：<br>服务发现（Eureka），断路器（Hystrix），智能路由（Zuul），客户端负载均衡（Ribbon）等。<br>Spring Cloud使用注解的方式提供了Eureka服务端（@EnableEurekaServer）和客户端（@EnableEurekaClient）。</p>
+<h2 id="路由网关"><a href="#路由网关" class="headerlink" title="路由网关"></a>路由网关</h2><p>路由网关的主要目的是为了让所有的微服务对外只有一个接口，我们只需访问一个网关地址，即可由网关将所有的请求代理<br>到不同的服务中。Spring Cloud是通过Zuul来实现的，支持自动路由映射到在Eureka Server上注册的服务。<br>Spring Cloud提供了注解@EnableZuulProxy来启用路由代理。</p>
+<h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>Spring Cloud提供了Ribbon和Feign作为客户端的负载均衡。在Spring Cloud下，使用Ribbon直接注入一个RestTemplate<br>对象即可，此RestTemplate已做好负载均衡的配置；而使用Feign只需定义个注解，有@FeignClient注解的接口，<br>然后使用@RequestMapping注解在方法上映射远程的REST服务，此方法也是做好了负载均衡配置。</p>
+<h2 id="路断器"><a href="#路断器" class="headerlink" title="路断器"></a>路断器</h2><p>断路器（Circuit Breaker）主要是为了解决当某个方法调用失败的时候，调用后备方法来替代失败的方法，<br>已达到容错／阻止级联错误的功能。Spring Cloud使用@EnableCircuitBreaker来启用断路器支持，<br>使用@HystrixCommand的fallbackMethod来指定后备方法。（@HystrixCommand(fallbackMethod=”fallbackOper”)）<br>Spring Cloud还提供了一个控制台来监控断路器的运行情况，通过@EnableHystrixDashboard注解开启。</p>
+<p>Spring Cloud依赖<br><img src="/2016/07/27/spring-Boot-Cloud2/spring_cloud.jpg" alt="spring_cloud" title="spring_cloud"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/07/27/spring-Boot-Cloud2/" data-id="cir4q3kls0004doot8hnbyksy" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-spring-Boot-Cloud" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/07/27/spring-Boot-Cloud/" class="article-date">
+  <time datetime="2016-07-27T06:43:26.000Z" itemprop="datePublished">2016-07-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/27/spring-Boot-Cloud/">spring Boot Cloud 学习1</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Spring-简介"><a href="#Spring-简介" class="headerlink" title="Spring 简介"></a>Spring 简介</h1><img src="/2016/07/27/spring-Boot-Cloud/Spring.jpg" alt="Spring Project" title="Spring Project">
+<p>Spring IO platform:用于系统部署，是可集成的，构建现代化应用的版本平台，具体来说当你使用maven dependency引入spring jar包时它就在工作了。</p>
+<p>Spring Boot:旨在简化创建产品级的 Spring 应用和服务，简化了配置文件，使用嵌入式web服务器，含有诸多开箱即用微服务功能，可以和spring cloud联合部署。</p>
+<p>Spring Framework:即通常所说的spring 框架，是一个开源的Java/Java EE全功能栈应用程序框架，其它spring项目如spring boot也依赖于此框架。</p>
+<p>Spring Cloud：微服务工具包，为开发者提供了在分布式系统的配置管理、服务发现、断路器、智能路由、微代理、控制总线等开发工具包。</p>
+<p>Spring XD：是一种运行时环境（服务器软件，非开发框架），组合spring技术，如spring batch、spring boot、spring data，采集大数据并处理。</p>
+<p>Spring Data：是一个数据访问及操作的工具包，封装了很多种数据及数据库的访问相关技术，包括：jdbc、Redis、MongoDB、Neo4j等。</p>
+<p>Spring Batch：批处理框架，或说是批量任务执行管理器，功能包括任务调度、日志记录/跟踪等。</p>
+<p>Spring Security：是一个能够为基于Spring的企业应用系统提供声明式的安全访问控制解决方案的安全框架。</p>
+<p>Spring Integration：面向企业应用集成（EAI/ESB）的编程框架，支持的通信方式包括HTTP、FTP、TCP/UDP、JMS、RabbitMQ、Email等。</p>
+<p>Spring Social：一组工具包，一组连接社交服务API，如Twitter、Facebook、LinkedIn、GitHub等，有几十个。</p>
+<p>Spring AMQP：消息队列操作的工具包，主要是封装了RabbitMQ的操作。</p>
+<p>Spring HATEOAS：是一个用于支持实现超文本驱动的 REST Web 服务的开发库。</p>
+<p>Spring Mobile：是Spring MVC的扩展，用来简化手机上的Web应用开发。</p>
+<p>Spring for Android：是Spring框架的一个扩展，其主要目的在乎简化Android本地应用的开发，提供RestTemplate来访问Rest服务。</p>
+<p>Spring Web Flow：目标是成为管理Web应用页面流程的最佳方案，将页面跳转流程单独管理，并可配置。</p>
+<p>Spring LDAP：是一个用于操作LDAP的Java工具包，基于Spring的JdbcTemplate模式，简化LDAP访问。</p>
+<p>Spring Session：session管理的开发工具包，让你可以把session保存到redis等，进行集群化session管理。</p>
+<p>Spring Web Services：是基于Spring的Web服务框架，提供SOAP服务开发，允许通过多种方式创建Web服务。</p>
+<p>Spring Shell：提供交互式的Shell可让你使用简单的基于Spring的编程模型来开发命令，比如Spring Roo命令。</p>
+<p>Spring Roo：是一种Spring开发的辅助工具，使用命令行操作来生成自动化项目，操作非常类似于Rails。</p>
+<p>Spring Scala：为Scala语言编程提供的spring框架的封装（新的编程语言，Java平台的Scala于2003年底/2004年初发布）。</p>
+<p>Spring BlazeDS Integration：一个开发RIA工具包，可以集成Adobe Flex、BlazeDS、Spring以及Java技术创建RIA。</p>
+<p>Spring Loaded：用于实现java程序和web应用的热部署的开源工具。</p>
+<p>Spring REST Shell：可以调用Rest服务的命令行工具，敲命令行操作Rest服务。</p>
+<h1 id="Spring-Cloud-项目"><a href="#Spring-Cloud-项目" class="headerlink" title="Spring Cloud 项目"></a>Spring Cloud 项目</h1><p>目前来说spring主要集中于spring boot（用于开发微服务）和spring cloud相关框架的开发，我们从几张图着手理解，然后再具体介绍</p>
+<img src="/2016/07/27/spring-Boot-Cloud/spring_cloud.jpg" alt="微服务架构图" title="微服务架构图">
+<img src="/2016/07/27/spring-Boot-Cloud/cloud.jpg" alt="微服务架构运行图" title="微服务架构运行图">
+<p>spring cloud子项目包括：</p>
+<p>Spring Cloud Config：配置管理开发工具包，可以让你把配置放到远程服务器，目前支持本地存储、Git以及Subversion。</p>
+<p>Spring Cloud Bus：事件、消息总线，用于在集群（例如，配置变化事件）中传播状态变化，可与Spring Cloud Config联合实现热部署。</p>
+<p>Spring Cloud Netflix：针对多种Netflix组件提供的开发工具包，其中包括Eureka、Hystrix、Zuul、Archaius等。</p>
+<p>Netflix Eureka：云端负载均衡，一个基于 REST 的服务，用于定位服务，以实现云端的负载均衡和中间层服务器的故障转移。</p>
+<p>Netflix Hystrix：容错管理工具，旨在通过控制服务和第三方库的节点,从而对延迟和故障提供更强大的容错能力。</p>
+<p>Netflix Zuul：边缘服务工具，是提供动态路由，监控，弹性，安全等的边缘服务。</p>
+<p>Netflix Archaius：配置管理API，包含一系列配置管理API，提供动态类型化属性、线程安全配置操作、轮询框架、回调机制等功能。</p>
+<p>Spring Cloud for Cloud Foundry：通过Oauth2协议绑定服务到CloudFoundry，CloudFoundry是VMware推出的开源PaaS云平台。</p>
+<p>Spring Cloud Sleuth：日志收集工具包，封装了Dapper,Zipkin和HTrace操作。</p>
+<p>Spring Cloud Data Flow：大数据操作工具，通过命令行方式操作数据流。</p>
+<p>Spring Cloud Security：安全工具包，为你的应用程序添加安全控制，主要是指OAuth2。</p>
+<p>Spring Cloud Consul：封装了Consul操作，consul是一个服务发现与配置工具，与Docker容器可以无缝集成。</p>
+<p>Spring Cloud Zookeeper：操作Zookeeper的工具包，用于使用zookeeper方式的服务注册和发现。</p>
+<p>Spring Cloud Stream：数据流操作开发包，封装了与Redis,Rabbit、Kafka等发送接收消息。</p>
+<p>Spring Cloud CLI：基于 Spring Boot CLI，可以让你以命令行方式快速建立云组件。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/07/27/spring-Boot-Cloud/" data-id="cir4q3kl00002doot459agl29" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-markDown" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/07/22/markDown/" class="article-date">
@@ -131,7 +304,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/22/markDown/" data-id="ciqxcwacw0002psot6ofco0uu" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/07/22/markDown/" data-id="cir4q3klz0005dootsfd58nkl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -173,96 +346,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/22/redis-cluster/" data-id="ciqxcwad60003psotp43uxo8a" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-logback" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/07/21/logback/" class="article-date">
-  <time datetime="2016-07-21T07:33:33.000Z" itemprop="datePublished">2016-07-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/21/logback/">logback 日志配置</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="写入文件配置"><a href="#写入文件配置" class="headerlink" title="写入文件配置"></a>写入文件配置</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;appender name=<span class="string">"FILE"</span> class=<span class="string">"ch.qos.logback.core.rolling.RollingFileAppender"</span><span class="string">&gt;</span></div><div class="line">    &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"&gt;</div><div class="line">        &lt;fileNamePattern&gt;logFile.%d&#123;yyyy-MM-dd&#125;.log&lt;/fileNamePattern&gt;</div><div class="line">        &lt;maxHistory&gt;90&lt;/maxHistory&gt;</div><div class="line">    &lt;/rollingPolicy&gt;</div><div class="line">    &lt;encoder&gt;</div><div class="line">        &lt;charset&gt;utf-8&lt;/charset&gt;</div><div class="line">        &lt;Pattern&gt;%d %-5level [%thread] %logger&#123;0&#125;: %msg%n&lt;/Pattern&gt;</div><div class="line">    &lt;/encoder&gt;</div><div class="line">&lt;/appender&gt;</div></pre></td></tr></table></figure>
-<h1 id="写入mysql数据库配置"><a href="#写入mysql数据库配置" class="headerlink" title="写入mysql数据库配置"></a>写入mysql数据库配置</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;appender name=<span class="string">"DB"</span> class=<span class="string">"ch.qos.logback.classic.db.DBAppender"</span><span class="string">&gt;</span></div><div class="line">     &lt;!--日志异步到数据库 --&gt;</div><div class="line">     &lt;connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource"&gt;</div><div class="line">         &lt;!--连接池 --&gt;</div><div class="line">         &lt;dataSource class="org.springframework.jdbc.datasource.DriverManagerDataSource"&gt;</div><div class="line">             &lt;driverClassName&gt;com.mysql.jdbc.Driver&lt;/driverClassName&gt;</div><div class="line">             &lt;url&gt;jdbc:mysql://localhost:3306/DB&lt;/url&gt;</div><div class="line">             &lt;username &gt;root&lt;/username&gt;</div><div class="line">             &lt;password&gt;root&lt;/password&gt;</div><div class="line">         &lt;/dataSource&gt;</div><div class="line">     &lt;/connectionSource&gt;</div><div class="line"> &lt;/appender&gt;</div></pre></td></tr></table></figure>
-<h1 id="写入控制台配置"><a href="#写入控制台配置" class="headerlink" title="写入控制台配置"></a>写入控制台配置</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;appender name=<span class="string">"STDOUT"</span> class=<span class="string">"ch.qos.logback.core.ConsoleAppender"</span><span class="string">&gt;</span></div><div class="line">     &lt;!-- 日志输出编码 --&gt;  </div><div class="line">     &lt;Encoding&gt;UTF-8&lt;/Encoding&gt;   </div><div class="line">      &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;   </div><div class="line">           &lt;!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符--&gt; </div><div class="line">          &lt;pattern&gt;%d&#123;yyyy-MM-dd HH:mm:ss.SSS&#125; [%thread] %-5level %logger&#123;50&#125; - %msg%n   </div><div class="line">          &lt;/pattern&gt;   </div><div class="line">      &lt;/layout&gt;   </div><div class="line"> &lt;/appender&gt;</div></pre></td></tr></table></figure>
-<h1 id="异步写入"><a href="#异步写入" class="headerlink" title="异步写入"></a>异步写入</h1><pre><code class="yaml">&lt;appender name=<span class="string">"ASYNC"</span> class=<span class="string">"ch.qos.logback.classic.AsyncAppender"</span><span class="string">&gt;
-      &lt;queueSize&gt;512&lt;/queueSize&gt;
-      &lt;appender-ref ref="FILE"/&gt;
-&lt;/appender&gt;</span>
-</code></pre>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/21/logback/" data-id="ciqxcwacd0001psot7d64asol" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/07/21/hello-world/" class="article-date">
-  <time datetime="2016-07-21T01:23:45.705Z" itemprop="datePublished">2016-07-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/21/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/21/hello-world/" data-id="ciqxcwabg0000psotmqkgzbf8" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/07/22/redis-cluster/" data-id="cir4q3km70006dooto3f7h77v" class="article-share-link">Share</a>
       
       
     </footer>
@@ -273,6 +357,10 @@
 
   
 
+
+  <nav id="page-nav">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
+  </nav>
 </section>
         
           <aside id="sidebar">
@@ -302,19 +390,23 @@
       <ul>
         
           <li>
+            <a href="/2016/07/27/Docker-应用/">Docker 应用</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/27/spring-Boot-Cloud2/">spring Boot Cloud2</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/27/spring-Boot-Cloud/">spring Boot Cloud 学习1</a>
+          </li>
+        
+          <li>
             <a href="/2016/07/22/markDown/">markDown 的使用</a>
           </li>
         
           <li>
             <a href="/2016/07/22/redis-cluster/">redis集群搭建</a>
-          </li>
-        
-          <li>
-            <a href="/2016/07/21/logback/">logback 日志配置</a>
-          </li>
-        
-          <li>
-            <a href="/2016/07/21/hello-world/">Hello World</a>
           </li>
         
       </ul>
