@@ -3,17 +3,33 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Tag: spring AOP | 橘子不酸的博客</title>
+  <title>Spring定时任务 | 橘子不酸的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记录生活点滴">
-<meta property="og:type" content="website">
-<meta property="og:title" content="橘子不酸的博客">
-<meta property="og:url" content="https://yangzhiw.github.io/tags/spring-AOP/index.html">
+  <meta name="description" content="获取昨天时间Calendar c=Calendar.getInstance();
+c.add(Calendar.DAY_OF_MONTH,-1);   //日期月是0-11
+c.set(Calendar.HOUR_OF_DAY,0);     
+c.set(Calendar.MINUTE,0);
+c.set(Calendar.SECOND,0);
+c.set(Calendar.MILLISECON">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring定时任务">
+<meta property="og:url" content="https://yangzhiw.github.io/2016/08/10/spring定时任务/index.html">
 <meta property="og:site_name" content="橘子不酸的博客">
-<meta property="og:description" content="记录生活点滴">
+<meta property="og:description" content="获取昨天时间Calendar c=Calendar.getInstance();
+c.add(Calendar.DAY_OF_MONTH,-1);   //日期月是0-11
+c.set(Calendar.HOUR_OF_DAY,0);     
+c.set(Calendar.MINUTE,0);
+c.set(Calendar.SECOND,0);
+c.set(Calendar.MILLISECON">
+<meta property="og:updated_time" content="2016-08-10T05:43:07.803Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="橘子不酸的博客">
-<meta name="twitter:description" content="记录生活点滴">
+<meta name="twitter:title" content="Spring定时任务">
+<meta name="twitter:description" content="获取昨天时间Calendar c=Calendar.getInstance();
+c.add(Calendar.DAY_OF_MONTH,-1);   //日期月是0-11
+c.set(Calendar.HOUR_OF_DAY,0);     
+c.set(Calendar.MINUTE,0);
+c.set(Calendar.SECOND,0);
+c.set(Calendar.MILLISECON">
   
     <link rel="alternate" href="/atom.xml" title="橘子不酸的博客" type="application/atom+xml">
   
@@ -66,39 +82,70 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2016/07/28/spring-AOP-注解开发/" class="archive-article-date">
-  <time datetime="2016-07-28T07:54:39.000Z" itemprop="datePublished">7月 28</time>
+        <section id="main"><article id="post-spring定时任务" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/10/spring定时任务/" class="article-date">
+  <time datetime="2016-08-10T02:29:47.000Z" itemprop="datePublished">2016-08-10</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/07/28/spring-AOP-注解开发/">spring AOP 注解开发</a>
+    <h1 class="article-title" itemprop="name">
+      Spring定时任务
     </h1>
   
 
-    </header>
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="获取昨天时间"><a href="#获取昨天时间" class="headerlink" title="获取昨天时间"></a>获取昨天时间</h2><pre><code>Calendar c=Calendar.getInstance();
+c.add(Calendar.DAY_OF_MONTH,-1);   //日期月是0-11
+c.set(Calendar.HOUR_OF_DAY,0);     
+c.set(Calendar.MINUTE,0);
+c.set(Calendar.SECOND,0);
+c.set(Calendar.MILLISECOND,0);
+return c.getTime();
+</code></pre><h2 id="在类上加上注解"><a href="#在类上加上注解" class="headerlink" title="在类上加上注解"></a>在类上加上注解</h2><p>@Configuration<br>@EnableScheduling        </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/10/spring定时任务/" data-id="cirvdqr8g000784otj8g56u6s" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
+
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/08/12/计算机网络知识复习/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          计算机网络知识复习
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/08/10/获取文件流的编码/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">获取文件流编码</div>
+    </a>
+  
+</nav>
+
+  
 </article>
-  
-  
-    </div></section>
-  
 
 </section>
         

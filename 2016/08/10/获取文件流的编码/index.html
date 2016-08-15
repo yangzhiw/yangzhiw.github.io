@@ -3,21 +3,36 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hello World | 橘子不酸的博客</title>
+  <title>获取文件流编码 | 橘子不酸的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
+  <meta name="description" content="1，获取文件的流InportStream importStream = file.getInputStream()；
+2，把文件流转化为字节流//字节数组输出流
+ByteArrayOutputStream baos = new ByteArrayOutputStream();
+try {
+    byte[] buffer = new byte[1024];
+    int len;
+    wh">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="https://yangzhiw.github.io/2016/07/21/hello-world/index.html">
+<meta property="og:title" content="获取文件流编码">
+<meta property="og:url" content="https://yangzhiw.github.io/2016/08/10/获取文件流的编码/index.html">
 <meta property="og:site_name" content="橘子不酸的博客">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
-<meta property="og:updated_time" content="2016-07-21T02:08:07.130Z">
+<meta property="og:description" content="1，获取文件的流InportStream importStream = file.getInputStream()；
+2，把文件流转化为字节流//字节数组输出流
+ByteArrayOutputStream baos = new ByteArrayOutputStream();
+try {
+    byte[] buffer = new byte[1024];
+    int len;
+    wh">
+<meta property="og:updated_time" content="2016-08-12T03:31:34.715Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
+<meta name="twitter:title" content="获取文件流编码">
+<meta name="twitter:description" content="1，获取文件的流InportStream importStream = file.getInputStream()；
+2，把文件流转化为字节流//字节数组输出流
+ByteArrayOutputStream baos = new ByteArrayOutputStream();
+try {
+    byte[] buffer = new byte[1024];
+    int len;
+    wh">
   
     <link rel="alternate" href="/atom.xml" title="橘子不酸的博客" type="application/atom+xml">
   
@@ -70,10 +85,10 @@ Quick">
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-获取文件流的编码" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/07/21/hello-world/" class="article-date">
-  <time datetime="2016-07-21T01:23:45.705Z" itemprop="datePublished">2016-07-21</time>
+    <a href="/2016/08/10/获取文件流的编码/" class="article-date">
+  <time datetime="2016-08-10T02:29:47.000Z" itemprop="datePublished">2016-08-10</time>
 </a>
     
   </div>
@@ -84,7 +99,7 @@ Quick">
         
   
     <h1 class="article-title" itemprop="name">
-      Hello World
+      获取文件流编码
     </h1>
   
 
@@ -92,37 +107,107 @@ Quick">
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+        <h1 id="1，获取文件的流"><a href="#1，获取文件的流" class="headerlink" title="1，获取文件的流"></a>1，获取文件的流</h1><pre><code>InportStream importStream = file.getInputStream()；
+</code></pre><h1 id="2，把文件流转化为字节流"><a href="#2，把文件流转化为字节流" class="headerlink" title="2，把文件流转化为字节流"></a>2，把文件流转化为字节流</h1><pre><code>//字节数组输出流
+ByteArrayOutputStream baos = new ByteArrayOutputStream();
+try {
+    byte[] buffer = new byte[1024];
+    int len;
+    while ((len = inputStream.read(buffer)) &gt; -1) {
+        baos.write(buffer, 0, len);
+    }
+    baos.flush();
+}catch(IOException e){
+    e.printStackTrace();
+}
+return new ByteArrayInputStream(baos.toByteArray());
+</code></pre><h1 id="3，根据字节流的判断文件的编码"><a href="#3，根据字节流的判断文件的编码" class="headerlink" title="3，根据字节流的判断文件的编码"></a>3，根据字节流的判断文件的编码</h1><pre><code>//默认编码
+String charset = &quot;GBK&quot;;
+byte[] first3Bytes = new byte[3];
+//缓存流
+BufferedInputStream bis = new BufferedInputStream(inputStream1);
+try {
+    boolean checked = false;
+    //标记
+    bis.mark(0);
+    //读取文件的前3个字符
+    int read = bis.read(first3Bytes, 0, 3);
+    if (read == -1) return charset;
+    if (first3Bytes[0] == (byte) 0xFF &amp;&amp; first3Bytes[1] == (byte) 0xFE) {
+        charset = &quot;UTF-16LE&quot;;
+        checked = true;
+    } else if (first3Bytes[0] == (byte) 0xFE &amp;&amp; first3Bytes[1] == (byte) 0xFF) {
+        charset = &quot;UTF-16BE&quot;;
+        checked = true;
+    } else if (first3Bytes[0] == (byte) 0xEF &amp;&amp; first3Bytes[1] == (byte) 0xBB &amp;&amp; first3Bytes[2] == (byte) 0xBF) {
+        charset = &quot;UTF-8&quot;;
+        checked = true;
+    }
+    bis.reset();
+    if (!checked) {
+
+        int loc = 0;
+        while ((read = bis.read()) != -1) {
+            loc++;
+            if (read &gt;= 0xF0) break;
+            if (0x80 &lt;= read &amp;&amp; read &lt;= 0xBF) // 单独出现BF以下的，也算是GBK
+                break;
+            if (0xC0 &lt;= read &amp;&amp; read &lt;= 0xDF) {
+                read = bis.read();
+                if (0x80 &lt;= read &amp;&amp; read &lt;= 0xBF) // 双字节 (0xC0 - 0xDF) (0x80
+                    continue;
+                else break;
+            } else if (0xE0 &lt;= read &amp;&amp; read &lt;= 0xEF) {// 也有可能出错，但是几率较小
+                read = bis.read();
+                if (0x80 &lt;= read &amp;&amp; read &lt;= 0xBF) {
+                    read = bis.read();
+                    if (0x80 &lt;= read &amp;&amp; read &lt;= 0xBF) {
+                        charset = &quot;UTF-8&quot;;
+                        break;
+                    } else break;
+                } else break;
+            }
+        }
+    }
+} catch (Exception e) {
+    e.printStackTrace();
+} finally {
+    try {
+        bis.close();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+</code></pre><p>1，web<br>2，IOS<br>3，android<br>4，wap<br>5，其他</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/21/hello-world/" data-id="cirvdqr3p000084oto7uxjxbk" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/10/获取文件流的编码/" data-id="cirvdqr98000d84otd41g35e5" class="article-share-link">Share</a>
       
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/编码/">编码</a></li></ul>
+
     </footer>
   </div>
   
     
 <nav id="article-nav">
   
-    <a href="/2016/07/21/logback/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2016/08/10/spring定时任务/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          logback 日志配置
+          Spring定时任务
         
       </div>
     </a>
   
+  
+    <a href="/2016/08/01/java-基础题/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">java 复习资料</div>
+    </a>
   
 </nav>
 

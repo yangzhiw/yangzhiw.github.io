@@ -18,7 +18,7 @@
 封装，继承，多态
 3，OverLoad与Override的区别1234567891011   Override（重写，覆盖） 方法名、参数、返回值相同。子类方法不能缩小父类方法的访问权限。子类方法不能抛出比父类方法更多的异常(但子类方法可以不抛出异常)。存在于父类和子类之间。方法被定义为final不能被重写。   Overload（">
 <meta property="og:image" content="https://yangzhiw.github.io/2016/08/01/java-基础题/java_collection.jpg">
-<meta property="og:updated_time" content="2016-08-07T14:48:16.201Z">
+<meta property="og:updated_time" content="2016-08-08T09:07:46.857Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java 复习资料">
 <meta name="twitter:description" content="java基础1，面向对象和面向过程的区别2，java的三大特性
@@ -105,7 +105,7 @@
 <pre><code>封装，继承，多态
 </code></pre><p>3，OverLoad与Override的区别<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">   Override（重写，覆盖） </div><div class="line">方法名、参数、返回值相同。</div><div class="line">子类方法不能缩小父类方法的访问权限。</div><div class="line">子类方法不能抛出比父类方法更多的异常(但子类方法可以不抛出异常)。</div><div class="line">存在于父类和子类之间。</div><div class="line">方法被定义为final不能被重写。</div><div class="line"></div><div class="line">   Overload（重载，过载）</div><div class="line">参数类型、个数、顺序至少有一个不相同。  </div><div class="line">不能重载只有返回值不同的方法名。</div><div class="line">存在于父类和子类、同类中。</div></pre></td></tr></table></figure></p>
 <p>4，构造器不能被修饰Override<br>5，访问控制符public,protected,private,以及默认的区别<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">作用域      当前类      同包   子类    其他</div><div class="line">public        √        √       √      √</div><div class="line">protected     √        √       √      ×</div><div class="line">default       √        √       ×      ×</div><div class="line">private       √        ×       ×      ×</div></pre></td></tr></table></figure></p>
-<p>6，String和StringBuffer、StringBuilder的区别<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">可变与不可变</div><div class="line">　String类中使用字符数组保存字符串，如下就是，因为有“final”修饰符，所以可以知道string对象是不可变的。</div><div class="line"></div><div class="line">　　　　private final char value[];</div><div class="line"></div><div class="line">　StringBuilder与StringBuffer都继承自AbstractStringBuilder类，在AbstractStringBuilder中也是使用字符</div><div class="line"> 数组保存字符串，如下就是，可知这两种对象都是可变的。</div><div class="line"></div><div class="line">　　　　char[] value;</div><div class="line">线程是否安全</div><div class="line"> StringBuffer对方法加了同步锁或者对调用的方法加了同步锁，所以是线程安全的。</div><div class="line"> StringBuilder并没有对方法进行加同步锁，所以是非线程安全的。</div></pre></td></tr></table></figure></p>
+<p>6，String和StringBuffer、StringBuilder的区别<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">可变与不可变</div><div class="line">String类中使用字符数组保存字符串，如下就是，因为有“final”修饰符，所以可以知道string对象是不可变的。</div><div class="line">private final char value[];</div><div class="line"></div><div class="line">StringBuilder与StringBuffer都继承自AbstractStringBuilder类，在AbstractStringBuilder中也是使用字符</div><div class="line">数组保存字符串，如下就是，可知这两种对象都是可变的。</div><div class="line"></div><div class="line">char[] value;</div><div class="line">线程是否安全</div><div class="line">StringBuffer对方法加了同步锁或者对调用的方法加了同步锁，所以是线程安全的。</div><div class="line">StringBuilder并没有对方法进行加同步锁，所以是非线程安全的。</div></pre></td></tr></table></figure></p>
 <p>7，抽象类和接口的区别<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="number">1</span>）抽象类可以提供成员方法的实现细节，而接口中只能存在public abstract 方法；</div><div class="line"></div><div class="line">　　<span class="number">2</span>）抽象类中的成员变量可以是各种类型的，而接口中的成员变量只能是public static final类型的；</div><div class="line"></div><div class="line">　　<span class="number">3</span>）接口中不能含有静态代码块以及静态方法，而抽象类可以有静态代码块和静态方法；</div><div class="line"></div><div class="line">　　<span class="number">4</span>）一个类只能继承一个抽象类，而一个类却可以实现多个接口。</div></pre></td></tr></table></figure></p>
 <p>8，自动装箱与拆箱<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">基本数据类型的自动装箱(autoboxing)、拆箱(unboxing)是自J2SE <span class="number">5.0</span>开始提供的功能。 </div><div class="line">基本数据与对象的区别</div><div class="line">如：int t = <span class="number">1</span>；     t.  后面是没有方法滴。</div><div class="line"></div><div class="line">    Integer t =<span class="number">1</span>； t.  后面就有很多方法可让你调用了。</div><div class="line"></div><div class="line">Integer i = <span class="number">100</span>; // 自动装箱</div><div class="line">相当于编译器自动为您作以下的语法编译：Integer i = Integer.valueOf(<span class="number">100</span>);</div><div class="line">Integer i = <span class="number">10</span>; //装箱 </div><div class="line">int t = i; //拆箱，实际上执行了 int t = i.intValue();    </div><div class="line"></div><div class="line">注意：integer值得默认大小是<span class="bullet">-127</span><span class="bullet">-128</span></div></pre></td></tr></table></figure></p>
 <p>7，泛型<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">泛型是Java SE <span class="number">1.5</span>的新特性，泛型的本质是参数化类型，也就是说所操作的数据类型被指定为一个参数,</div><div class="line">类型擦除可以简单的理解为将泛型java代码转换为普通java代码，只不过编译器更直接点，</div><div class="line">将泛型java代码直接转换成普通java字节码。</div><div class="line">     类型擦除的主要过程如下：</div><div class="line">     <span class="number">1.</span>将所有的泛型参数用其最左边界（最顶级的父类型）类型替换。</div><div class="line">     <span class="number">2.</span>移除所有的类型参数。</div></pre></td></tr></table></figure></p>
@@ -119,7 +119,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/01/java-基础题/" data-id="cirbkfvst0000ogot7w852qqn" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/01/java-基础题/" data-id="cirvdqr87000584othtre8atd" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
@@ -129,6 +129,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2016/08/10/获取文件流的编码/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          获取文件流编码
+        
+      </div>
+    </a>
   
   
     <a href="/2016/07/28/spring-AOP-注解开发/" id="article-nav-older" class="article-nav-link-wrap">
@@ -152,7 +161,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li></ul>
     </div>
   </div>
 
@@ -162,7 +171,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Spring-Boot/" style="font-size: 20px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a>
+      <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 10px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 20px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a>
     </div>
   </div>
 
@@ -184,23 +193,23 @@
       <ul>
         
           <li>
+            <a href="/2016/08/12/计算机网络知识复习/">计算机网络知识复习</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/10/spring定时任务/">Spring定时任务</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/10/获取文件流的编码/">获取文件流编码</a>
+          </li>
+        
+          <li>
             <a href="/2016/08/01/java-基础题/">java 复习资料</a>
           </li>
         
           <li>
             <a href="/2016/07/28/spring-AOP-注解开发/">spring AOP 注解开发</a>
-          </li>
-        
-          <li>
-            <a href="/2016/07/27/Docker-应用/">Docker 应用</a>
-          </li>
-        
-          <li>
-            <a href="/2016/07/27/spring-Boot-Cloud2/">spring Boot Cloud2</a>
-          </li>
-        
-          <li>
-            <a href="/2016/07/27/spring-Boot-Cloud/">spring Boot Cloud 学习1</a>
           </li>
         
       </ul>
