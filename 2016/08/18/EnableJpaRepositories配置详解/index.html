@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>@EnableJpaRepositories配置详解 | 橘子不酸的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="1,简单配置@EnableJpaRepositories(“com.juzi.repository”)或者 @EnableJpaRepositories({“com.juzi.repository”, “com.cshtong.second.repository”})
+2,完整的@EnableJpaRepositories注解1234567891011121314 @EnableJpaReposi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="@EnableJpaRepositories配置详解">
+<meta property="og:url" content="https://yangzhiw.github.io/2016/08/18/EnableJpaRepositories配置详解/index.html">
+<meta property="og:site_name" content="橘子不酸的博客">
+<meta property="og:description" content="1,简单配置@EnableJpaRepositories(“com.juzi.repository”)或者 @EnableJpaRepositories({“com.juzi.repository”, “com.cshtong.second.repository”})
+2,完整的@EnableJpaRepositories注解1234567891011121314 @EnableJpaReposi">
+<meta property="og:updated_time" content="2016-08-18T05:16:38.295Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="@EnableJpaRepositories配置详解">
+<meta name="twitter:description" content="1,简单配置@EnableJpaRepositories(“com.juzi.repository”)或者 @EnableJpaRepositories({“com.juzi.repository”, “com.cshtong.second.repository”})
+2,完整的@EnableJpaRepositories注解1234567891011121314 @EnableJpaReposi">
+  
+    <link rel="alternate" href="/atom.xml" title="橘子不酸的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">橘子不酸的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一天进步一点</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://yangzhiw.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-EnableJpaRepositories配置详解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/18/EnableJpaRepositories配置详解/" class="article-date">
+  <time datetime="2016-08-18T03:23:40.000Z" itemprop="datePublished">2016-08-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      @EnableJpaRepositories配置详解
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-简单配置"><a href="#1-简单配置" class="headerlink" title="1,简单配置"></a>1,简单配置</h1><p>@EnableJpaRepositories(“com.juzi.repository”)<br>或者 @EnableJpaRepositories({“com.juzi.repository”, “com.cshtong.second.repository”})</p>
+<h1 id="2-完整的-EnableJpaRepositories注解"><a href="#2-完整的-EnableJpaRepositories注解" class="headerlink" title="2,完整的@EnableJpaRepositories注解"></a>2,完整的@EnableJpaRepositories注解</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"> @EnableJpaRepositories(</div><div class="line">     basePackages = &#123;&#125;,</div><div class="line">     basePackageClasses = &#123;&#125;,</div><div class="line">     includeFilters = &#123;&#125;,</div><div class="line">     excludeFilters = &#123;&#125;,</div><div class="line">     repositoryImplementationPostfix = <span class="string">"Impl"</span>,</div><div class="line">     namedQueriesLocation = <span class="string">""</span>,//META-INF/jpa-named-queries.properties</div><div class="line">     queryLookupStrategy=QueryLookupStrategy.Key.CREATE_IF_NOT_FOUND, //QueryLookupStrategy.Key.x</div><div class="line">     repositoryFactoryBeanClass=JpaRepositoryFactoryBean.class, //class</div><div class="line">     entityManagerFactoryRef=<span class="string">"entityManagerFactory"</span>,</div><div class="line">     transactionManagerRef=<span class="string">"transactionManager"</span>,</div><div class="line">     considerNestedRepositories=<span class="literal">false</span>, </div><div class="line">     enableDefaultTransactions=<span class="literal">true</span></div><div class="line">)</div></pre></td></tr></table></figure>
+<p>各个配置项的作用<br>1）basePackage<br>用于配置扫描Repositories所在的package及子package。简单配置中的配置则等同于此项配置值，<br>basePackages可以配置为单个字符串，也可以配置为字符串数组形式。<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">@EnableJpaRepositories(</div><div class="line">        basePackages = <span class="string">"com.juzi"</span>)</div><div class="line">多个包路径</div><div class="line">@EnableJpaRepositories(</div><div class="line">        basePackages = &#123;<span class="string">"com.juzi.repository"</span>, <span class="string">"com.juzi.second.repository"</span>&#125;)</div></pre></td></tr></table></figure></p>
+<p>2）basePackageClasses<br>指定 Repository 类<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@EnableJpaRepositories(basePackageClasses = BookRepository.class)</div><div class="line"></div><div class="line">@EnableJpaRepositories(</div><div class="line">         basePackageClasses = &#123;ShopRepository.class, OrganizationRepository.class&#125;)</div></pre></td></tr></table></figure></p>
+<p>3）includeFilters<br>过滤器，该过滤区采用ComponentScan的过滤器类<br>@EnableJpaRepositories(<br>      includeFilters={@ComponentScan.Filter(type=FilterType.ANNOTATION, value=Repository.class)})<br>4）excludeFilters<br>不包含过滤器</p>
+<p>@EnableJpaRepositories(<br>         excludeFilters={<br>                 @ComponentScan.Filter(type=FilterType.ANNOTATION, value=Service.class),<br>                 @ComponentScan.Filter(type=FilterType.ANNOTATION, value=Controller.class)})</p>
+<p>5）repositoryImplementationPostfix<br>实现类追加的尾部，比如ShopRepository，对应的为ShopRepositoryImpl</p>
+<p>6）namedQueriesLocation<br>named SQL存放的位置，默认为META-INF/jpa-named-queries.properties</p>
+<p>7）queryLookupStrategy<br>构建条件查询的策略，包含三种方式CREATE，USE_DECLARED_QUERY，CREATE_IF_NOT_FOUND</p>
+<p>CREATE：按照接口名称自动构建查询<br>USE_DECLARED_QUERY：用户声明查询<br>CREATE_IF_NOT_FOUND：先搜索用户声明的，不存在则自动构建</p>
+<p>8）repositoryFactoryBeanClass<br>指定Repository的工厂类</p>
+<p>9)entityManagerFactoryRef<br>实体管理工厂引用名称，对应到@Bean注解对应的方法</p>
+<p>10)transactionManagerRef</p>
+<p>事务管理工厂引用名称，对应到@Bean注解对应的方法</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/18/EnableJpaRepositories配置详解/" data-id="cis6x003k000vgooti3jjei0e" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/08/19/Boot日志管理/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Spring Boot日志管理
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/08/17/Security进行安全控制/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Spring Boot中使用Spring Security进行安全控制</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 10px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 20px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 13.33px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/日志/" style="font-size: 16.67px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/08/23/Kafkar入门/">Kafka入门</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/19/使用Redis做集中式缓存/">使用Redis做集中式缓存</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/19/Boot中使用log4j记录日志/">Sporing Boot中使用log4j记录日志</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/19/Boot日志管理/">Spring Boot日志管理</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/18/EnableJpaRepositories配置详解/">@EnableJpaRepositories配置详解</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

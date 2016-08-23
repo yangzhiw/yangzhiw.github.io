@@ -68,10 +68,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-spring-AOP-注解开发" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="spring-Security进行安全控制" class="article article-type-spring" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/07/28/spring-AOP-注解开发/" class="article-date">
-  <time datetime="2016-07-28T07:54:39.000Z" itemprop="datePublished">2016-07-28</time>
+    <a href="/2016/08/17/Security进行安全控制/" class="article-date">
+  <time datetime="2016-08-17T07:50:18.000Z" itemprop="datePublished">2016-08-17</time>
 </a>
     
   </div>
@@ -82,7 +82,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/28/spring-AOP-注解开发/">spring AOP 注解开发</a>
+      <a class="article-title" href="/2016/08/17/Security进行安全控制/">Spring Boot中使用Spring Security进行安全控制</a>
     </h1>
   
 
@@ -90,20 +90,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1.简介"></a>1.简介</h1><p>AOP主要包含了通知、切点和连接点等术语，介绍如下:</p>
-<h2 id="通知（advice）"><a href="#通知（advice）" class="headerlink" title="通知（advice）"></a>通知（advice）</h2><p>通知定义了切面是什么以及何时调用，何时调用包含以下几种<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Before 在方法被调用之前调用通知</div><div class="line">After 在方法完成之后调用通知，无论方法执行是否成功</div><div class="line">After-returning 在方法成功执行之后调用通知</div><div class="line">After-throwing 在方法抛出异常后调用通知</div><div class="line">Around 通知包裹了被通知的方法，在被通知的方法调用之前和调用之后执行自定义的行为</div></pre></td></tr></table></figure></p>
-<h2 id="切点-PointCut"><a href="#切点-PointCut" class="headerlink" title="切点(PointCut)"></a>切点(PointCut)</h2><p>通知定义了切面的什么和何时，切点定义了何处，切点的定义会匹配通知所要织入的一个或多个连接点，<br>我们通常使用明确的类的方法名称来指定这些切点，或是利用正则表达式定义匹配的类和方法名称来指定这些切点。</p>
-<h2 id="连接点-JoinPoint"><a href="#连接点-JoinPoint" class="headerlink" title="连接点(JoinPoint)"></a>连接点(JoinPoint)</h2><p>连接点是在应用执行过程中能够插入切面的一个点，这个点可以是调用方法时，抛出异常时，甚至是修改一个字段时，<br>切面代码可以利用这些连接点插入到应用的正常流程中，并添加新的行为，如日志、安全、事务、缓存等。<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">joinPoint.getSignature().getDeclaringTypeName() 可以获取到调用方法的类名（包括包名），</div><div class="line">joinPoint.getSignature().getName()    可以获取方法名，</div><div class="line">Arrays.toString(joinPoint.getArgs())   得到的是方法调用的参数列表，</div><div class="line">joinPoint.proceed()   可以得到方法的返回结果</div></pre></td></tr></table></figure></p>
-<h1 id="2-注解开发"><a href="#2-注解开发" class="headerlink" title="2.注解开发"></a>2.注解开发</h1><p>声明一个切面，只需要在类名上添加@Aspect属性即可，具体的连接点，我们用@Pointcut和@Before、@After等标注。<br>在声明前 我们需要依赖配置pom<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">&lt;dependency<span class="string">&gt;</span></div><div class="line">    &lt;groupId&gt;org.aspectj&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;aspectjrt&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.6.11&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;org.aspectj&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;aspectjweaver&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.6.11&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
-<p>例子<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line">package com.ganji.demo.service.aspect;</div><div class="line"></div><div class="line">import org.aspectj.lang.ProceedingJoinPoint;</div><div class="line">import org.aspectj.lang.annotation.*;</div><div class="line">import org.springframework.stereotype.Service;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by admin on <span class="number">2015</span>/<span class="number">9</span>/<span class="number">2.</span></div><div class="line"> */</div><div class="line">@Aspect</div><div class="line">@Service</div><div class="line">public class XmlAopDemoUserLog &#123;</div><div class="line"></div><div class="line">// 配置切点 及要传的参数   </div><div class="line">    @Pointcut(<span class="string">"execution(* com.ganji.demo.service.user.UserService.GetDemoUser(..)) &amp;&amp; args(id)"</span>)</div><div class="line">    public void pointCut(int id)</div><div class="line">    &#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">// 配置连接点 方法开始执行时通知</div><div class="line">    @Before(<span class="string">"pointCut(id)"</span>)</div><div class="line">    public void beforeLog(int id) &#123;</div><div class="line">        System.out.println(<span class="string">"开始执行前置通知  日志记录:"</span>+id);</div><div class="line">    &#125;</div><div class="line">//    方法执行完后通知</div><div class="line">    @After(<span class="string">"pointCut(id)"</span>)</div><div class="line">    public void afterLog(int id) &#123;</div><div class="line">        System.out.println(<span class="string">"开始执行后置通知 日志记录:"</span>+id);</div><div class="line">    &#125;</div><div class="line">//    执行成功后通知</div><div class="line">    @AfterReturning(<span class="string">"pointCut(id)"</span>)</div><div class="line">    public void afterReturningLog(int id) &#123;</div><div class="line">        System.out.println(<span class="string">"方法成功执行后通知 日志记录:"</span>+id);</div><div class="line">    &#125;</div><div class="line">//    抛出异常后通知</div><div class="line">    @AfterThrowing(<span class="string">"pointCut(id)"</span>)</div><div class="line">    public void afterThrowingLog(int id) &#123;</div><div class="line">        System.out.println(<span class="string">"方法抛出异常后执行通知 日志记录"</span>+id);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">//    环绕通知</div><div class="line">    @Around(<span class="string">"pointCut(id)"</span>)</div><div class="line">    public Object aroundLog(ProceedingJoinPoint joinpoint,int id) &#123;</div><div class="line">        Object result = <span class="literal">null</span>;</div><div class="line">        try &#123;</div><div class="line">            System.out.println(<span class="string">"环绕通知开始 日志记录"</span>+id);</div><div class="line">            long start = System.currentTimeMillis();</div><div class="line"></div><div class="line">            //有返回参数 则需返回值</div><div class="line">            result =  joinpoint.proceed();</div><div class="line"></div><div class="line">            long end = System.currentTimeMillis();</div><div class="line">            System.out.println(<span class="string">"总共执行时长"</span> + (end - start) + <span class="string">" 毫秒"</span>);</div><div class="line">            System.out.println(<span class="string">"环绕通知结束 日志记录"</span>);</div><div class="line">        &#125; catch (Throwable t) &#123;</div><div class="line">            System.out.println(<span class="string">"出现错误"</span>);</div><div class="line">        &#125;</div><div class="line">        return result;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-
+        
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/28/spring-AOP-注解开发/" data-id="cirx51q7h000794otd16fdgs6" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/17/Security进行安全控制/" data-id="cis6wzzzq0006gootb2inc0kc" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li></ul>
 
     </footer>
   </div>
@@ -112,10 +106,10 @@
 
 
   
-    <article id="post-Docker-应用" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-JavaWeb基础" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/07/27/Docker-应用/" class="article-date">
-  <time datetime="2016-07-27T09:20:21.000Z" itemprop="datePublished">2016-07-27</time>
+    <a href="/2016/08/16/JavaWeb基础/" class="article-date">
+  <time datetime="2016-08-16T06:57:28.000Z" itemprop="datePublished">2016-08-16</time>
 </a>
     
   </div>
@@ -126,7 +120,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/27/Docker-应用/">Docker 应用</a>
+      <a class="article-title" href="/2016/08/16/JavaWeb基础/">JavaWeb基础</a>
     </h1>
   
 
@@ -134,215 +128,214 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="应用Docker部署"><a href="#应用Docker部署" class="headerlink" title="应用Docker部署"></a>应用Docker部署</h1><p>在项目的根目录下建立一个Dockerfile文件<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">FROM maven:<span class="number">3.3</span><span class="number">.3</span>  </div><div class="line">  </div><div class="line">ADD pom.xml /tmp/build/  </div><div class="line">RUN cd /tmp/build &amp;&amp; mvn -q dependency:resolve  </div><div class="line">  </div><div class="line">ADD src /tmp/build/src  </div><div class="line">        <span class="comment">#构建应用  </span></div><div class="line">RUN cd /tmp/build &amp;&amp; mvn -q -DskipTests=<span class="literal">true</span> package \  </div><div class="line">        <span class="comment">#拷贝编译结果到指定目录  </span></div><div class="line">        &amp;&amp; mv target/*.jar /app.jar \  </div><div class="line">        <span class="comment">#清理编译痕迹  </span></div><div class="line">        &amp;&amp; cd / &amp;&amp; rm -rf /tmp/build  </div><div class="line">  </div><div class="line">VOLUME /tmp  </div><div class="line">EXPOSE <span class="number">8080</span>  </div><div class="line">ENTRYPOINT [<span class="string">"java"</span>,<span class="string">"-Djava.security.egd=file:/dev/./urandom"</span>,<span class="string">"-jar"</span>,<span class="string">"/app.jar"</span>]</div></pre></td></tr></table></figure></p>
-<p>因为 Spring Boot 框架打包的应用是一个包含依赖的 jar 文件，内嵌了 Tomcat 和 Jetty 支持，所以我们只需要使用包含 Java<br>的 Maven 镜像即可，不需要 Tomcat 镜像。<br>为了减少镜像大小，在执行 Maven 构建之后，清理了构建痕迹。<br>在 Dockerfile 文件的最后，使用 ENTRYPOINT 指令执行启动 Java 应用的操作。</p>
-<h1 id="构建-Docker-镜像"><a href="#构建-Docker-镜像" class="headerlink" title="构建 Docker 镜像"></a>构建 Docker 镜像</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker build -t docker-demo-spring-boot .   ／／注意后面的 . 表示当前路径下</div></pre></td></tr></table></figure>
-<h1 id="从镜像启动容器"><a href="#从镜像启动容器" class="headerlink" title="从镜像启动容器"></a>从镜像启动容器</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d -p <span class="number">8080</span>:<span class="number">8080</span> docker-demo-spring-boot</div></pre></td></tr></table></figure>
-<h1 id="完成部署："><a href="#完成部署：" class="headerlink" title="完成部署："></a>完成部署：</h1><p>URL访问，可通过docker ip查看应用的虚拟地址。</p>
-<h1 id="Docker-Compose编排"><a href="#Docker-Compose编排" class="headerlink" title="Docker Compose编排"></a>Docker Compose编排</h1><p>Docker Compose是用于定义和组装运行多容器分布式应用的工具，<br>它提供一个简单的基于YAML语言的docker－compose.yml配置文件。 通常，我们使用docker定义和运行复杂的应用，<br>使用docker compose，在一个文件里定义多容器应用的启动顺序，起到服务编排的作用。</p>
-<h2 id="编写-docker-compose-yaml-文件"><a href="#编写-docker-compose-yaml-文件" class="headerlink" title="编写 docker-compose.yaml 文件"></a>编写 docker-compose.yaml 文件</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="attr">web:</span>  </div><div class="line"><span class="attr">  build:</span> .  </div><div class="line"><span class="attr">  ports:</span>  </div><div class="line"><span class="bullet">    -</span> <span class="string">"8080:8080"</span>  </div><div class="line"><span class="attr">  links:</span>  </div><div class="line"><span class="attr">    - mongodb:</span>mongodb  </div><div class="line">  </div><div class="line"><span class="attr">mongodb:</span>  </div><div class="line"><span class="attr">  image:</span> daocloud.io/library/mongo:latest  </div><div class="line"><span class="attr">  ports:</span>  </div><div class="line"><span class="bullet">    -</span> <span class="string">"27017:27017"</span></div></pre></td></tr></table></figure>
-<p>这里以MongoDB数据库提供服务的demo，在该文件中，我们定于了两个服务：</p>
-<pre><code>基于我们应用构建的 docker-demo-java-mongo 镜像，用来提供 Web 服务
-基于 DaoCloud 提供的 MongoDB 镜像，提供存储服务
-通过 links 为 web 关联 mongo 服务
-</code></pre><h2 id="启动-Docker-Compose"><a href="#启动-Docker-Compose" class="headerlink" title="启动 Docker Compose"></a>启动 Docker Compose</h2><pre><code class="yaml">docker-compose up
+        <h1 id="1，Servlet-生命周期、工作原理"><a href="#1，Servlet-生命周期、工作原理" class="headerlink" title="1，Servlet 生命周期、工作原理"></a>1，Servlet 生命周期、工作原理</h1><p><a href="http://www.cnblogs.com/xuekyo/archive/2013/02/24/2924072.html" target="_blank" rel="external">点我跳转</a></p>
+<h1 id="2，JSP和Servlet的区别"><a href="#2，JSP和Servlet的区别" class="headerlink" title="2，JSP和Servlet的区别"></a>2，JSP和Servlet的区别</h1><p>jsp经过编译后变成类servlet，<br>jsp由html代码和jsp标签组成，擅长页面显示，servlet擅长流程控制；<br>JSP中嵌入JAVA代码，而Servlet中嵌入HTML代码。</p>
+<h1 id="3，JSP的动态include和静态include"><a href="#3，JSP的动态include和静态include" class="headerlink" title="3，JSP的动态include和静态include"></a>3，JSP的动态include和静态include</h1><p>(1)动态include用jsp:include动作实现，如<jsp:include page="abc.jsp" flush="true">，<br>它总是会检查所含文件中的变化，适合用于包含动态页面，并且可以带参数。会先解析所要包含的页面，解析后和主页面合并一起显示，即先编译后包含。<br>(2)静态include用include伪码实现，不会检查所含文件的变化，适用于包含静态页面，如&lt;%@ include file=”qq.htm” %&gt;，<br>不会提前解析所要包含的页面，先把要显示的页面包含进来，然后统一编译，即先包含后编译。</jsp:include></p>
+<h1 id="4，设计模式的6大原则"><a href="#4，设计模式的6大原则" class="headerlink" title="4，设计模式的6大原则"></a>4，设计模式的6大原则</h1><p>(1)单一职责原则<br>    可以降低类的复杂度，一个类只负责一项职责，其逻辑肯定要比负责多项职责简单的多；<br>    提高类的可读性，提高系统的可维护性；<br>    变更引起的风险降低，变更是必然的，如果单一职责原则遵守的好，当修改一个功能时，可以显著降低对其他功能的影响。</p>
+<p>(2)里氏替换原则<br>    子类可以实现父类的抽象方法，但不能覆盖父类的非抽象方法。<br>    子类中可以增加自己特有的方法。<br>    当子类的方法重载父类的方法时，方法的前置条件（即方法的形参）要比父类方法的输入参数更宽松。<br>    当子类的方法实现父类的抽象方法时，方法的后置条件（即方法的返回值）要比父类更严格。</p>
+<p>(3)依赖倒置原则<br>定义：高层模块不应该依赖低层模块，二者都应该依赖其抽象；抽象不应该依赖细节；细节应该依赖抽象。<br>传递依赖关系的三种关系：<br>    接口传递<br>    构造方法传递<br>    setter方法传递<br>(4)接口隔离原则<br>定义：客户端不应该依赖它不需要的接口；一个类对另一个类的依赖应该建立在最小的接口上。<br>接口尽量小，但是要有限度。对接口进行细化可以提高程序设计灵活性是不挣的事实，但是如果过小，<br>    则会造成接口数量过多，使设计复杂化。所以一定要适度。<br>为依赖接口的类定制服务，只暴露给调用的类它需要的方法，它不需要的方法则隐藏起来。只有专注地为一个模块提供定制服务，<br>    才能建立最小的依赖关系。<br>提高内聚，减少对外交互。使接口用最少的方法去完成最多的事情。<br>(5)迪米特法则<br>定义：一个对象应该对其他对象保持最少的了解。<br>(6)开闭原则<br>定义：一个软件实体如类、模块和函数应该对扩展开放，对修改关闭。</p>
+<h1 id="4，Hibernate缓存：一级缓存和二级缓存"><a href="#4，Hibernate缓存：一级缓存和二级缓存" class="headerlink" title="4，Hibernate缓存：一级缓存和二级缓存"></a>4，Hibernate缓存：一级缓存和二级缓存</h1><p>Hibernate缓存的分类：<br>(1),Session缓存（又称事物缓存），Hibernate内置的，不能卸载；<br>缓存范围：缓存只能被当前Session对象访问。缓存的生命周期依赖于Session的生命周期，当Session被关闭后，缓存也就结束生命周期。<br>(2)SessionFactory缓存（又称作应用缓存）：使用第三方插件，可插拔.<br>缓存范围：缓存被应用范围内的所有session共享,不同的Session可以共享。这些session有可能是并发访问缓存，因此必须对缓存进行更新。<br>        缓存的生命周期依赖于应用的生命周期，应用结束时，缓存也就结束了生命周期，二级缓存存在于应用程序范围。</p>
+<p>一级缓存：<br>(1). save()。当session对象调用save()方法保存一个对象后，该对象会被放入到session的缓存中。<br>(2). get()和load()。当session对象调用get()或load()方法从数据库取出一个对象后，该对象也会被放入到session的缓存中。<br>(3). 使用HQL和QBC等从数据库中查询数据。<br>数据从缓存中清除：<br>(1). evit()将指定的持久化对象从缓存中清除，释放对象所占用的内存资源，指定对象从持久化状态变为脱管状态，从而成为游离对象。<br>(2). clear()将缓存中的所有持久化对象清除，释放其占用的内存资源。<br>其他缓存操作：<br>(1). contains()判断指定的对象是否存在于缓存中。<br>(2). flush()刷新缓存区的内容，使之与数据库数据保持同步。</p>
+<p>二级缓存：<br>定义：SessionFactory级别的缓存，可以跨越Session存在，可以被多个Session所共享。<br>实现原理：<br>Hibernate如何将数据库中的数据放入到二级缓存中？注意，你可以把缓存看做是一个Map对象，<br>它的Key用于存储对象OID，Value用于存储POJO。首先，当我们使用Hibernate从数据库中查询出数据，<br>获取检索的数据后，Hibernate将检索出来的对象的OID放入缓存中key 中，然后将具体的POJO放入value中，<br>等待下一次再次向数据查询数据时，Hibernate根据你提供的OID先检索一级缓存，若有且配置了二级缓存，则检索二级缓存，<br>如果还没有则才向数据库发送SQL语句，然后将查询出来的对象放入缓存中。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/16/JavaWeb基础/" data-id="cis6wzzz70005gootj48fpr2g" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-计算机网络知识复习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/12/计算机网络知识复习/" class="article-date">
+  <time datetime="2016-08-12T07:57:58.000Z" itemprop="datePublished">2016-08-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/12/计算机网络知识复习/">计算机网络知识复习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/12/计算机网络知识复习/" data-id="cis6x0040000ygootj78qo8wd" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-spring定时任务" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/10/spring定时任务/" class="article-date">
+  <time datetime="2016-08-10T02:29:47.000Z" itemprop="datePublished">2016-08-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/10/spring定时任务/">Spring定时任务</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="获取昨天时间"><a href="#获取昨天时间" class="headerlink" title="获取昨天时间"></a>获取昨天时间</h2><pre><code>Calendar c=Calendar.getInstance();
+c.add(Calendar.DAY_OF_MONTH,-1);   //日期月是0-11
+c.set(Calendar.HOUR_OF_DAY,0);     
+c.set(Calendar.MINUTE,0);
+c.set(Calendar.SECOND,0);
+c.set(Calendar.MILLISECOND,0);
+return c.getTime();
+</code></pre><h2 id="在类上加上注解"><a href="#在类上加上注解" class="headerlink" title="在类上加上注解"></a>在类上加上注解</h2><p>@Configuration<br>@EnableScheduling<br>@Scheduled(fixedRate = 5000) ：上一次开始执行时间点之后5秒再执行<br>@Scheduled(fixedDelay = 5000) ：上一次执行完毕时间点之后5秒再执行<br>@Scheduled(initialDelay=1000, fixedRate=5000) ：第一次延迟1秒后执行，之后按fixedRate的规则每5秒执行一次<br>@Scheduled(cron=”<em>/5 </em> <em> </em> <em> </em>“) ：通过cron表达式定义规则        </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/10/spring定时任务/" data-id="cis6x002n000lgoot9sgggnp3" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-获取文件流的编码" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/10/获取文件流的编码/" class="article-date">
+  <time datetime="2016-08-10T02:29:47.000Z" itemprop="datePublished">2016-08-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/10/获取文件流的编码/">获取文件流编码</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1，获取文件的流"><a href="#1，获取文件的流" class="headerlink" title="1，获取文件的流"></a>1，获取文件的流</h1><pre><code>InportStream importStream = file.getInputStream()；
+</code></pre><h1 id="2，把文件流转化为字节流"><a href="#2，把文件流转化为字节流" class="headerlink" title="2，把文件流转化为字节流"></a>2，把文件流转化为字节流</h1><pre><code>//字节数组输出流
+ByteArrayOutputStream baos = new ByteArrayOutputStream();
+try {
+    byte[] buffer = new byte[1024];
+    int len;
+    while ((len = inputStream.read(buffer)) &gt; -1) {
+        baos.write(buffer, 0, len);
+    }
+    baos.flush();
+}catch(IOException e){
+    e.printStackTrace();
+}
+return new ByteArrayInputStream(baos.toByteArray());
+</code></pre><h1 id="3，根据字节流的判断文件的编码"><a href="#3，根据字节流的判断文件的编码" class="headerlink" title="3，根据字节流的判断文件的编码"></a>3，根据字节流的判断文件的编码</h1><pre><code>//默认编码
+String charset = &quot;GBK&quot;;
+byte[] first3Bytes = new byte[3];
+//缓存流
+BufferedInputStream bis = new BufferedInputStream(inputStream1);
+try {
+    boolean checked = false;
+    //标记
+    bis.mark(0);
+    //读取文件的前3个字符
+    int read = bis.read(first3Bytes, 0, 3);
+    if (read == -1) return charset;
+    if (first3Bytes[0] == (byte) 0xFF &amp;&amp; first3Bytes[1] == (byte) 0xFE) {
+        charset = &quot;UTF-16LE&quot;;
+        checked = true;
+    } else if (first3Bytes[0] == (byte) 0xFE &amp;&amp; first3Bytes[1] == (byte) 0xFF) {
+        charset = &quot;UTF-16BE&quot;;
+        checked = true;
+    } else if (first3Bytes[0] == (byte) 0xEF &amp;&amp; first3Bytes[1] == (byte) 0xBB &amp;&amp; first3Bytes[2] == (byte) 0xBF) {
+        charset = &quot;UTF-8&quot;;
+        checked = true;
+    }
+    bis.reset();
+    if (!checked) {
+
+        int loc = 0;
+        while ((read = bis.read()) != -1) {
+            loc++;
+            if (read &gt;= 0xF0) break;
+            if (0x80 &lt;= read &amp;&amp; read &lt;= 0xBF) // 单独出现BF以下的，也算是GBK
+                break;
+            if (0xC0 &lt;= read &amp;&amp; read &lt;= 0xDF) {
+                read = bis.read();
+                if (0x80 &lt;= read &amp;&amp; read &lt;= 0xBF) // 双字节 (0xC0 - 0xDF) (0x80
+                    continue;
+                else break;
+            } else if (0xE0 &lt;= read &amp;&amp; read &lt;= 0xEF) {// 也有可能出错，但是几率较小
+                read = bis.read();
+                if (0x80 &lt;= read &amp;&amp; read &lt;= 0xBF) {
+                    read = bis.read();
+                    if (0x80 &lt;= read &amp;&amp; read &lt;= 0xBF) {
+                        charset = &quot;UTF-8&quot;;
+                        break;
+                    } else break;
+                } else break;
+            }
+        }
+    }
+} catch (Exception e) {
+    e.printStackTrace();
+} finally {
+    try {
+        bis.close();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
 </code></pre>
-
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/27/Docker-应用/" data-id="cirx51q5s000394otp6fycz9d" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/10/获取文件流的编码/" data-id="cis6x00440010goota1w2oes5" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Docker/">Docker</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-spring-Boot-Cloud2" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/07/27/spring-Boot-Cloud2/" class="article-date">
-  <time datetime="2016-07-27T07:39:34.000Z" itemprop="datePublished">2016-07-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/27/spring-Boot-Cloud2/">spring Boot Cloud2</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Spring-Cloud介绍"><a href="#Spring-Cloud介绍" class="headerlink" title="Spring Cloud介绍"></a>Spring Cloud介绍</h1><p>Spring Cloud是一个基于Spring Boot实现的云应用开发工具，它为基于JVM的云应用开发中的配置管理、服务发现、断路器、<br>智能路由、微代理、控制总线、全局锁、决策竞选、分布式会话和集群状态管理等操作提供了一种简单的开发方式。</p>
-<h1 id="Spring-Cloud与Dubbo对比"><a href="#Spring-Cloud与Dubbo对比" class="headerlink" title="Spring Cloud与Dubbo对比"></a>Spring Cloud与Dubbo对比</h1><p>它们两都具备分布式服务治理相关的功能，都能够提供服务注册、发现、路由、负载均衡等。说到这，Dubbo的功能好像<br>也就这么多了，但是Spring Cloud是提供了一整套企业级分布式云应用的完美解决方案，能够结合Spring Boot，<br>Docker实现快速开发的目的，所以说Dubbo只有Spring Cloud的一部分RPC功能，而且也谈不上谁好谁坏。不过，<br>Dubbo项目现已停止了更新，淘宝内部由hsf替代dubbo，我想这会有更多人倾向Spring Cloud了。<br>从开发角度上说，Dubbo常与Spring、zookeeper结合，而且实现只是通过xml来配置服务地址、名称、端口，<br>代码的侵入性是很小的，相对Spring Cloud，它的实现需要类注解等，多少具有一定侵入性。</p>
-<h1 id="Spring-Cloud子项目"><a href="#Spring-Cloud子项目" class="headerlink" title="Spring Cloud子项目"></a>Spring Cloud子项目</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Spring Cloud包含了多个子项目（针对分布式系统中涉及的多个不同开源产品），之前在第一章节也介绍这些，</div><div class="line">比如：Spring Cloud Config、Spring Cloud Netflix、Spring Cloud CloudFoundry、Spring Cloud AWS、</div><div class="line">Spring Cloud Security、Spring Cloud Commons、Spring Cloud Zookeeper、Spring Cloud CLI等项目。</div></pre></td></tr></table></figure>
-<h2 id="配置服务"><a href="#配置服务" class="headerlink" title="配置服务"></a>配置服务</h2><p>Spring Cloud通过Netflix OSS的Eureka来实现服务发现，服务发现的主要目的是为了让每个服务之间可以互相通信。<br>Eureka Server为微服务的注册中心。谈到Spring Cloud Netflix，它是Spring Cloud的子项目之一，主要提供的模块包括：<br>服务发现（Eureka），断路器（Hystrix），智能路由（Zuul），客户端负载均衡（Ribbon）等。<br>Spring Cloud使用注解的方式提供了Eureka服务端（@EnableEurekaServer）和客户端（@EnableEurekaClient）。</p>
-<h2 id="路由网关"><a href="#路由网关" class="headerlink" title="路由网关"></a>路由网关</h2><p>路由网关的主要目的是为了让所有的微服务对外只有一个接口，我们只需访问一个网关地址，即可由网关将所有的请求代理<br>到不同的服务中。Spring Cloud是通过Zuul来实现的，支持自动路由映射到在Eureka Server上注册的服务。<br>Spring Cloud提供了注解@EnableZuulProxy来启用路由代理。</p>
-<h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>Spring Cloud提供了Ribbon和Feign作为客户端的负载均衡。在Spring Cloud下，使用Ribbon直接注入一个RestTemplate<br>对象即可，此RestTemplate已做好负载均衡的配置；而使用Feign只需定义个注解，有@FeignClient注解的接口，<br>然后使用@RequestMapping注解在方法上映射远程的REST服务，此方法也是做好了负载均衡配置。</p>
-<h2 id="路断器"><a href="#路断器" class="headerlink" title="路断器"></a>路断器</h2><p>断路器（Circuit Breaker）主要是为了解决当某个方法调用失败的时候，调用后备方法来替代失败的方法，<br>已达到容错／阻止级联错误的功能。Spring Cloud使用@EnableCircuitBreaker来启用断路器支持，<br>使用@HystrixCommand的fallbackMethod来指定后备方法。（@HystrixCommand(fallbackMethod=”fallbackOper”)）<br>Spring Cloud还提供了一个控制台来监控断路器的运行情况，通过@EnableHystrixDashboard注解开启。</p>
-<p>Spring Cloud依赖<br><img src="/2016/07/27/spring-Boot-Cloud2/spring_cloud.jpg" alt="spring_cloud" title="spring_cloud"></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/27/spring-Boot-Cloud2/" data-id="cirx51qah000h94otmf5b4l81" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-spring-Boot-Cloud" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/07/27/spring-Boot-Cloud/" class="article-date">
-  <time datetime="2016-07-27T06:43:26.000Z" itemprop="datePublished">2016-07-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/27/spring-Boot-Cloud/">spring Boot Cloud 学习1</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Spring-简介"><a href="#Spring-简介" class="headerlink" title="Spring 简介"></a>Spring 简介</h1><img src="/2016/07/27/spring-Boot-Cloud/Spring.jpg" alt="Spring Project" title="Spring Project">
-<p>Spring IO platform:用于系统部署，是可集成的，构建现代化应用的版本平台，具体来说当你使用maven dependency引入spring jar包时它就在工作了。</p>
-<p>Spring Boot:旨在简化创建产品级的 Spring 应用和服务，简化了配置文件，使用嵌入式web服务器，含有诸多开箱即用微服务功能，可以和spring cloud联合部署。</p>
-<p>Spring Framework:即通常所说的spring 框架，是一个开源的Java/Java EE全功能栈应用程序框架，其它spring项目如spring boot也依赖于此框架。</p>
-<p>Spring Cloud：微服务工具包，为开发者提供了在分布式系统的配置管理、服务发现、断路器、智能路由、微代理、控制总线等开发工具包。</p>
-<p>Spring XD：是一种运行时环境（服务器软件，非开发框架），组合spring技术，如spring batch、spring boot、spring data，采集大数据并处理。</p>
-<p>Spring Data：是一个数据访问及操作的工具包，封装了很多种数据及数据库的访问相关技术，包括：jdbc、Redis、MongoDB、Neo4j等。</p>
-<p>Spring Batch：批处理框架，或说是批量任务执行管理器，功能包括任务调度、日志记录/跟踪等。</p>
-<p>Spring Security：是一个能够为基于Spring的企业应用系统提供声明式的安全访问控制解决方案的安全框架。</p>
-<p>Spring Integration：面向企业应用集成（EAI/ESB）的编程框架，支持的通信方式包括HTTP、FTP、TCP/UDP、JMS、RabbitMQ、Email等。</p>
-<p>Spring Social：一组工具包，一组连接社交服务API，如Twitter、Facebook、LinkedIn、GitHub等，有几十个。</p>
-<p>Spring AMQP：消息队列操作的工具包，主要是封装了RabbitMQ的操作。</p>
-<p>Spring HATEOAS：是一个用于支持实现超文本驱动的 REST Web 服务的开发库。</p>
-<p>Spring Mobile：是Spring MVC的扩展，用来简化手机上的Web应用开发。</p>
-<p>Spring for Android：是Spring框架的一个扩展，其主要目的在乎简化Android本地应用的开发，提供RestTemplate来访问Rest服务。</p>
-<p>Spring Web Flow：目标是成为管理Web应用页面流程的最佳方案，将页面跳转流程单独管理，并可配置。</p>
-<p>Spring LDAP：是一个用于操作LDAP的Java工具包，基于Spring的JdbcTemplate模式，简化LDAP访问。</p>
-<p>Spring Session：session管理的开发工具包，让你可以把session保存到redis等，进行集群化session管理。</p>
-<p>Spring Web Services：是基于Spring的Web服务框架，提供SOAP服务开发，允许通过多种方式创建Web服务。</p>
-<p>Spring Shell：提供交互式的Shell可让你使用简单的基于Spring的编程模型来开发命令，比如Spring Roo命令。</p>
-<p>Spring Roo：是一种Spring开发的辅助工具，使用命令行操作来生成自动化项目，操作非常类似于Rails。</p>
-<p>Spring Scala：为Scala语言编程提供的spring框架的封装（新的编程语言，Java平台的Scala于2003年底/2004年初发布）。</p>
-<p>Spring BlazeDS Integration：一个开发RIA工具包，可以集成Adobe Flex、BlazeDS、Spring以及Java技术创建RIA。</p>
-<p>Spring Loaded：用于实现java程序和web应用的热部署的开源工具。</p>
-<p>Spring REST Shell：可以调用Rest服务的命令行工具，敲命令行操作Rest服务。</p>
-        
-          <p class="article-more-link">
-            <a href="/2016/07/27/spring-Boot-Cloud/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/27/spring-Boot-Cloud/" data-id="cirx51q89000b94otgra5v148" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-markDown" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/07/22/markDown/" class="article-date">
-  <time datetime="2016-07-22T06:08:08.000Z" itemprop="datePublished">2016-07-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/22/markDown/">markDown 的使用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 一级标题</span></div><div class="line"><span class="comment">## 二级标题</span></div><div class="line">依次类推</div></pre></td></tr></table></figure>
-<h1 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">在 Markdown 下，列表的显示只需要在文字前加上 - 或 * 即可变为无序列表，</div><div class="line">有序列表则直接在文字前加 <span class="number">1.</span> <span class="number">2.</span> <span class="number">3.</span> 符号要和文字之间加上一个字符的空格。</div></pre></td></tr></table></figure>
-<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">只需要在文本前加入 &gt; 这种尖括号（大于号）即可</div></pre></td></tr></table></figure>
-<h1 id="图片与链接"><a href="#图片与链接" class="headerlink" title="图片与链接"></a>图片与链接</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">插入链接与插入图片的语法很像，区别在一个 !号</div></pre></td></tr></table></figure>
-<h1 id="粗体与斜体"><a href="#粗体与斜体" class="headerlink" title="粗体与斜体"></a>粗体与斜体</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Markdown 的粗体和斜体也非常简单，用两个 * 包含一段文本就是粗体的语法，</div><div class="line">用一个 * 包含一段文本就是斜体的语法。</div></pre></td></tr></table></figure>
-<p><strong>我只粗体</strong>，<em>我是斜体</em>。</p>
-<h1 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h1><p>表格是我觉得 Markdown 比较累人的地方，例子如下：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">| Tables        | Are           | Cool  <span class="string">|</span></div><div class="line">| ------------- |:-------------:| -----:|</div><div class="line">| col 3 is      | right-aligned | $1600 |</div><div class="line">| col 2 is      | centered      |   $12 |</div><div class="line">| zebra stripes | are neat      |    $1 |</div></pre></td></tr></table></figure></p>
-<table>
-<thead>
-<tr>
-<th>Tables</th>
-<th style="text-align:center">Are</th>
-<th style="text-align:right">Cool</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>col 3 is</td>
-<td style="text-align:center">right-aligned</td>
-<td style="text-align:right">$1600</td>
-</tr>
-<tr>
-<td>col 2 is</td>
-<td style="text-align:center">centered</td>
-<td style="text-align:right">$12</td>
-</tr>
-<tr>
-<td>zebra stripes</td>
-<td style="text-align:center">are neat</td>
-<td style="text-align:right">$1</td>
-</tr>
-</tbody>
-</table>
-<h1 id="分割线"><a href="#分割线" class="headerlink" title="分割线"></a>分割线</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">分割线的语法只需要另起一行，连续输入三个星号 *** 即可。</div></pre></td></tr></table></figure>
-<hr>
-<h1 id="代码框"><a href="#代码框" class="headerlink" title="代码框"></a>代码框</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">如果你是个程序猿，需要在文章里优雅的引用代码框，在 Markdown 下实现也非常简单，</div><div class="line">只需要用两个 ` 把中间的代码包裹起来.</div><div class="line"></div><div class="line">如 `System.out.println()`</div></pre></td></tr></table></figure>
-<p><code>System.out.println()</code></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/22/markDown/" data-id="cirx51qan000k94otfhjdl1oh" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Markdown/">Markdown</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/编码/">编码</a></li></ul>
 
     </footer>
   </div>
@@ -354,7 +347,7 @@
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">__('next') &raquo;</a>
+    <a class="extend prev" rel="prev" href="/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -367,7 +360,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li></ul>
     </div>
   </div>
 
@@ -377,7 +370,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 10px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 20px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a>
+      <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 10px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 20px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 13.33px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/日志/" style="font-size: 16.67px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a>
     </div>
   </div>
 
@@ -399,23 +392,23 @@
       <ul>
         
           <li>
-            <a href="/2016/08/16/JavaWeb基础/">JavaWeb基础</a>
+            <a href="/2016/08/23/Kafkar入门/">Kafka入门</a>
           </li>
         
           <li>
-            <a href="/2016/08/12/计算机网络知识复习/">计算机网络知识复习</a>
+            <a href="/2016/08/19/使用Redis做集中式缓存/">使用Redis做集中式缓存</a>
           </li>
         
           <li>
-            <a href="/2016/08/10/spring定时任务/">Spring定时任务</a>
+            <a href="/2016/08/19/Boot中使用log4j记录日志/">Sporing Boot中使用log4j记录日志</a>
           </li>
         
           <li>
-            <a href="/2016/08/10/获取文件流的编码/">获取文件流编码</a>
+            <a href="/2016/08/19/Boot日志管理/">Spring Boot日志管理</a>
           </li>
         
           <li>
-            <a href="/2016/08/01/java-基础题/">java 复习资料</a>
+            <a href="/2016/08/18/EnableJpaRepositories配置详解/">@EnableJpaRepositories配置详解</a>
           </li>
         
       </ul>

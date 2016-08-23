@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Spring Boot日志管理 | 橘子不酸的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Spring Boot在所有内部日志中使用Commons Logging，但是默认配置也提供了对常用日志的支持，如：Java Util Logging，Log4J, Log4J2和Logback。每种Logger都可以通过配置使用控制台或者文件输出日志内容。
+日志输出格式12016-08-19 10:22:04.233  INFO 7368 --- [           main] com.ju">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Boot日志管理">
+<meta property="og:url" content="https://yangzhiw.github.io/2016/08/19/Boot日志管理/index.html">
+<meta property="og:site_name" content="橘子不酸的博客">
+<meta property="og:description" content="Spring Boot在所有内部日志中使用Commons Logging，但是默认配置也提供了对常用日志的支持，如：Java Util Logging，Log4J, Log4J2和Logback。每种Logger都可以通过配置使用控制台或者文件输出日志内容。
+日志输出格式12016-08-19 10:22:04.233  INFO 7368 --- [           main] com.ju">
+<meta property="og:updated_time" content="2016-08-19T02:45:33.070Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring Boot日志管理">
+<meta name="twitter:description" content="Spring Boot在所有内部日志中使用Commons Logging，但是默认配置也提供了对常用日志的支持，如：Java Util Logging，Log4J, Log4J2和Logback。每种Logger都可以通过配置使用控制台或者文件输出日志内容。
+日志输出格式12016-08-19 10:22:04.233  INFO 7368 --- [           main] com.ju">
+  
+    <link rel="alternate" href="/atom.xml" title="橘子不酸的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">橘子不酸的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一天进步一点</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://yangzhiw.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="spring-Boot日志管理" class="article article-type-spring" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/19/Boot日志管理/" class="article-date">
+  <time datetime="2016-08-19T02:25:56.000Z" itemprop="datePublished">2016-08-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Spring Boot日志管理
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Spring Boot在所有内部日志中使用Commons Logging，但是默认配置也提供了对常用日志的支持，<br>如：Java Util Logging，Log4J, Log4J2和Logback。每种Logger都可以通过配置使用控制台或者文件输出日志内容。</p>
+<h1 id="日志输出格式"><a href="#日志输出格式" class="headerlink" title="日志输出格式"></a>日志输出格式</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="number">2016</span><span class="bullet">-08</span><span class="bullet">-19</span> <span class="number">10</span>:<span class="number">22</span>:<span class="number">04.233</span>  INFO <span class="number">7368</span> --- [           main] com.juzi.AsyncTest                       : Started AsyncTest in <span class="number">10.084</span> seconds (JVM running for <span class="number">12.545</span>)</div></pre></td></tr></table></figure>
+<p>输出内容元素具体如下：</p>
+<p>时间日期 — 精确到毫秒<br>日志级别 — ERROR, WARN, INFO, DEBUG or TRACE<br>进程ID<br>分隔符 — — 标识实际日志的开始<br>线程名 — 方括号括起来（可能会截断控制台输出）<br>Logger名 — 通常使用源代码的类名<br>日志内容</p>
+<h1 id="控制台输出"><a href="#控制台输出" class="headerlink" title="控制台输出"></a>控制台输出</h1><p>在Spring Boot中默认配置了ERROR、WARN和INFO级别的日志输出到控制台。</p>
+<p>我们可以通过两种方式切换至DEBUG级别：<br>1.在运行命令后加入–debug标志，如：$ java -jar myapp.jar –debug<br>2.在application.properties中配置debug=true，该属性置为true的时候，核心Logger（包含嵌入式容器、hibernate、spring）<br>会输出更多内容，但是你自己应用的日志并不会输出为DEBUG级别。</p>
+<h1 id="多彩输出"><a href="#多彩输出" class="headerlink" title="多彩输出"></a>多彩输出</h1><p>如果你的终端支持ANSI，设置彩色输出会让日志更具可读性。通过在application.properties中设置spring.output.ansi.enabled参数来支持。</p>
+<p>1.NEVER：禁用ANSI-colored输出（默认项）<br>2.DETECT：会检查终端是否支持ANSI，是的话就采用彩色输出（推荐项）<br>3.ALWAYS：总是使用ANSI-colored格式输出，若终端不支持的时候，会有很多干扰信息，不推荐使用</p>
+<h1 id="文件输出"><a href="#文件输出" class="headerlink" title="文件输出"></a>文件输出</h1><p>Spring Boot默认配置只会输出到控制台，并不会记录到文件中，但是我们通常生产环境使用时都需要以文件方式记录。</p>
+<p>若要增加文件输出，需要在application.properties中配置logging.file或logging.path属性。</p>
+<p>1.logging.file，设置文件，可以是绝对路径，也可以是相对路径。如：logging.file=my.log<br>2.logging.path，设置目录，会在该目录下创建spring.log文件，并写入日志内容，如：logging.path=/var/log</p>
+<p>日志文件会在10Mb大小的时候被截断，产生新的日志文件，默认级别为：ERROR、WARN、INFO *</p>
+<h1 id="级别控制"><a href="#级别控制" class="headerlink" title="级别控制"></a>级别控制</h1><p>在Spring Boot中只需要在application.properties中进行配置完成日志记录的级别控制。</p>
+<p>配置格式：logging.level.*=LEVEL</p>
+<p>1.logging.level：日志级别控制前缀，*为包名或Logger名<br>2.LEVEL：选项TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF<br>举例：</p>
+<p>logging.level.com.juzi=DEBUG     com.juzi包下所有class以DEBUG级别输出<br>logging.level.root=WARN      root日志以WARN级别输出</p>
+<h1 id="自定义日志配置"><a href="#自定义日志配置" class="headerlink" title="自定义日志配置"></a>自定义日志配置</h1><p>由于日志服务一般都在ApplicationContext创建前就初始化了，它并不是必须通过Spring的配置文件控制。<br>因此通过系统属性和传统的Spring Boot外部配置文件依然可以很好的支持日志控制和管理。</p>
+<p>根据不同的日志系统，你可以按如下规则组织配置文件名，就能被正确加载：</p>
+<p>1.Logback：logback-spring.xml, logback-spring.groovy, logback.xml, logback.groovy    <a href="2016/07/21/logback">logback日志配置</a><br>2.Log4j：log4j-spring.properties, log4j-spring.xml, log4j.properties, log4j.xml<br>3.Log4j2：log4j2-spring.xml, log4j2.xml<br>4.JDK (Java Util Logging)：logging.properties</p>
+<p>Spring Boot官方推荐优先使用带有-spring的文件名作为你的日志配置（如使用logback-spring.xml，而不是logback.xml）</p>
+<h1 id="自定义输出格式"><a href="#自定义输出格式" class="headerlink" title="自定义输出格式"></a>自定义输出格式</h1><p>在Spring Boot中可以通过在application.properties配置如下参数控制输出格式：</p>
+<p>1.logging.pattern.console：定义输出到控制台的样式（不支持JDK Logger）<br>2.logging.pattern.file：定义输出到文件的样式（不支持JDK Logger）</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/19/Boot日志管理/" data-id="cis6x000d0008goot942a0n01" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/日志/">日志</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/08/19/Boot中使用log4j记录日志/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Sporing Boot中使用log4j记录日志
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/08/18/EnableJpaRepositories配置详解/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">@EnableJpaRepositories配置详解</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 10px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 20px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 13.33px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/日志/" style="font-size: 16.67px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/08/23/Kafkar入门/">Kafka入门</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/19/使用Redis做集中式缓存/">使用Redis做集中式缓存</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/19/Boot中使用log4j记录日志/">Sporing Boot中使用log4j记录日志</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/19/Boot日志管理/">Spring Boot日志管理</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/18/EnableJpaRepositories配置详解/">@EnableJpaRepositories配置详解</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
