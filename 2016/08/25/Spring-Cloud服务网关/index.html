@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Spring Cloud服务网关 | 橘子不酸的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="常用的微服务架构种种架构的不足就是缺少权限控制， 现在我们需要增加的就是服务网关了，服务网关是微服务架构中一个不可或缺的部分。通过服务网关统一向外系统提供REST API的过程中，除了具备服务路由、均衡负载功能之外，它还具备了权限控制等功能。Spring Cloud Netflix中的Zuul就担任了这样的一个角色，为微服务架构提供了前门保护的作用，同时将权限控制这些较重的非业务逻辑内容迁移到服务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Cloud服务网关">
+<meta property="og:url" content="https://yangzhiw.github.io/2016/08/25/Spring-Cloud服务网关/index.html">
+<meta property="og:site_name" content="橘子不酸的博客">
+<meta property="og:description" content="常用的微服务架构种种架构的不足就是缺少权限控制， 现在我们需要增加的就是服务网关了，服务网关是微服务架构中一个不可或缺的部分。通过服务网关统一向外系统提供REST API的过程中，除了具备服务路由、均衡负载功能之外，它还具备了权限控制等功能。Spring Cloud Netflix中的Zuul就担任了这样的一个角色，为微服务架构提供了前门保护的作用，同时将权限控制这些较重的非业务逻辑内容迁移到服务">
+<meta property="og:image" content="https://yangzhiw.github.io/2016/08/25/Spring-Cloud服务网关/zuul.jpg">
+<meta property="og:image" content="https://yangzhiw.github.io/2016/08/25/Spring-Cloud服务网关/zuul1.jpg">
+<meta property="og:updated_time" content="2016-08-25T04:33:09.307Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring Cloud服务网关">
+<meta name="twitter:description" content="常用的微服务架构种种架构的不足就是缺少权限控制， 现在我们需要增加的就是服务网关了，服务网关是微服务架构中一个不可或缺的部分。通过服务网关统一向外系统提供REST API的过程中，除了具备服务路由、均衡负载功能之外，它还具备了权限控制等功能。Spring Cloud Netflix中的Zuul就担任了这样的一个角色，为微服务架构提供了前门保护的作用，同时将权限控制这些较重的非业务逻辑内容迁移到服务">
+<meta name="twitter:image" content="https://yangzhiw.github.io/2016/08/25/Spring-Cloud服务网关/zuul.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="橘子不酸的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">橘子不酸的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一天进步一点</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://yangzhiw.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Spring-Cloud服务网关" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/25/Spring-Cloud服务网关/" class="article-date">
+  <time datetime="2016-08-25T01:51:07.000Z" itemprop="datePublished">2016-08-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Spring Cloud服务网关
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>常用的微服务架构<br><img src="/2016/08/25/Spring-Cloud服务网关/zuul.jpg" alt="微服务架构" title="微服务架构"><br>种种架构的不足就是缺少权限控制， 现在我们需要增加的就是服务网关了，<br>服务网关是微服务架构中一个不可或缺的部分。通过服务网关统一向外系统提供REST API的过程中，除了具备服务路由、<br>均衡负载功能之外，它还具备了权限控制等功能。Spring Cloud Netflix中的Zuul就担任了这样的一个角色，<br>为微服务架构提供了前门保护的作用，同时将权限控制这些较重的非业务逻辑内容迁移到服务路由层面，<br>使得服务集群主体能够具备更高的可复用性和可测试性。</p>
+<p>下面我们通过实例例子来使用一下Zuul来作为服务的路有功能</p>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>在使用Zuul之前，我们先构建一个服务注册中心、以及两个简单的服务，比如：我构建了一个simple-service，<br>一个simple-service1。然后启动eureka-server和这两个服务。<br>通过访问eureka-server，我们可以看到simple-service和simple-service1已经注册到了服务中心。</p>
+<h1 id="开始使用Zuul"><a href="#开始使用Zuul" class="headerlink" title="开始使用Zuul"></a>开始使用Zuul</h1><p>引入依赖spring-cloud-starter-zuul、spring-cloud-starter-eureka，如果不是通过指定serviceId的方式，eureka依赖不需要，<br>但是为了对服务集群细节的透明性，还是用serviceId来避免直接引用url的方式吧。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">&lt;dependency<span class="string">&gt;  </span></div><div class="line">    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-cloud-starter-zuul&lt;/artifactId&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line"></div><div class="line">&lt;dependency&gt;  </div><div class="line">    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-cloud-starter-eureka&lt;/artifactId&gt;</div><div class="line">&lt;/dependency&gt;  </div><div class="line"></div><div class="line">&lt;dependencyManagement&gt;</div><div class="line">		&lt;dependencies&gt;</div><div class="line">			&lt;dependency&gt;</div><div class="line">				&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">				&lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;</div><div class="line">				&lt;version&gt;Brixton.RELEASE&lt;/version&gt;</div><div class="line">				&lt;type&gt;pom&lt;/type&gt;</div><div class="line">				&lt;scope&gt;import&lt;/scope&gt;</div><div class="line">			&lt;/dependency&gt;</div><div class="line">		&lt;/dependencies&gt;</div><div class="line">&lt;/dependencyManagement&gt;</div></pre></td></tr></table></figure>
+<p>应用主类使用@EnableZuulProxy注解开启Zuul<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">@EnableZuulProxy</div><div class="line">@SpringCloudApplication</div><div class="line">public class ApiGatewayApplication &#123;</div><div class="line"></div><div class="line">	public static void main(String[] args) &#123;</div><div class="line">		SpringApplication.run(ApiGatewayApplication.class, args);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>@SpringCloudApplication注解，通过源码我们看到，<br>它整合了@SpringBootApplication、@EnableDiscoveryClient、@EnableCircuitBreaker</p>
+<p>application.properties中配置Zuul应用的基础信息，如：应用名、服务端口等。<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">spring.application.name=api-gateway  </div><div class="line">server.port=<span class="number">5555</span> </div><div class="line">eureka.client.serviceUrl.defaultZone=http://localhost:<span class="number">11111</span>/eureka/</div></pre></td></tr></table></figure></p>
+<p>在Zuul中提供了两种映射方式：</p>
+<h2 id="通过url直接映射，我们可以如下配置："><a href="#通过url直接映射，我们可以如下配置：" class="headerlink" title="通过url直接映射，我们可以如下配置："></a>通过url直接映射，我们可以如下配置：</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># routes to url</span></div><div class="line">zuul.routes.api-a-url.path=/api-a-url/**  </div><div class="line">zuul.routes.api-a-url.url=http://localhost:<span class="number">2222</span>/</div></pre></td></tr></table></figure>
+<p>该配置，定义了，所有到Zuul的中规则为：/api-a-url/**的访问都映射到<a href="http://localhost:2222/上，" target="_blank" rel="external">http://localhost:2222/上，</a><br>也就是说当我们访问<a href="http://localhost:5555/api-a-url/add?a=1&amp;b=2的时候，Zuul会将该请求路由到：" target="_blank" rel="external">http://localhost:5555/api-a-url/add?a=1&amp;b=2的时候，Zuul会将该请求路由到：</a><br><a href="http://localhost:2222/add?a=1&amp;b=2上。" target="_blank" rel="external">http://localhost:2222/add?a=1&amp;b=2上。</a></p>
+<h2 id="通过serviceId的映射"><a href="#通过serviceId的映射" class="headerlink" title="通过serviceId的映射"></a>通过serviceId的映射</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">zuul.routes.api-a.path=/api-a/**  </div><div class="line">zuul.routes.api-a.serviceId=service-A</div><div class="line"></div><div class="line">zuul.routes.api-b.path=/api-b/**  </div><div class="line">zuul.routes.api-b.serviceId=service-B</div></pre></td></tr></table></figure>
+<p>通过浏览器就可以访问了。如<a href="http://localhost:5555/api-b" target="_blank" rel="external">http://localhost:5555/api-b</a></p>
+<h1 id="服务过滤"><a href="#服务过滤" class="headerlink" title="服务过滤"></a>服务过滤</h1><p>在完成了服务路由之后，我们对外开放服务还需要一些安全措施来保护客户端只能访问它应该访问到的资源。<br>所以我们需要利用Zuul的过滤器来实现我们对外服务的安全控制。<br>在服务网关中定义过滤器只需要继承ZuulFilter抽象类实现其定义的四个抽象函数就可对请求进行拦截与过滤。</p>
+<p>自定义过滤器的实现，需要继承ZuulFilter，需要重写实现下面四个方法：<br>filterType：返回一个字符串代表过滤器的类型，在zuul中定义了四种不同生命周期的过滤器类型，具体如下：<br>    pre：可以在请求被路由之前调用<br>    routing：在路由请求时候被调用<br>    post：在routing和error过滤器之后被调用<br>    error：处理请求时发生错误时被调用<br>filterOrder：通过int值来定义过滤器的执行顺序<br>shouldFilter：返回一个boolean类型来判断该过滤器是否要执行，所以通过此函数可实现过滤器的开关，默认false，不执行<br>run：过滤器的具体逻辑</p>
+<p>然后在主类中注入该类<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@Bean</div><div class="line">public FilterTest filterTest() &#123;</div><div class="line">	return new FilterTest();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>最后在浏览器中输入<a href="http://localhost:5555/api-b/add?a=1&amp;b=2就不可以访问，" target="_blank" rel="external">http://localhost:5555/api-b/add?a=1&amp;b=2就不可以访问，</a><br>而<a href="http://localhost:5555/api-b/add?a=1&amp;b=2&amp;c=d可以访问了" target="_blank" rel="external">http://localhost:5555/api-b/add?a=1&amp;b=2&amp;c=d可以访问了</a></p>
+<p>根据之前对filterType生命周期介绍，可以参考下图去理解，并根据自己的需要在不同的生命周期中去实现不同类型的过滤器。<br><img src="/2016/08/25/Spring-Cloud服务网关/zuul1.jpg" alt="filterType生命周期" title="filterType生命周期"></p>
+<p>总结：<br>服务网关的优点：<br>不仅仅实现了路由功能来屏蔽诸多服务细节，更实现了服务级别、均衡负载的路由。<br>实现了接口权限校验与微服务业务逻辑的解耦。通过服务网关中的过滤器，在各生命周期中去校验请求的内容，<br>将原本在对外服务层做的校验前移，保证了微服务的无状态性，同时降低了微服务的测试难度，<br>让服务本身更集中关注业务逻辑的处理。<br>实现了断路器，不会因为具体微服务的故障而导致服务网关的阻塞，依然可以对外服务。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/25/Spring-Cloud服务网关/" data-id="cis9u6i6r000fucotcunefwyv" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/08/24/Spring-Cloud分布式配置/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Spring Cloud分布式配置</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 10px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 16.67px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/日志/" style="font-size: 13.33px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/08/25/Spring-Cloud服务网关/">Spring Cloud服务网关</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/24/Spring-Cloud分布式配置/">Spring Cloud分布式配置</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/24/Spring-Cloud路断器/">Spring Cloud路断器</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/24/Spring-Cloud服务消费者/">Spring Cloud服务消费者</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/23/Spring-Cloud服务注册与发现/">Spring Cloud服务注册与发现</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

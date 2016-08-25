@@ -5,22 +5,19 @@
   
   <title>Spring Cloud路断器 | 橘子不酸的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="什么是断路器
-断路器模式源于Martin Fowler的Circuit Breaker一文。“断路器”本身是一种开关装置，用于在电路上保护线路过载，当线路中有电器发生短路时，“断路器”能够及时的切断故障电路，防止发生过载、发热、甚至起火等严重后果。
-在分布式架构中，断路器模式的作用也是类似的，当某个服务单元发生故障（类似用电器发生短路）之后，通过断路器的故障监控（类似熔断保险丝），向调用方返回一个">
+  <meta name="description" content="什么是断路器断路器模式源于Martin Fowler的Circuit Breaker一文。“断路器”本身是一种开关装置，用于在电路上保护线路过载，当线路中有电器发生短路时，“断路器”能够及时的切断故障电路，防止发生过载、发热、甚至起火等严重后果。
+在分布式架构中，断路器模式的作用也是类似的，当某个服务单元发生故障（类似用电器发生短路）之后，通过断路器的故障监控（类似熔断保险丝），向调用方返回一个错">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Spring Cloud路断器">
 <meta property="og:url" content="https://yangzhiw.github.io/2016/08/24/Spring-Cloud路断器/index.html">
 <meta property="og:site_name" content="橘子不酸的博客">
-<meta property="og:description" content="什么是断路器
-断路器模式源于Martin Fowler的Circuit Breaker一文。“断路器”本身是一种开关装置，用于在电路上保护线路过载，当线路中有电器发生短路时，“断路器”能够及时的切断故障电路，防止发生过载、发热、甚至起火等严重后果。
-在分布式架构中，断路器模式的作用也是类似的，当某个服务单元发生故障（类似用电器发生短路）之后，通过断路器的故障监控（类似熔断保险丝），向调用方返回一个">
-<meta property="og:updated_time" content="2016-08-24T05:29:28.146Z">
+<meta property="og:description" content="什么是断路器断路器模式源于Martin Fowler的Circuit Breaker一文。“断路器”本身是一种开关装置，用于在电路上保护线路过载，当线路中有电器发生短路时，“断路器”能够及时的切断故障电路，防止发生过载、发热、甚至起火等严重后果。
+在分布式架构中，断路器模式的作用也是类似的，当某个服务单元发生故障（类似用电器发生短路）之后，通过断路器的故障监控（类似熔断保险丝），向调用方返回一个错">
+<meta property="og:updated_time" content="2016-08-24T09:31:04.494Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spring Cloud路断器">
-<meta name="twitter:description" content="什么是断路器
-断路器模式源于Martin Fowler的Circuit Breaker一文。“断路器”本身是一种开关装置，用于在电路上保护线路过载，当线路中有电器发生短路时，“断路器”能够及时的切断故障电路，防止发生过载、发热、甚至起火等严重后果。
-在分布式架构中，断路器模式的作用也是类似的，当某个服务单元发生故障（类似用电器发生短路）之后，通过断路器的故障监控（类似熔断保险丝），向调用方返回一个">
+<meta name="twitter:description" content="什么是断路器断路器模式源于Martin Fowler的Circuit Breaker一文。“断路器”本身是一种开关装置，用于在电路上保护线路过载，当线路中有电器发生短路时，“断路器”能够及时的切断故障电路，防止发生过载、发热、甚至起火等严重后果。
+在分布式架构中，断路器模式的作用也是类似的，当某个服务单元发生故障（类似用电器发生短路）之后，通过断路器的故障监控（类似熔断保险丝），向调用方返回一个错">
   
     <link rel="alternate" href="/atom.xml" title="橘子不酸的博客" type="application/atom+xml">
   
@@ -95,26 +92,20 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="什么是断路器"><a href="#什么是断路器" class="headerlink" title="什么是断路器"></a>什么是断路器</h1><blockquote>
-<p>断路器模式源于Martin Fowler的Circuit Breaker一文。“断路器”本身是一种开关装置，用于在电路上保护线路过载，<br>当线路中有电器发生短路时，“断路器”能够及时的切断故障电路，防止发生过载、发热、甚至起火等严重后果。</p>
+        <h1 id="什么是断路器"><a href="#什么是断路器" class="headerlink" title="什么是断路器"></a>什么是断路器</h1><p>断路器模式源于Martin Fowler的Circuit Breaker一文。“断路器”本身是一种开关装置，用于在电路上保护线路过载，<br>当线路中有电器发生短路时，“断路器”能够及时的切断故障电路，防止发生过载、发热、甚至起火等严重后果。</p>
 <p>在分布式架构中，断路器模式的作用也是类似的，当某个服务单元发生故障（类似用电器发生短路）之后，<br>通过断路器的故障监控（类似熔断保险丝），向调用方返回一个错误响应，而不是长时间的等待。<br>这样就不会使得线程因调用故障服务被长时间占用不释放，避免了故障在分布式系统中的蔓延.</p>
-</blockquote>
-<h1 id="Netflix-Hystrix"><a href="#Netflix-Hystrix" class="headerlink" title="Netflix Hystrix"></a>Netflix Hystrix</h1><blockquote>
-<p>在Spring Cloud中使用了Hystrix 来实现断路器的功能。Hystrix是Netflix开源的微服务框架套件之一，<br>该框架目标在于通过控制那些访问远程系统、服务和第三方库的节点，从而对延迟和故障提供更强大的容错能力。<br>Hystrix具备拥有回退机制和断路器功能的线程和信号隔离，请求缓存和请求打包，以及监控和配置等功能。</p>
-</blockquote>
+<h1 id="Netflix-Hystrix"><a href="#Netflix-Hystrix" class="headerlink" title="Netflix Hystrix"></a>Netflix Hystrix</h1><p>在Spring Cloud中使用了Hystrix 来实现断路器的功能。Hystrix是Netflix开源的微服务框架套件之一，<br>该框架目标在于通过控制那些访问远程系统、服务和第三方库的节点，从而对延迟和故障提供更强大的容错能力。<br>Hystrix具备拥有回退机制和断路器功能的线程和信号隔离，请求缓存和请求打包，以及监控和配置等功能。</p>
 <p>下面我们来看看如何使用Hystrix。</p>
 <h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>启动spring-could，spring-cloud-provide,eureka-ribbon项目</p>
 <p>pom.xml中引入依赖hystrix依赖<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;dependency<span class="string">&gt;  </span></div><div class="line">    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-cloud-starter-hystrix&lt;/artifactId&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
 <p>在eureka-ribbon的主类RibbonApplication中使用@EnableCircuitBreaker注解开启断路器功能<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@SpringBootApplication</div><div class="line">@EnableDiscoveryClient</div><div class="line">@EnableCircuitBreaker</div><div class="line">public class EurekaRibbonApplication &#123;</div></pre></td></tr></table></figure></p>
 <p>新增也service类<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">@Service</div><div class="line">public class SimpleService &#123;</div><div class="line">    @Autowired</div><div class="line">    RestTemplate restTemplate;</div><div class="line"></div><div class="line">    @HystrixCommand(fallbackMethod = <span class="string">"addServiceFallback"</span>)</div><div class="line">    public String addService() &#123;</div><div class="line">        return restTemplate.getForEntity(<span class="string">"http://COMPUTE-SERVICE/add?a=10&amp;b=20"</span>, String.class).getBody();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public String addServiceFallback() &#123;</div><div class="line">        return <span class="string">"error"</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<blockquote>
 <p>改变之前Controller中的方法使其掉用Service中的addService即可，没开服务可以发现浏览器中返回了error错误了。<br>完成</p>
-</blockquote>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/24/Spring-Cloud路断器/" data-id="cis8bl3hh0002ucothsgg3xmw" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/24/Spring-Cloud路断器/" data-id="cis9u6i6t000gucot16xh4fs0" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
@@ -124,6 +115,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2016/08/24/Spring-Cloud分布式配置/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Spring Cloud分布式配置
+        
+      </div>
+    </a>
   
   
     <a href="/2016/08/24/Spring-Cloud服务消费者/" id="article-nav-older" class="article-nav-link-wrap">
@@ -179,6 +179,14 @@
       <ul>
         
           <li>
+            <a href="/2016/08/25/Spring-Cloud服务网关/">Spring Cloud服务网关</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/24/Spring-Cloud分布式配置/">Spring Cloud分布式配置</a>
+          </li>
+        
+          <li>
             <a href="/2016/08/24/Spring-Cloud路断器/">Spring Cloud路断器</a>
           </li>
         
@@ -188,14 +196,6 @@
         
           <li>
             <a href="/2016/08/23/Spring-Cloud服务注册与发现/">Spring Cloud服务注册与发现</a>
-          </li>
-        
-          <li>
-            <a href="/2016/08/23/Kafkar入门/">Kafka入门</a>
-          </li>
-        
-          <li>
-            <a href="/2016/08/19/使用Redis做集中式缓存/">使用Redis做集中式缓存</a>
           </li>
         
       </ul>
