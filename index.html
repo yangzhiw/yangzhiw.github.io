@@ -90,7 +90,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>常用的微服务架构<br><img src="/2016/08/25/Spring-Cloud服务网关/zuul.jpg" alt="微服务架构" title="微服务架构"><br>种种架构的不足就是缺少权限控制， 现在我们需要增加的就是服务网关了，<br>服务网关是微服务架构中一个不可或缺的部分。通过服务网关统一向外系统提供REST API的过程中，除了具备服务路由、<br>均衡负载功能之外，它还具备了权限控制等功能。Spring Cloud Netflix中的Zuul就担任了这样的一个角色，<br>为微服务架构提供了前门保护的作用，同时将权限控制这些较重的非业务逻辑内容迁移到服务路由层面，<br>使得服务集群主体能够具备更高的可复用性和可测试性。</p>
+        <p>常用的微服务架构<br><img src="/2016/08/25/Spring-Cloud服务网关/zuul.jpg" alt="微服务架构" title="微服务架构"></p>
+<blockquote>
+<p>种种架构的不足就是缺少权限控制， 现在我们需要增加的就是服务网关了，<br>服务网关是微服务架构中一个不可或缺的部分。通过服务网关统一向外系统提供REST API的过程中，除了具备服务路由、<br>均衡负载功能之外，它还具备了权限控制等功能。Spring Cloud Netflix中的Zuul就担任了这样的一个角色，<br>为微服务架构提供了前门保护的作用，同时将权限控制这些较重的非业务逻辑内容迁移到服务路由层面，<br>使得服务集群主体能够具备更高的可复用性和可测试性。</p>
+</blockquote>
 <p>下面我们通过实例例子来使用一下Zuul来作为服务的路有功能</p>
 <h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>在使用Zuul之前，我们先构建一个服务注册中心、以及两个简单的服务，比如：我构建了一个simple-service，<br>一个simple-service1。然后启动eureka-server和这两个服务。<br>通过访问eureka-server，我们可以看到simple-service和simple-service1已经注册到了服务中心。</p>
 <h1 id="开始使用Zuul"><a href="#开始使用Zuul" class="headerlink" title="开始使用Zuul"></a>开始使用Zuul</h1><p>引入依赖spring-cloud-starter-zuul、spring-cloud-starter-eureka，如果不是通过指定serviceId的方式，eureka依赖不需要，<br>但是为了对服务集群细节的透明性，还是用serviceId来避免直接引用url的方式吧。</p>
@@ -113,7 +116,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/25/Spring-Cloud服务网关/" data-id="cis9u6i6r000fucotcunefwyv" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/25/Spring-Cloud服务网关/" data-id="cis9oarst0022ckotihvwqdpg" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
@@ -166,7 +169,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/24/Spring-Cloud分布式配置/" data-id="cis9u6i5s0007ucotc15rcn9o" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/24/Spring-Cloud分布式配置/" data-id="cis9n7mox0004ckot72fiwyma" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
@@ -213,7 +216,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/24/Spring-Cloud路断器/" data-id="cis9u6i6t000gucot16xh4fs0" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/24/Spring-Cloud路断器/" data-id="cis9n7mqz000bckotyjyz81ne" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
@@ -251,7 +254,7 @@
 <p>1.启动之前的spring-could<br>2.启动服务提供方spring-cloud-provide</p>
 <p>修改spring-cloud-provide中的server-port为2223，再启动一个服务提供方：service</p>
 <h1 id="使用Ribbon实现客户端负载均衡的消费者"><a href="#使用Ribbon实现客户端负载均衡的消费者" class="headerlink" title="使用Ribbon实现客户端负载均衡的消费者"></a>使用Ribbon实现客户端负载均衡的消费者</h1><p>在pom.xml中添加<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">&lt;dependency<span class="string">&gt;</span></div><div class="line">       &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">       &lt;artifactId&gt;spring-cloud-starter-ribbon&lt;/artifactId&gt;</div><div class="line">   &lt;/dependency&gt;</div><div class="line">   &lt;dependency&gt;</div><div class="line">       &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">       &lt;artifactId&gt;spring-cloud-starter-eureka&lt;/artifactId&gt;</div><div class="line">   &lt;/dependency&gt;</div><div class="line">   &lt;dependencyManagement&gt;  </div><div class="line">    &lt;dependencies&gt;</div><div class="line">        &lt;dependency&gt;</div><div class="line">	        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">	        &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;</div><div class="line">	        &lt;version&gt;Brixton.RELEASE&lt;/version&gt;</div><div class="line">	        &lt;type&gt;pom&lt;/type&gt;</div><div class="line">	        &lt;scope&gt;import&lt;/scope&gt;</div><div class="line">    	&lt;/dependency&gt;</div><div class="line">    &lt;/dependencies&gt;</div><div class="line">&lt;/dependencyManagement&gt;</div></pre></td></tr></table></figure></p>
-<p>在应用主类中，通过@EnableDiscoveryClient注解来添加发现服务能力。<br>创建RestTemplate实例，并通过@LoadBalanced注解开启均衡负载能力。<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">@RestController</div><div class="line">public class ConsumerController &#123;</div><div class="line">    @Autowired</div><div class="line">    RestTemplate restTemplate;</div><div class="line"></div><div class="line">    @RequestMapping(value = <span class="string">"/add"</span>, method = RequestMethod.GET)</div><div class="line">    public String add() &#123;</div><div class="line">        return restTemplate.getForEntity(<span class="string">"http://simple-SERVICE/add?a=10&amp;b=20"</span>, String.class).getBody();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在应用主类中，通过@EnableDiscoveryClient注解来添加发现服务能力。<br>创建RestTemplate实例，并通过@LoadBalanced注解开启均衡负载能力。<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">@SpringBootApplication</div><div class="line">@EnableDiscoveryClient</div><div class="line">public class RibbonApplication &#123;</div><div class="line"></div><div class="line">    @Bean</div><div class="line">    @LoadBalanced</div><div class="line">    RestTemplate restTemplate() &#123;</div><div class="line">        return new RestTemplate();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        SpringApplication.run(RibbonApplication.class, args);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>创建ConsumerController来消费COMPUTE-SERVICE的add服务。<br>通过直接RestTemplate来调用服务，计算10 + 20的值。<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">@RestController</div><div class="line">public class ConsumerController &#123;</div><div class="line"></div><div class="line">    @Autowired</div><div class="line">    RestTemplate restTemplate;</div><div class="line"></div><div class="line">    @RequestMapping(value = <span class="string">"/add"</span>, method = RequestMethod.GET)</div><div class="line">    public String add() &#123;</div><div class="line">        return restTemplate.getForEntity(<span class="string">"http://COMPUTE-SERVICE/add?a=10&amp;b=20"</span>, String.class).getBody();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>application.properties中配置eureka服务注册中心<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">spring.application.name=ribbon-consumer  </div><div class="line">server.port=<span class="number">3333</span></div><div class="line"></div><div class="line">eureka.client.serviceUrl.defaultZone=http://localhost:<span class="number">1111</span>/eureka/</div></pre></td></tr></table></figure></p>
 <p>然后启动该项目，在浏览器中输入<a href="http://localhost:3333/add" target="_blank" rel="external">http://localhost:3333/add</a><br>在2222和2223的端口总能看到有其中一个控制台有日志打出，关闭一个，还能继续运行<br>即通过ribbon实现了负载均衡了。</p>
@@ -259,7 +262,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/24/Spring-Cloud服务消费者/" data-id="cis9u6i6i000ducot4vvx1vno" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/24/Spring-Cloud服务消费者/" data-id="cis9n7mqi0008ckotrzb6p8hk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
@@ -313,7 +316,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/23/Spring-Cloud服务注册与发现/" data-id="cis9u6i62000bucot0d4qpcos" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/23/Spring-Cloud服务注册与发现/" data-id="cis9n7mpx0007ckot8hvpfklb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>

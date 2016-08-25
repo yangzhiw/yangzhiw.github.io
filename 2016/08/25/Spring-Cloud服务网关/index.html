@@ -5,18 +5,24 @@
   
   <title>Spring Cloud服务网关 | 橘子不酸的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="常用的微服务架构种种架构的不足就是缺少权限控制， 现在我们需要增加的就是服务网关了，服务网关是微服务架构中一个不可或缺的部分。通过服务网关统一向外系统提供REST API的过程中，除了具备服务路由、均衡负载功能之外，它还具备了权限控制等功能。Spring Cloud Netflix中的Zuul就担任了这样的一个角色，为微服务架构提供了前门保护的作用，同时将权限控制这些较重的非业务逻辑内容迁移到服务">
+  <meta name="description" content="常用的微服务架构
+
+种种架构的不足就是缺少权限控制， 现在我们需要增加的就是服务网关了，服务网关是微服务架构中一个不可或缺的部分。通过服务网关统一向外系统提供REST API的过程中，除了具备服务路由、均衡负载功能之外，它还具备了权限控制等功能。Spring Cloud Netflix中的Zuul就担任了这样的一个角色，为微服务架构提供了前门保护的作用，同时将权限控制这些较重的非业务逻辑内容迁移到">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Spring Cloud服务网关">
 <meta property="og:url" content="https://yangzhiw.github.io/2016/08/25/Spring-Cloud服务网关/index.html">
 <meta property="og:site_name" content="橘子不酸的博客">
-<meta property="og:description" content="常用的微服务架构种种架构的不足就是缺少权限控制， 现在我们需要增加的就是服务网关了，服务网关是微服务架构中一个不可或缺的部分。通过服务网关统一向外系统提供REST API的过程中，除了具备服务路由、均衡负载功能之外，它还具备了权限控制等功能。Spring Cloud Netflix中的Zuul就担任了这样的一个角色，为微服务架构提供了前门保护的作用，同时将权限控制这些较重的非业务逻辑内容迁移到服务">
+<meta property="og:description" content="常用的微服务架构
+
+种种架构的不足就是缺少权限控制， 现在我们需要增加的就是服务网关了，服务网关是微服务架构中一个不可或缺的部分。通过服务网关统一向外系统提供REST API的过程中，除了具备服务路由、均衡负载功能之外，它还具备了权限控制等功能。Spring Cloud Netflix中的Zuul就担任了这样的一个角色，为微服务架构提供了前门保护的作用，同时将权限控制这些较重的非业务逻辑内容迁移到">
 <meta property="og:image" content="https://yangzhiw.github.io/2016/08/25/Spring-Cloud服务网关/zuul.jpg">
 <meta property="og:image" content="https://yangzhiw.github.io/2016/08/25/Spring-Cloud服务网关/zuul1.jpg">
-<meta property="og:updated_time" content="2016-08-25T04:33:09.307Z">
+<meta property="og:updated_time" content="2016-08-25T04:52:00.511Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spring Cloud服务网关">
-<meta name="twitter:description" content="常用的微服务架构种种架构的不足就是缺少权限控制， 现在我们需要增加的就是服务网关了，服务网关是微服务架构中一个不可或缺的部分。通过服务网关统一向外系统提供REST API的过程中，除了具备服务路由、均衡负载功能之外，它还具备了权限控制等功能。Spring Cloud Netflix中的Zuul就担任了这样的一个角色，为微服务架构提供了前门保护的作用，同时将权限控制这些较重的非业务逻辑内容迁移到服务">
+<meta name="twitter:description" content="常用的微服务架构
+
+种种架构的不足就是缺少权限控制， 现在我们需要增加的就是服务网关了，服务网关是微服务架构中一个不可或缺的部分。通过服务网关统一向外系统提供REST API的过程中，除了具备服务路由、均衡负载功能之外，它还具备了权限控制等功能。Spring Cloud Netflix中的Zuul就担任了这样的一个角色，为微服务架构提供了前门保护的作用，同时将权限控制这些较重的非业务逻辑内容迁移到">
 <meta name="twitter:image" content="https://yangzhiw.github.io/2016/08/25/Spring-Cloud服务网关/zuul.jpg">
   
     <link rel="alternate" href="/atom.xml" title="橘子不酸的博客" type="application/atom+xml">
@@ -92,7 +98,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>常用的微服务架构<br><img src="/2016/08/25/Spring-Cloud服务网关/zuul.jpg" alt="微服务架构" title="微服务架构"><br>种种架构的不足就是缺少权限控制， 现在我们需要增加的就是服务网关了，<br>服务网关是微服务架构中一个不可或缺的部分。通过服务网关统一向外系统提供REST API的过程中，除了具备服务路由、<br>均衡负载功能之外，它还具备了权限控制等功能。Spring Cloud Netflix中的Zuul就担任了这样的一个角色，<br>为微服务架构提供了前门保护的作用，同时将权限控制这些较重的非业务逻辑内容迁移到服务路由层面，<br>使得服务集群主体能够具备更高的可复用性和可测试性。</p>
+        <p>常用的微服务架构<br><img src="/2016/08/25/Spring-Cloud服务网关/zuul.jpg" alt="微服务架构" title="微服务架构"></p>
+<blockquote>
+<p>种种架构的不足就是缺少权限控制， 现在我们需要增加的就是服务网关了，<br>服务网关是微服务架构中一个不可或缺的部分。通过服务网关统一向外系统提供REST API的过程中，除了具备服务路由、<br>均衡负载功能之外，它还具备了权限控制等功能。Spring Cloud Netflix中的Zuul就担任了这样的一个角色，<br>为微服务架构提供了前门保护的作用，同时将权限控制这些较重的非业务逻辑内容迁移到服务路由层面，<br>使得服务集群主体能够具备更高的可复用性和可测试性。</p>
+</blockquote>
 <p>下面我们通过实例例子来使用一下Zuul来作为服务的路有功能</p>
 <h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>在使用Zuul之前，我们先构建一个服务注册中心、以及两个简单的服务，比如：我构建了一个simple-service，<br>一个simple-service1。然后启动eureka-server和这两个服务。<br>通过访问eureka-server，我们可以看到simple-service和simple-service1已经注册到了服务中心。</p>
 <h1 id="开始使用Zuul"><a href="#开始使用Zuul" class="headerlink" title="开始使用Zuul"></a>开始使用Zuul</h1><p>引入依赖spring-cloud-starter-zuul、spring-cloud-starter-eureka，如果不是通过指定serviceId的方式，eureka依赖不需要，<br>但是为了对服务集群细节的透明性，还是用serviceId来避免直接引用url的方式吧。</p>
@@ -115,7 +124,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/25/Spring-Cloud服务网关/" data-id="cis9u6i6r000fucotcunefwyv" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/25/Spring-Cloud服务网关/" data-id="cis9oarst0022ckotihvwqdpg" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
