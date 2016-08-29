@@ -68,6 +68,161 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-获取文件流的编码" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/10/获取文件流的编码/" class="article-date">
+  <time datetime="2016-08-10T02:29:47.000Z" itemprop="datePublished">2016-08-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/10/获取文件流的编码/">获取文件流编码</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1，获取文件的流"><a href="#1，获取文件的流" class="headerlink" title="1，获取文件的流"></a>1，获取文件的流</h1><pre><code>InportStream importStream = file.getInputStream()；
+</code></pre><h1 id="2，把文件流转化为字节流"><a href="#2，把文件流转化为字节流" class="headerlink" title="2，把文件流转化为字节流"></a>2，把文件流转化为字节流</h1><pre><code>//字节数组输出流
+ByteArrayOutputStream baos = new ByteArrayOutputStream();
+try {
+    byte[] buffer = new byte[1024];
+    int len;
+    while ((len = inputStream.read(buffer)) &gt; -1) {
+        baos.write(buffer, 0, len);
+    }
+    baos.flush();
+}catch(IOException e){
+    e.printStackTrace();
+}
+return new ByteArrayInputStream(baos.toByteArray());
+</code></pre><h1 id="3，根据字节流的判断文件的编码"><a href="#3，根据字节流的判断文件的编码" class="headerlink" title="3，根据字节流的判断文件的编码"></a>3，根据字节流的判断文件的编码</h1><pre><code>//默认编码
+String charset = &quot;GBK&quot;;
+byte[] first3Bytes = new byte[3];
+//缓存流
+BufferedInputStream bis = new BufferedInputStream(inputStream1);
+try {
+    boolean checked = false;
+    //标记
+    bis.mark(0);
+    //读取文件的前3个字符
+    int read = bis.read(first3Bytes, 0, 3);
+    if (read == -1) return charset;
+    if (first3Bytes[0] == (byte) 0xFF &amp;&amp; first3Bytes[1] == (byte) 0xFE) {
+        charset = &quot;UTF-16LE&quot;;
+        checked = true;
+    } else if (first3Bytes[0] == (byte) 0xFE &amp;&amp; first3Bytes[1] == (byte) 0xFF) {
+        charset = &quot;UTF-16BE&quot;;
+        checked = true;
+    } else if (first3Bytes[0] == (byte) 0xEF &amp;&amp; first3Bytes[1] == (byte) 0xBB &amp;&amp; first3Bytes[2] == (byte) 0xBF) {
+        charset = &quot;UTF-8&quot;;
+        checked = true;
+    }
+    bis.reset();
+    if (!checked) {
+
+        int loc = 0;
+        while ((read = bis.read()) != -1) {
+            loc++;
+            if (read &gt;= 0xF0) break;
+            if (0x80 &lt;= read &amp;&amp; read &lt;= 0xBF) // 单独出现BF以下的，也算是GBK
+                break;
+            if (0xC0 &lt;= read &amp;&amp; read &lt;= 0xDF) {
+                read = bis.read();
+                if (0x80 &lt;= read &amp;&amp; read &lt;= 0xBF) // 双字节 (0xC0 - 0xDF) (0x80
+                    continue;
+                else break;
+            } else if (0xE0 &lt;= read &amp;&amp; read &lt;= 0xEF) {// 也有可能出错，但是几率较小
+                read = bis.read();
+                if (0x80 &lt;= read &amp;&amp; read &lt;= 0xBF) {
+                    read = bis.read();
+                    if (0x80 &lt;= read &amp;&amp; read &lt;= 0xBF) {
+                        charset = &quot;UTF-8&quot;;
+                        break;
+                    } else break;
+                } else break;
+            }
+        }
+    }
+} catch (Exception e) {
+    e.printStackTrace();
+} finally {
+    try {
+        bis.close();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/10/获取文件流的编码/" data-id="cisfm40jt001po4oti2y30lb2" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/编码/">编码</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-spring定时任务" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/10/spring定时任务/" class="article-date">
+  <time datetime="2016-08-10T02:29:47.000Z" itemprop="datePublished">2016-08-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/10/spring定时任务/">Spring定时任务</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="获取昨天时间"><a href="#获取昨天时间" class="headerlink" title="获取昨天时间"></a>获取昨天时间</h2><pre><code>Calendar c=Calendar.getInstance();
+c.add(Calendar.DAY_OF_MONTH,-1);   //日期月是0-11
+c.set(Calendar.HOUR_OF_DAY,0);     
+c.set(Calendar.MINUTE,0);
+c.set(Calendar.SECOND,0);
+c.set(Calendar.MILLISECOND,0);
+return c.getTime();
+</code></pre><h2 id="在类上加上注解"><a href="#在类上加上注解" class="headerlink" title="在类上加上注解"></a>在类上加上注解</h2><p>@Configuration<br>@EnableScheduling<br>@Scheduled(fixedRate = 5000) ：上一次开始执行时间点之后5秒再执行<br>@Scheduled(fixedDelay = 5000) ：上一次执行完毕时间点之后5秒再执行<br>@Scheduled(initialDelay=1000, fixedRate=5000) ：第一次延迟1秒后执行，之后按fixedRate的规则每5秒执行一次<br>@Scheduled(cron=”<em>/5 </em> <em> </em> <em> </em>“) ：通过cron表达式定义规则        </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/10/spring定时任务/" data-id="cisfm40jo001ko4otzh7ldp2w" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-java-基础题" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/08/01/java-基础题/" class="article-date">
@@ -109,7 +264,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/01/java-基础题/" data-id="cis9n7mu1000pckotzwsuh2qd" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/01/java-基础题/" data-id="cisfm40j9001do4ot9a48493t" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
@@ -158,7 +313,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/28/spring-AOP-注解开发/" data-id="cis9n7mua000rckotyu0lrdgr" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/07/28/spring-AOP-注解开发/" data-id="cisfm40iu0013o4ot0l1ap133" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li></ul>
@@ -209,7 +364,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/27/Docker-应用/" data-id="cis9n7mne0003ckotylc2zso6" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/07/27/Docker-应用/" data-id="cisfm40ga0004o4ot4phsxdqi" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Docker/">Docker</a></li></ul>
@@ -221,123 +376,10 @@
 
 
   
-    <article id="post-spring-Boot-Cloud2" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/07/27/spring-Boot-Cloud2/" class="article-date">
-  <time datetime="2016-07-27T07:39:34.000Z" itemprop="datePublished">2016-07-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/27/spring-Boot-Cloud2/">spring Boot Cloud2</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Spring-Cloud介绍"><a href="#Spring-Cloud介绍" class="headerlink" title="Spring Cloud介绍"></a>Spring Cloud介绍</h1><p>Spring Cloud是一个基于Spring Boot实现的云应用开发工具，它为基于JVM的云应用开发中的配置管理、服务发现、断路器、<br>智能路由、微代理、控制总线、全局锁、决策竞选、分布式会话和集群状态管理等操作提供了一种简单的开发方式。</p>
-<h1 id="Spring-Cloud与Dubbo对比"><a href="#Spring-Cloud与Dubbo对比" class="headerlink" title="Spring Cloud与Dubbo对比"></a>Spring Cloud与Dubbo对比</h1><p>它们两都具备分布式服务治理相关的功能，都能够提供服务注册、发现、路由、负载均衡等。说到这，Dubbo的功能好像<br>也就这么多了，但是Spring Cloud是提供了一整套企业级分布式云应用的完美解决方案，能够结合Spring Boot，<br>Docker实现快速开发的目的，所以说Dubbo只有Spring Cloud的一部分RPC功能，而且也谈不上谁好谁坏。不过，<br>Dubbo项目现已停止了更新，淘宝内部由hsf替代dubbo，我想这会有更多人倾向Spring Cloud了。<br>从开发角度上说，Dubbo常与Spring、zookeeper结合，而且实现只是通过xml来配置服务地址、名称、端口，<br>代码的侵入性是很小的，相对Spring Cloud，它的实现需要类注解等，多少具有一定侵入性。</p>
-<h1 id="Spring-Cloud子项目"><a href="#Spring-Cloud子项目" class="headerlink" title="Spring Cloud子项目"></a>Spring Cloud子项目</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Spring Cloud包含了多个子项目（针对分布式系统中涉及的多个不同开源产品），之前在第一章节也介绍这些，</div><div class="line">比如：Spring Cloud Config、Spring Cloud Netflix、Spring Cloud CloudFoundry、Spring Cloud AWS、</div><div class="line">Spring Cloud Security、Spring Cloud Commons、Spring Cloud Zookeeper、Spring Cloud CLI等项目。</div></pre></td></tr></table></figure>
-<h2 id="配置服务"><a href="#配置服务" class="headerlink" title="配置服务"></a>配置服务</h2><p>Spring Cloud通过Netflix OSS的Eureka来实现服务发现，服务发现的主要目的是为了让每个服务之间可以互相通信。<br>Eureka Server为微服务的注册中心。谈到Spring Cloud Netflix，它是Spring Cloud的子项目之一，主要提供的模块包括：<br>服务发现（Eureka），断路器（Hystrix），智能路由（Zuul），客户端负载均衡（Ribbon）等。<br>Spring Cloud使用注解的方式提供了Eureka服务端（@EnableEurekaServer）和客户端（@EnableEurekaClient）。</p>
-<h2 id="路由网关"><a href="#路由网关" class="headerlink" title="路由网关"></a>路由网关</h2><p>路由网关的主要目的是为了让所有的微服务对外只有一个接口，我们只需访问一个网关地址，即可由网关将所有的请求代理<br>到不同的服务中。Spring Cloud是通过Zuul来实现的，支持自动路由映射到在Eureka Server上注册的服务。<br>Spring Cloud提供了注解@EnableZuulProxy来启用路由代理。</p>
-<h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>Spring Cloud提供了Ribbon和Feign作为客户端的负载均衡。在Spring Cloud下，使用Ribbon直接注入一个RestTemplate<br>对象即可，此RestTemplate已做好负载均衡的配置；而使用Feign只需定义个注解，有@FeignClient注解的接口，<br>然后使用@RequestMapping注解在方法上映射远程的REST服务，此方法也是做好了负载均衡配置。</p>
-<h2 id="路断器"><a href="#路断器" class="headerlink" title="路断器"></a>路断器</h2><p>断路器（Circuit Breaker）主要是为了解决当某个方法调用失败的时候，调用后备方法来替代失败的方法，<br>已达到容错／阻止级联错误的功能。Spring Cloud使用@EnableCircuitBreaker来启用断路器支持，<br>使用@HystrixCommand的fallbackMethod来指定后备方法。（@HystrixCommand(fallbackMethod=”fallbackOper”)）<br>Spring Cloud还提供了一个控制台来监控断路器的运行情况，通过@EnableHystrixDashboard注解开启。</p>
-<p>Spring Cloud依赖<br><img src="/2016/07/27/spring-Boot-Cloud2/spring_cloud.jpg" alt="spring_cloud" title="spring_cloud"></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/27/spring-Boot-Cloud2/" data-id="cis9n7n1z001qckottiiela14" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-spring-Boot-Cloud" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/07/27/spring-Boot-Cloud/" class="article-date">
-  <time datetime="2016-07-27T06:43:26.000Z" itemprop="datePublished">2016-07-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/27/spring-Boot-Cloud/">spring Boot Cloud 学习1</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Spring-简介"><a href="#Spring-简介" class="headerlink" title="Spring 简介"></a>Spring 简介</h1><img src="/2016/07/27/spring-Boot-Cloud/Spring.jpg" alt="Spring Project" title="Spring Project">
-<p>Spring IO platform:用于系统部署，是可集成的，构建现代化应用的版本平台，具体来说当你使用maven dependency引入spring jar包时它就在工作了。</p>
-<p>Spring Boot:旨在简化创建产品级的 Spring 应用和服务，简化了配置文件，使用嵌入式web服务器，含有诸多开箱即用微服务功能，可以和spring cloud联合部署。</p>
-<p>Spring Framework:即通常所说的spring 框架，是一个开源的Java/Java EE全功能栈应用程序框架，其它spring项目如spring boot也依赖于此框架。</p>
-<p>Spring Cloud：微服务工具包，为开发者提供了在分布式系统的配置管理、服务发现、断路器、智能路由、微代理、控制总线等开发工具包。</p>
-<p>Spring XD：是一种运行时环境（服务器软件，非开发框架），组合spring技术，如spring batch、spring boot、spring data，采集大数据并处理。</p>
-<p>Spring Data：是一个数据访问及操作的工具包，封装了很多种数据及数据库的访问相关技术，包括：jdbc、Redis、MongoDB、Neo4j等。</p>
-<p>Spring Batch：批处理框架，或说是批量任务执行管理器，功能包括任务调度、日志记录/跟踪等。</p>
-<p>Spring Security：是一个能够为基于Spring的企业应用系统提供声明式的安全访问控制解决方案的安全框架。</p>
-<p>Spring Integration：面向企业应用集成（EAI/ESB）的编程框架，支持的通信方式包括HTTP、FTP、TCP/UDP、JMS、RabbitMQ、Email等。</p>
-<p>Spring Social：一组工具包，一组连接社交服务API，如Twitter、Facebook、LinkedIn、GitHub等，有几十个。</p>
-<p>Spring AMQP：消息队列操作的工具包，主要是封装了RabbitMQ的操作。</p>
-<p>Spring HATEOAS：是一个用于支持实现超文本驱动的 REST Web 服务的开发库。</p>
-<p>Spring Mobile：是Spring MVC的扩展，用来简化手机上的Web应用开发。</p>
-<p>Spring for Android：是Spring框架的一个扩展，其主要目的在乎简化Android本地应用的开发，提供RestTemplate来访问Rest服务。</p>
-<p>Spring Web Flow：目标是成为管理Web应用页面流程的最佳方案，将页面跳转流程单独管理，并可配置。</p>
-<p>Spring LDAP：是一个用于操作LDAP的Java工具包，基于Spring的JdbcTemplate模式，简化LDAP访问。</p>
-<p>Spring Session：session管理的开发工具包，让你可以把session保存到redis等，进行集群化session管理。</p>
-<p>Spring Web Services：是基于Spring的Web服务框架，提供SOAP服务开发，允许通过多种方式创建Web服务。</p>
-<p>Spring Shell：提供交互式的Shell可让你使用简单的基于Spring的编程模型来开发命令，比如Spring Roo命令。</p>
-<p>Spring Roo：是一种Spring开发的辅助工具，使用命令行操作来生成自动化项目，操作非常类似于Rails。</p>
-<p>Spring Scala：为Scala语言编程提供的spring框架的封装（新的编程语言，Java平台的Scala于2003年底/2004年初发布）。</p>
-<p>Spring BlazeDS Integration：一个开发RIA工具包，可以集成Adobe Flex、BlazeDS、Spring以及Java技术创建RIA。</p>
-<p>Spring Loaded：用于实现java程序和web应用的热部署的开源工具。</p>
-<p>Spring REST Shell：可以调用Rest服务的命令行工具，敲命令行操作Rest服务。</p>
-        
-          <p class="article-more-link">
-            <a href="/2016/07/27/spring-Boot-Cloud/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/27/spring-Boot-Cloud/" data-id="cis9n7n0z001mckotvjfw27po" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/page/3/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/">__('next') &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/3/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -350,7 +392,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heroku/">Heroku</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异常处理/">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li></ul>
     </div>
   </div>
 
@@ -360,7 +402,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 10px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 16.67px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/日志/" style="font-size: 13.33px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a>
+      <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 10px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 16.67px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/日志/" style="font-size: 13.33px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a>
     </div>
   </div>
 
@@ -382,6 +424,14 @@
       <ul>
         
           <li>
+            <a href="/2016/08/29/使用heroku免费部署Java应用/">使用Heroku免费部署Java应用</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/28/Spring-Boot-中的统一异常处理/">Spring Boot 中的统一异常处理</a>
+          </li>
+        
+          <li>
             <a href="/2016/08/25/Spring-Cloud服务网关/">Spring Cloud服务网关</a>
           </li>
         
@@ -391,14 +441,6 @@
         
           <li>
             <a href="/2016/08/24/Spring-Cloud路断器/">Spring Cloud路断器</a>
-          </li>
-        
-          <li>
-            <a href="/2016/08/24/Spring-Cloud服务消费者/">Spring Cloud服务消费者</a>
-          </li>
-        
-          <li>
-            <a href="/2016/08/23/Spring-Cloud服务注册与发现/">Spring Cloud服务注册与发现</a>
           </li>
         
       </ul>

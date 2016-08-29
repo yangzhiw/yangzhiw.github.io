@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Spring Boot 中的统一异常处理 | 橘子不酸的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Spring Boot中默认带了error的映射，但是这个错误页面显示给用户并不是很友好。
+统一异常处理通过使用@ControllerAdvice定义统一异常处理的类，而不是在每个Controller中逐个定义。@ExceptionHandler用来定义函数针对的函数类型，最后将Exception对象和请求URL映射到URL中。
+1234567891011121314@ControllerAdvi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Boot 中的统一异常处理">
+<meta property="og:url" content="https://yangzhiw.github.io/2016/08/28/Spring-Boot-中的统一异常处理/index.html">
+<meta property="og:site_name" content="橘子不酸的博客">
+<meta property="og:description" content="Spring Boot中默认带了error的映射，但是这个错误页面显示给用户并不是很友好。
+统一异常处理通过使用@ControllerAdvice定义统一异常处理的类，而不是在每个Controller中逐个定义。@ExceptionHandler用来定义函数针对的函数类型，最后将Exception对象和请求URL映射到URL中。
+1234567891011121314@ControllerAdvi">
+<meta property="og:updated_time" content="2016-08-28T06:13:38.666Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring Boot 中的统一异常处理">
+<meta name="twitter:description" content="Spring Boot中默认带了error的映射，但是这个错误页面显示给用户并不是很友好。
+统一异常处理通过使用@ControllerAdvice定义统一异常处理的类，而不是在每个Controller中逐个定义。@ExceptionHandler用来定义函数针对的函数类型，最后将Exception对象和请求URL映射到URL中。
+1234567891011121314@ControllerAdvi">
+  
+    <link rel="alternate" href="/atom.xml" title="橘子不酸的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">橘子不酸的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一天进步一点</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://yangzhiw.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Spring-Boot-中的统一异常处理" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/28/Spring-Boot-中的统一异常处理/" class="article-date">
+  <time datetime="2016-08-28T03:02:30.000Z" itemprop="datePublished">2016-08-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Spring Boot 中的统一异常处理
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Spring Boot中默认带了error的映射，但是这个错误页面显示给用户并不是很友好。</p>
+<h1 id="统一异常处理"><a href="#统一异常处理" class="headerlink" title="统一异常处理"></a>统一异常处理</h1><h2 id="通过使用-ControllerAdvice定义统一异常处理的类，而不是在每个Controller中逐个定义。"><a href="#通过使用-ControllerAdvice定义统一异常处理的类，而不是在每个Controller中逐个定义。" class="headerlink" title="通过使用@ControllerAdvice定义统一异常处理的类，而不是在每个Controller中逐个定义。"></a>通过使用@ControllerAdvice定义统一异常处理的类，而不是在每个Controller中逐个定义。</h2><p>@ExceptionHandler用来定义函数针对的函数类型，最后将Exception对象和请求URL映射到URL中。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">@ControllerAdvice</div><div class="line">class ExceptionTranslator &#123;</div><div class="line"></div><div class="line">    public static final String DEFAULT_ERROR_VIEW = <span class="string">"error"</span>;</div><div class="line"></div><div class="line">    @ExceptionHandler(value = Exception.class)</div><div class="line">    public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception &#123;</div><div class="line">        ModelAndView mav = new ModelAndView();</div><div class="line">        mav.addObject(<span class="string">"exception"</span>, e);</div><div class="line">        mav.addObject(<span class="string">"url"</span>, req.getRequestURL());</div><div class="line">        mav.setViewName(DEFAULT_ERROR_VIEW);</div><div class="line">        return mav;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="实现error-html页面展示"><a href="#实现error-html页面展示" class="headerlink" title="实现error.html页面展示"></a>实现error.html页面展示</h2><p>在templates目录下创建error.html。<br>例如：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html<span class="string">&gt;  </span></div><div class="line">&lt;html&gt;  </div><div class="line">&lt;head lang="en"&gt;  </div><div class="line">    &lt;meta charset="UTF-8" /&gt;</div><div class="line">    &lt;title&gt;统一异常处理&lt;/title&gt;</div><div class="line">&lt;/head&gt;  </div><div class="line">&lt;body&gt;  </div><div class="line">    &lt;h1&gt;Error Handler&lt;/h1&gt;</div><div class="line">    &lt;div th:text="$&#123;url&#125;"&gt;&lt;/div&gt;</div><div class="line">    &lt;div th:text="$&#123;exception.message&#125;"&gt;&lt;/div&gt;</div><div class="line">&lt;/body&gt;  </div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
+<h1 id="返回使用Json格式"><a href="#返回使用Json格式" class="headerlink" title="返回使用Json格式"></a>返回使用Json格式</h1><p>只需在@ExceptionHandler之后加入@ResponseBody，就能让处理函数return的内容转换为JSON格式</p>
+<h2 id="创建一个JSON返回对象，如："><a href="#创建一个JSON返回对象，如：" class="headerlink" title="创建一个JSON返回对象，如："></a>创建一个JSON返回对象，如：</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public class ErrorDTO implements Serializable &#123;</div><div class="line"></div><div class="line">    private static final long serialVersionUID = <span class="number">1</span>L;</div><div class="line"></div><div class="line">    private final String message;</div><div class="line">    private final String description;</div><div class="line"></div><div class="line">    private List&lt;FieldErrorDTO&gt; fieldErrors;</div><div class="line"></div><div class="line">    //getter和setter省略</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="可以为指定的Exception添加异常处理"><a href="#可以为指定的Exception添加异常处理" class="headerlink" title="可以为指定的Exception添加异常处理"></a>可以为指定的Exception添加异常处理</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">@ExceptionHandler(ConcurrencyFailureException.class)</div><div class="line">  @ResponseStatus(HttpStatus.CONFLICT)</div><div class="line">  @ResponseBody</div><div class="line">  public ErrorDTO processConcurencyError(ConcurrencyFailureException ex) &#123;</div><div class="line">      return new ErrorDTO(ErrorConstants.ERR_CONCURRENCY_FAILURE);</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>ErrorConstants.ERR_CONCURRENCY_FAILURE 是定义的一个异常信息。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/28/Spring-Boot-中的统一异常处理/" data-id="cisfm40gj0005o4otk3dspzry" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异常处理/">异常处理</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/08/29/使用heroku免费部署Java应用/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          使用Heroku免费部署Java应用
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/08/25/Spring-Cloud服务网关/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Spring Cloud服务网关</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heroku/">Heroku</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异常处理/">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 10px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 16.67px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/日志/" style="font-size: 13.33px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/08/29/使用heroku免费部署Java应用/">使用Heroku免费部署Java应用</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/28/Spring-Boot-中的统一异常处理/">Spring Boot 中的统一异常处理</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/25/Spring-Cloud服务网关/">Spring Cloud服务网关</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/24/Spring-Cloud分布式配置/">Spring Cloud分布式配置</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/24/Spring-Cloud路断器/">Spring Cloud路断器</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
