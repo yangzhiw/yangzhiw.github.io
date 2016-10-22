@@ -68,6 +68,138 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Kafkar入门" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/23/Kafkar入门/" class="article-date">
+  <time datetime="2016-08-23T03:25:06.000Z" itemprop="datePublished">2016-08-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/23/Kafkar入门/">Kafka入门</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>Kafka是一个分布式的、可分区的、可复制的消息系统。它提供了普通消息系统的功能，但具有自己独特的设计。<br>首先让我们看几个基本的消息系统术语：<br>Kafka将消息以topic为单位进行归纳。<br>将向Kafka topic发布消息的程序成为producers.<br>将预订topics并消费消息的程序成为consumer.<br>Kafka以集群的方式运行，可以由一个或多个服务组成，每个服务叫做一个broker.<br><img src="/2016/08/23/Kafkar入门/kafka1.jpg" alt="kafak架构" title="kafak架构"></p>
+<h2 id="分布式"><a href="#分布式" class="headerlink" title="分布式"></a>分布式</h2><p>每个分区在Kafka集群的若干服务中都有副本，这样这些持有副本的服务可以共同处理数据和请求，副本数量是可以配置的。副本使Kafka具备了容错能力。<br>每个分区都由一个服务器作为“leader”，零或若干服务器作为“followers”,leader负责处理消息的读和写，followers则去复制leader.如果leader down了，<br>followers中的一台则会自动成为leader。集群中的每个服务都会同时扮演两个角色：<br>作为它所持有的一部分分区的leader，同时作为其他分区的followers，这样集群就会据有较好的负载均衡。</p>
+<h2 id="Producers"><a href="#Producers" class="headerlink" title="Producers"></a>Producers</h2><p>Producer将消息发布到它指定的topic中,并负责决定发布到哪个分区。通常简单的由负载均衡机制随机选择分区，但也可以通过特定的分区函数选择分区。<br>使用的更多的是第二种。</p>
+<h2 id="Consumers"><a href="#Consumers" class="headerlink" title="Consumers"></a>Consumers</h2><p>发布消息通常有两种模式：队列模式（queuing）和发布-订阅模式(publish-subscribe)。队列模式中，consumers可以同时从服务端读取<br>消息，每个消息只被其中一个consumer读到；发布-订阅模式中消息被广播到所有的consumer中。Consumers可以加入一个consumer<br>组，共同竞争一个topic，topic中的消息将被分发到组中的一个成员中。同一组中的consumer可以在不同的程序中，也可以在不同的<br>机器上。如果所有的consumer都在一个组中，这就成为了传统的队列模式，在各consumer中实现负载均衡。如果所有的consumer<br>不在不同的组中，这就成为了发布-订阅模式，所有的消息都被分发到所有的consumer中。更常见的是，每个topic都有若干数量<br>的consumer组，每个组都是一个逻辑上的“订阅者”，为了容错和更好的稳定性，每个组由若干consumer组成。这其实就是一个<br>发布-订阅模式，只不过订阅者是个组而不是单个consumer。<br><img src="/2016/08/23/Kafkar入门/kafka2.jpg" alt="kafakx消费组" title="kafakx消费组"><br>由两个机器组成的集群拥有4个分区 (P0-P3) 2个consumer组. A组有两个consumerB组有4个<br>相比传统的消息系统，Kafka可以很好的保证有序性。<br>传统的队列在服务器上保存有序的消息，如果多个consumers同时从这个服务器消费消息，服务器就会以消息存储的顺序向<br>consumer分发消息。虽然服务器按顺序发布消息，但是消息是被异步的分发到各consumer上，所以当消息到达时可能已经失去了<br>原来的顺序，这意味着并发消费将导致顺序错乱。为了避免故障，这样的消息系统通常使用“专用consumer”的概念，其实就是<br>只允许一个消费者消费消息，当然这就意味着失去了并发性。<br>在这方面Kafka做的更好，通过分区的概念，Kafka可以在多个consumer组并发的情况下提供较好的有序性和负载均衡。<br>将每个分区分只分发给一个consumer组，这样一个分区就只被这个组的一个consumer消费，就可以顺序的消费这个分区的消息。<br>为有多个分区，依然可以在多个consumer组之间进行负载均衡。注意consumer组的数量不能多于分区的数量，也就是有多少<br>分区就允许多少并发消费。<br>Kafka只能保证一个分区之内消息的有序性，在不同的分区之间是不可以的，这已经可以满足大部分应用的需求。<br>如果需要topic中所有消息的有序性，那就只能让这个topic只有一个分区，当然也就只有一个consumer组消费它。</p>
+<h1 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h1><h2 id="下载并解压"><a href="#下载并解压" class="headerlink" title="下载并解压"></a>下载并解压</h2><p>从<a href="http://kafka.apache.org/downloads.html">官网</a>选择下载最新的二进制文件<br>解压<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">tar -vxzf kafka_2<span class="number">.11</span><span class="bullet">-0.10</span><span class="number">.0</span><span class="number">.1</span>.tgz</div><div class="line">cd kafka_2<span class="number">.11</span><span class="bullet">-0.10</span><span class="number">.0</span><span class="number">.1</span></div></pre></td></tr></table></figure></p>
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><p>1.启动zookeeper<br>2.启动kafka<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bin/kafka-server-start.sh config/server.properties</div></pre></td></tr></table></figure></p>
+<p>3.创建topic<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">使用kafka-topics.sh 创建单分区单副本的topic test：</div><div class="line">bin/kafka-topics.sh --create --zookeeper localhost:<span class="number">2181</span> --replication-factor <span class="number">1</span> --partitions <span class="number">1</span> --topic test</div><div class="line">查看</div><div class="line">bin/kafka-topics.sh --list --zookeeper localhost:<span class="number">2181</span></div><div class="line">test</div></pre></td></tr></table></figure></p>
+<p>4.产生消息<br>使用kafka-console-producer.sh 发送消息：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">bin/kafka-console-producer.sh --broker-list localhost:<span class="number">9092</span> --topic test </div><div class="line">Hello world！</div><div class="line">Hello Kafka！</div></pre></td></tr></table></figure></p>
+<p>按Ctrl+C退出<br>5.消费消息<br>使用kafka-console-consumer.sh 接收消息并在终端打印：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">bin/kafka-console-consumer.sh --zookeeper localhost:<span class="number">2181</span> --topic test --from-beginning</div><div class="line">Hello world!</div><div class="line">Hello Kafka!</div></pre></td></tr></table></figure></p>
+        
+          <p class="article-more-link">
+            <a href="/2016/08/23/Kafkar入门/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/23/Kafkar入门/" data-id="cit8lan2s000hcwotziahnnju" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Kafka/">Kafka</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-使用Redis做集中式缓存" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/19/使用Redis做集中式缓存/" class="article-date">
+  <time datetime="2016-08-19T06:08:30.000Z" itemprop="datePublished">2016-08-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/19/使用Redis做集中式缓存/">使用Redis做集中式缓存</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/19/使用Redis做集中式缓存/" data-id="cit8lan750017cwot3x8go80n" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="spring-Boot中使用log4j记录日志" class="article article-type-spring" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/19/Boot中使用log4j记录日志/" class="article-date">
+  <time datetime="2016-08-19T03:07:43.000Z" itemprop="datePublished">2016-08-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/19/Boot中使用log4j记录日志/">Sporing Boot中使用log4j记录日志</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="引入log4j依赖"><a href="#引入log4j依赖" class="headerlink" title="引入log4j依赖"></a>引入log4j依赖</h1><p>在创建Spring Boot工程时，我们引入了spring-boot-starter，其中包含了spring-boot-starter-logging，该依赖内容就是<br>Spring Boot默认的日志框架Logback，所以我们在引入log4j之前，需要先排除该包的依赖，再引入log4j的依赖，就像下面这样：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&lt;dependency<span class="string">&gt;  </span></div><div class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-boot-starter&lt;/artifactId&gt;</div><div class="line">    &lt;exclusions&gt;</div><div class="line">        &lt;exclusion&gt; </div><div class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;spring-boot-starter-logging&lt;/artifactId&gt;</div><div class="line">        &lt;/exclusion&gt;</div><div class="line">    &lt;/exclusions&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line"></div><div class="line">&lt;dependency&gt;  </div><div class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-boot-starter-log4j&lt;/artifactId&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
+<h1 id="配置log4j-properties"><a href="#配置log4j-properties" class="headerlink" title="配置log4j.properties"></a>配置log4j.properties</h1><p>在引入了log4j依赖之后，只需要在src/main/resources目录下加入log4j.properties配置文件，就可以开始对应用的日志进行配置使用。</p>
+<h2 id="控制台输出"><a href="#控制台输出" class="headerlink" title="控制台输出"></a>控制台输出</h2><p>通过如下配置，设定root日志的输出级别为INFO，appender为控制台输出stdout</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># LOG4J配置</span></div><div class="line">log4j.rootCategory=INFO, stdout</div><div class="line"></div><div class="line"><span class="comment"># 控制台输出</span></div><div class="line">	log4j.appender.stdout=org.apache.log4j.ConsoleAppender  </div><div class="line">	log4j.appender.stdout.layout=org.apache.log4j.PatternLayout  </div><div class="line">	log4j.appender.stdout.layout.ConversionPattern=%d&#123;yyyy-MM-dd HH:mm:ss,SSS&#125; %<span class="number">5</span>p %c&#123;<span class="number">1</span>&#125;:%L - %m%n</div></pre></td></tr></table></figure>
+<h2 id="输出到文件"><a href="#输出到文件" class="headerlink" title="输出到文件"></a>输出到文件</h2><p>在开发环境，我们只是输出到控制台没有问题，但是到了生产或测试环境，或许持久化日志内容，方便追溯问题原因。<br>可以通过添加如下的appender内容，按天输出到不同的文件中去，同时还需要为log4j.rootCategory添加名为file的appender，<br>这样root日志就可以输出到logs/all.log文件中了。<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#</span></div><div class="line">log4j.rootCategory=INFO, stdout, file</div><div class="line"></div><div class="line"><span class="comment"># root日志输出</span></div><div class="line">log4j.appender.file=org.apache.log4j.DailyRollingFileAppender  </div><div class="line">log4j.appender.file.file=logs/all.log  </div><div class="line">log4j.appender.file.DatePattern=<span class="string">'.'</span>yyyy-MM-dd  </div><div class="line">log4j.appender.file.layout=org.apache.log4j.PatternLayout  </div><div class="line">log4j.appender.file.layout.ConversionPattern=%d&#123;yyyy-MM-dd HH:mm:ss,SSS&#125; %<span class="number">5</span>p %c&#123;<span class="number">1</span>&#125;:%L - %m%n</div></pre></td></tr></table></figure></p>
+<h2 id="分类输出"><a href="#分类输出" class="headerlink" title="分类输出"></a>分类输出</h2><p>1.可以按不同package进行输出。通过定义输出到logs/my.log的appender，并对com.didispace包下的日志级别设定<br>为DEBUG级别、appender设置为输出到logs/my.log的名为didifile的appender。<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># com.juzi包下的日志配置</span></div><div class="line">log4j.category.com.juzi=DEBUG, didifile</div><div class="line"></div><div class="line"><span class="comment"># com.didispace下的日志输出</span></div><div class="line">log4j.appender.didifile=org.apache.log4j.DailyRollingFileAppender  </div><div class="line">log4j.appender.didifile.file=logs/my.log  </div><div class="line">log4j.appender.didifile.DatePattern=<span class="string">'.'</span>yyyy-MM-dd  </div><div class="line">log4j.appender.didifile.layout=org.apache.log4j.PatternLayout  </div><div class="line">log4j.appender.didifile.layout.ConversionPattern=%d&#123;yyyy-MM-dd HH:mm:ss,SSS&#125; %<span class="number">5</span>p %c&#123;<span class="number">1</span>&#125;:%L ---- %m%n</div></pre></td></tr></table></figure></p>
+<p>可以对不同级别进行分类，比如对ERROR级别输出到特定的日志文件中，具体配置可以如下。<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">og4j.logger.error=errorfile  </div><div class="line"><span class="comment"># error日志输出</span></div><div class="line">log4j.appender.errorfile=org.apache.log4j.DailyRollingFileAppender  </div><div class="line">log4j.appender.errorfile.file=logs/error.log  </div><div class="line">log4j.appender.errorfile.DatePattern=<span class="string">'.'</span>yyyy-MM-dd  </div><div class="line">log4j.appender.errorfile.Threshold = ERROR  </div><div class="line">log4j.appender.errorfile.layout=org.apache.log4j.PatternLayout  </div><div class="line">log4j.appender.errorfile.layout.ConversionPattern=%d&#123;yyyy-MM-dd HH:mm:ss,SSS&#125; %<span class="number">5</span>p %c&#123;<span class="number">1</span>&#125;:%L - %m%n</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/19/Boot中使用log4j记录日志/" data-id="cit8lamvv0005cwot67wk24yn" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/log4j/">log4j</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/日志/">日志</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="spring-Boot日志管理" class="article article-type-spring" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/08/19/Boot日志管理/" class="article-date">
@@ -116,7 +248,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/19/Boot日志管理/" data-id="cisfm40fi0001o4otka45acb6" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/19/Boot日志管理/" data-id="cit8lamu80000cwotf0ktdjan" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/日志/">日志</a></li></ul>
@@ -168,132 +300,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/18/EnableJpaRepositories配置详解/" data-id="cisfm40i5000to4otx71niiki" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/18/EnableJpaRepositories配置详解/" data-id="cit8lan02000dcwotil3smwho" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li></ul>
 
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="spring-Security进行安全控制" class="article article-type-spring" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/17/Security进行安全控制/" class="article-date">
-  <time datetime="2016-08-17T07:50:18.000Z" itemprop="datePublished">2016-08-17</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/17/Security进行安全控制/">Spring Boot中使用Spring Security进行安全控制</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/17/Security进行安全控制/" data-id="cisfm40gq0007o4otrkjuedmv" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-JavaWeb基础" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/16/JavaWeb基础/" class="article-date">
-  <time datetime="2016-08-16T06:57:28.000Z" itemprop="datePublished">2016-08-16</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/16/JavaWeb基础/">JavaWeb基础</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="1，Servlet-生命周期、工作原理"><a href="#1，Servlet-生命周期、工作原理" class="headerlink" title="1，Servlet 生命周期、工作原理"></a>1，Servlet 生命周期、工作原理</h1><p><a href="http://www.cnblogs.com/xuekyo/archive/2013/02/24/2924072.html" target="_blank" rel="external">点我跳转</a></p>
-<h1 id="2，JSP和Servlet的区别"><a href="#2，JSP和Servlet的区别" class="headerlink" title="2，JSP和Servlet的区别"></a>2，JSP和Servlet的区别</h1><p>jsp经过编译后变成类servlet，<br>jsp由html代码和jsp标签组成，擅长页面显示，servlet擅长流程控制；<br>JSP中嵌入JAVA代码，而Servlet中嵌入HTML代码。</p>
-<h1 id="3，JSP的动态include和静态include"><a href="#3，JSP的动态include和静态include" class="headerlink" title="3，JSP的动态include和静态include"></a>3，JSP的动态include和静态include</h1><p>(1)动态include用jsp:include动作实现，如<jsp:include page="abc.jsp" flush="true">，<br>它总是会检查所含文件中的变化，适合用于包含动态页面，并且可以带参数。会先解析所要包含的页面，解析后和主页面合并一起显示，即先编译后包含。<br>(2)静态include用include伪码实现，不会检查所含文件的变化，适用于包含静态页面，如&lt;%@ include file=”qq.htm” %&gt;，<br>不会提前解析所要包含的页面，先把要显示的页面包含进来，然后统一编译，即先包含后编译。</jsp:include></p>
-<h1 id="4，设计模式的6大原则"><a href="#4，设计模式的6大原则" class="headerlink" title="4，设计模式的6大原则"></a>4，设计模式的6大原则</h1><p>(1)单一职责原则<br>    可以降低类的复杂度，一个类只负责一项职责，其逻辑肯定要比负责多项职责简单的多；<br>    提高类的可读性，提高系统的可维护性；<br>    变更引起的风险降低，变更是必然的，如果单一职责原则遵守的好，当修改一个功能时，可以显著降低对其他功能的影响。</p>
-<p>(2)里氏替换原则<br>    子类可以实现父类的抽象方法，但不能覆盖父类的非抽象方法。<br>    子类中可以增加自己特有的方法。<br>    当子类的方法重载父类的方法时，方法的前置条件（即方法的形参）要比父类方法的输入参数更宽松。<br>    当子类的方法实现父类的抽象方法时，方法的后置条件（即方法的返回值）要比父类更严格。</p>
-<p>(3)依赖倒置原则<br>定义：高层模块不应该依赖低层模块，二者都应该依赖其抽象；抽象不应该依赖细节；细节应该依赖抽象。<br>传递依赖关系的三种关系：<br>    接口传递<br>    构造方法传递<br>    setter方法传递<br>(4)接口隔离原则<br>定义：客户端不应该依赖它不需要的接口；一个类对另一个类的依赖应该建立在最小的接口上。<br>接口尽量小，但是要有限度。对接口进行细化可以提高程序设计灵活性是不挣的事实，但是如果过小，<br>    则会造成接口数量过多，使设计复杂化。所以一定要适度。<br>为依赖接口的类定制服务，只暴露给调用的类它需要的方法，它不需要的方法则隐藏起来。只有专注地为一个模块提供定制服务，<br>    才能建立最小的依赖关系。<br>提高内聚，减少对外交互。使接口用最少的方法去完成最多的事情。<br>(5)迪米特法则<br>定义：一个对象应该对其他对象保持最少的了解。<br>(6)开闭原则<br>定义：一个软件实体如类、模块和函数应该对扩展开放，对修改关闭。</p>
-<h1 id="4，Hibernate缓存：一级缓存和二级缓存"><a href="#4，Hibernate缓存：一级缓存和二级缓存" class="headerlink" title="4，Hibernate缓存：一级缓存和二级缓存"></a>4，Hibernate缓存：一级缓存和二级缓存</h1><p>Hibernate缓存的分类：<br>(1),Session缓存（又称事物缓存），Hibernate内置的，不能卸载；<br>缓存范围：缓存只能被当前Session对象访问。缓存的生命周期依赖于Session的生命周期，当Session被关闭后，缓存也就结束生命周期。<br>(2)SessionFactory缓存（又称作应用缓存）：使用第三方插件，可插拔.<br>缓存范围：缓存被应用范围内的所有session共享,不同的Session可以共享。这些session有可能是并发访问缓存，因此必须对缓存进行更新。<br>        缓存的生命周期依赖于应用的生命周期，应用结束时，缓存也就结束了生命周期，二级缓存存在于应用程序范围。</p>
-<p>一级缓存：<br>(1). save()。当session对象调用save()方法保存一个对象后，该对象会被放入到session的缓存中。<br>(2). get()和load()。当session对象调用get()或load()方法从数据库取出一个对象后，该对象也会被放入到session的缓存中。<br>(3). 使用HQL和QBC等从数据库中查询数据。<br>数据从缓存中清除：<br>(1). evit()将指定的持久化对象从缓存中清除，释放对象所占用的内存资源，指定对象从持久化状态变为脱管状态，从而成为游离对象。<br>(2). clear()将缓存中的所有持久化对象清除，释放其占用的内存资源。<br>其他缓存操作：<br>(1). contains()判断指定的对象是否存在于缓存中。<br>(2). flush()刷新缓存区的内容，使之与数据库数据保持同步。</p>
-<p>二级缓存：<br>定义：SessionFactory级别的缓存，可以跨越Session存在，可以被多个Session所共享。<br>实现原理：<br>Hibernate如何将数据库中的数据放入到二级缓存中？注意，你可以把缓存看做是一个Map对象，<br>它的Key用于存储对象OID，Value用于存储POJO。首先，当我们使用Hibernate从数据库中查询出数据，<br>获取检索的数据后，Hibernate将检索出来的对象的OID放入缓存中key 中，然后将具体的POJO放入value中，<br>等待下一次再次向数据查询数据时，Hibernate根据你提供的OID先检索一级缓存，若有且配置了二级缓存，则检索二级缓存，<br>如果还没有则才向数据库发送SQL语句，然后将查询出来的对象放入缓存中。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/16/JavaWeb基础/" data-id="cisfm40fu0002o4othkouv3yi" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-计算机网络知识复习" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/12/计算机网络知识复习/" class="article-date">
-  <time datetime="2016-08-12T07:57:58.000Z" itemprop="datePublished">2016-08-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/12/计算机网络知识复习/">计算机网络知识复习</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/12/计算机网络知识复习/" data-id="cisfm40jq001mo4otjr6w8rbp" class="article-share-link">Share</a>
-      
-      
     </footer>
   </div>
   
@@ -317,7 +328,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heroku/">Heroku</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异常处理/">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Codis/">Codis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heroku/">Heroku</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java基础/">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异常处理/">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/拦截器/">拦截器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li></ul>
     </div>
   </div>
 
@@ -327,7 +338,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 10px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 16.67px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/日志/" style="font-size: 13.33px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a>
+      <a href="/tags/Codis/" style="font-size: 10px;">Codis</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 10px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 16.67px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/拦截器/" style="font-size: 10px;">拦截器</a> <a href="/tags/日志/" style="font-size: 13.33px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a>
     </div>
   </div>
 
@@ -336,7 +347,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
     </div>
   </div>
 
@@ -349,23 +360,23 @@
       <ul>
         
           <li>
+            <a href="/2016/09/18/Spring-MVC拦截器/">Spring MVC拦截器</a>
+          </li>
+        
+          <li>
+            <a href="/2016/09/18/codis 配置/">codis 配置</a>
+          </li>
+        
+          <li>
+            <a href="/2016/09/07/二叉树的遍历/">二叉树的遍历</a>
+          </li>
+        
+          <li>
             <a href="/2016/08/29/使用heroku免费部署Java应用/">使用Heroku免费部署Java应用</a>
           </li>
         
           <li>
             <a href="/2016/08/28/Spring-Boot-中的统一异常处理/">Spring Boot 中的统一异常处理</a>
-          </li>
-        
-          <li>
-            <a href="/2016/08/25/Spring-Cloud服务网关/">Spring Cloud服务网关</a>
-          </li>
-        
-          <li>
-            <a href="/2016/08/24/Spring-Cloud分布式配置/">Spring Cloud分布式配置</a>
-          </li>
-        
-          <li>
-            <a href="/2016/08/24/Spring-Cloud路断器/">Spring Cloud路断器</a>
           </li>
         
       </ul>

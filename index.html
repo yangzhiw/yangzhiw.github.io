@@ -68,6 +68,137 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Spring-MVC拦截器" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/09/18/Spring-MVC拦截器/" class="article-date">
+  <time datetime="2016-09-18T11:45:36.000Z" itemprop="datePublished">2016-09-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/09/18/Spring-MVC拦截器/">Spring MVC拦截器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h1><p>记录web请求的相关日志，可以做信息监控，统计，分析<br>检查web的访问权限，例如发现用户没有登录后，重定向到登录页面。<br>打开关闭数据库连接–预处理打开，后处理关闭，可以避免所有的业务方法中都编写相似的类。</p>
+<h1 id="Spring-MVC的请求流程"><a href="#Spring-MVC的请求流程" class="headerlink" title="Spring MVC的请求流程"></a>Spring MVC的请求流程</h1><img src="/2016/09/18/Spring-MVC拦截器/spring-mvc1.jpg" alt="Spring-MVC请求流程" title="Spring-MVC请求流程">
+<h1 id="HandlerInterceptor接口"><a href="#HandlerInterceptor接口" class="headerlink" title="HandlerInterceptor接口"></a>HandlerInterceptor接口</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public interface HandlerInterceptor &#123;</div><div class="line">    boolean preHandle(HttpServletRequest request, </div><div class="line">                      HttpServletResponse response, </div><div class="line">                      Object handler) throws Exception;</div><div class="line"></div><div class="line">    void postHandle(HttpServletRequest request, </div><div class="line">                    HttpServletResponse response, </div><div class="line">                    Object handler, ModelAndView modelAndView) throws Exception;</div><div class="line"></div><div class="line">    void afterCompletion(HttpServletRequest request, </div><div class="line">                         HttpServletResponse response, </div><div class="line">                         Object handler, Exception ex) throws Exception;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>1.preHandle()：预处理回调方法，若方法返回值为true，请求继续（调用下一个拦截器或处理器方法）；若方法返回值为false，请求处理流程中断，不会继续调用其他的拦截器或处理器方法，此时需要通过response产生响应；<br>2.postHandle()：后处理回调方法，实现处理器的后处理（但在渲染视图之前），此时可以通过modelAndView对模型数据进行处理或对视图进行处理<br>3.afterCompletion()：整个请求处理完毕回调方法，即在视图渲染完毕时调用</p>
+<h1 id="实例：用户登录检查"><a href="#实例：用户登录检查" class="headerlink" title="实例：用户登录检查"></a>实例：用户登录检查</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public class LoginInterceptor extends HandlerInterceptorAdapter &#123;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public boolean preHandle(HttpServletRequest request,</div><div class="line">                             HttpServletResponse response,</div><div class="line">                             Object handler) throws Exception &#123;</div><div class="line">        if (request.getSession().getAttribute(Constants.USER_SESSION_ATTR) != <span class="literal">null</span>) &#123;</div><div class="line">            return <span class="literal">true</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        response.sendRedirect(<span class="string">"/"</span>);</div><div class="line">        return <span class="literal">false</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="配置Interceptor"><a href="#配置Interceptor" class="headerlink" title="配置Interceptor"></a>配置Interceptor</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">@Configuration</div><div class="line">public class WebMvcConfig extends WebMvcConfigurerAdapter &#123;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void addInterceptors(InterceptorRegistry registry) &#123;</div><div class="line">        registry.addInterceptor(new LoginInterceptor())</div><div class="line">                .addPathPatterns(<span class="string">"/**"</span>)</div><div class="line">                .excludePathPatterns(<span class="string">"/account/*"</span>).excludePathPatterns(<span class="string">"/"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/09/18/Spring-MVC拦截器/" data-id="cit8lan36000jcwotrcstkkn2" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/拦截器/">拦截器</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-codis 配置" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/09/18/codis 配置/" class="article-date">
+  <time datetime="2016-09-18T01:54:12.000Z" itemprop="datePublished">2016-09-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/09/18/codis 配置/">codis 配置</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>@Configuration<br>public class CodisConfiguration {<br>    @Value(“${codis.zookeeper.clients}”)<br>    private String zkClients;<br>    @Value(“${codis.zookeeper.proxyDir}”)<br>    private String zkDir;<br>    @Value(“${codis.poolConfig.maxIdle}”)<br>    private int maxIdle;<br>    @Value(“${codis.poolConfig.maxTotal}”)<br>    private int maxTotal;</p>
+<pre><code>@Bean
+public JedisResourcePool jedisResourcePool() {
+    JedisPoolConfig poolConfig = new JedisPoolConfig();
+    poolConfig.setMaxIdle(maxIdle);
+    poolConfig.setMaxTotal(maxTotal);
+    poolConfig.setTestOnBorrow(true);
+    return RoundRobinJedisPool.create().curatorClient(zkClients, 30000).zkProxyDir(zkDir)
+            .poolConfig(poolConfig).build();
+}
+</code></pre><p>}</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/09/18/codis 配置/" data-id="cit8lan44000ocwothnxa03cj" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Codis/">Codis</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-二叉树的遍历" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/09/07/二叉树的遍历/" class="article-date">
+  <time datetime="2016-09-07T13:05:13.948Z" itemprop="datePublished">2016-09-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/09/07/二叉树的遍历/">二叉树的遍历</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="中序遍历"><a href="#中序遍历" class="headerlink" title="中序遍历"></a>中序遍历</h1><p>从树的根节点开始，沿着其左孩子域向下移动，直到某一节点再无左节点，访问这个最左边的节点，接下来再从此节点的右孩子<br>开始进行中序遍历，当右子树遍历完了以后，退回到上一层的未访问节点继续二叉树遍历，直到书中所有节点被访问到为止。</p>
+<h1 id="先序遍历"><a href="#先序遍历" class="headerlink" title="先序遍历"></a>先序遍历</h1><p>对节点的访问时在其左、右子树之前进行的。遍历是从根节点开始的，遇到每个节点时，遍历过程为：<br>访问根节点<br>先序遍历其左子树<br>先序遍历其右子树</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/09/07/二叉树的遍历/" data-id="cit8lan6o0015cwotj7sjcww5" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-使用heroku免费部署Java应用" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/08/29/使用heroku免费部署Java应用/" class="article-date">
@@ -117,7 +248,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/29/使用heroku免费部署Java应用/" data-id="cisfm40jm001ho4ot4snbtlwv" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/29/使用heroku免费部署Java应用/" data-id="cit8lan8m001fcwotw3rsxaq3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Heroku/">Heroku</a></li></ul>
@@ -163,170 +294,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/28/Spring-Boot-中的统一异常处理/" data-id="cisfm40gj0005o4otk3dspzry" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/28/Spring-Boot-中的统一异常处理/" data-id="cit8lamxe0009cwotb65wweeq" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异常处理/">异常处理</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Spring-Cloud服务网关" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/25/Spring-Cloud服务网关/" class="article-date">
-  <time datetime="2016-08-25T01:51:07.000Z" itemprop="datePublished">2016-08-25</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/25/Spring-Cloud服务网关/">Spring Cloud服务网关</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>常用的微服务架构<br><img src="/2016/08/25/Spring-Cloud服务网关/zuul.jpg" alt="微服务架构" title="微服务架构"></p>
-<blockquote>
-<p>种种架构的不足就是缺少权限控制， 现在我们需要增加的就是服务网关了，<br>服务网关是微服务架构中一个不可或缺的部分。通过服务网关统一向外系统提供REST API的过程中，除了具备服务路由、<br>均衡负载功能之外，它还具备了权限控制等功能。Spring Cloud Netflix中的Zuul就担任了这样的一个角色，<br>为微服务架构提供了前门保护的作用，同时将权限控制这些较重的非业务逻辑内容迁移到服务路由层面，<br>使得服务集群主体能够具备更高的可复用性和可测试性。</p>
-</blockquote>
-<p>下面我们通过实例例子来使用一下Zuul来作为服务的路有功能</p>
-<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>在使用Zuul之前，我们先构建一个服务注册中心、以及两个简单的服务，比如：我构建了一个simple-service，<br>一个simple-service1。然后启动eureka-server和这两个服务。<br>通过访问eureka-server，我们可以看到simple-service和simple-service1已经注册到了服务中心。</p>
-<h1 id="开始使用Zuul"><a href="#开始使用Zuul" class="headerlink" title="开始使用Zuul"></a>开始使用Zuul</h1><p>引入依赖spring-cloud-starter-zuul、spring-cloud-starter-eureka，如果不是通过指定serviceId的方式，eureka依赖不需要，<br>但是为了对服务集群细节的透明性，还是用serviceId来避免直接引用url的方式吧。</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">&lt;dependency<span class="string">&gt;  </span></div><div class="line">    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-cloud-starter-zuul&lt;/artifactId&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line"></div><div class="line">&lt;dependency&gt;  </div><div class="line">    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-cloud-starter-eureka&lt;/artifactId&gt;</div><div class="line">&lt;/dependency&gt;  </div><div class="line"></div><div class="line">&lt;dependencyManagement&gt;</div><div class="line">		&lt;dependencies&gt;</div><div class="line">			&lt;dependency&gt;</div><div class="line">				&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">				&lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;</div><div class="line">				&lt;version&gt;Brixton.RELEASE&lt;/version&gt;</div><div class="line">				&lt;type&gt;pom&lt;/type&gt;</div><div class="line">				&lt;scope&gt;import&lt;/scope&gt;</div><div class="line">			&lt;/dependency&gt;</div><div class="line">		&lt;/dependencies&gt;</div><div class="line">&lt;/dependencyManagement&gt;</div></pre></td></tr></table></figure>
-<p>应用主类使用@EnableZuulProxy注解开启Zuul<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">@EnableZuulProxy</div><div class="line">@SpringCloudApplication</div><div class="line">public class ApiGatewayApplication &#123;</div><div class="line"></div><div class="line">	public static void main(String[] args) &#123;</div><div class="line">		SpringApplication.run(ApiGatewayApplication.class, args);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>@SpringCloudApplication注解，通过源码我们看到，<br>它整合了@SpringBootApplication、@EnableDiscoveryClient、@EnableCircuitBreaker</p>
-<p>application.properties中配置Zuul应用的基础信息，如：应用名、服务端口等。<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">spring.application.name=api-gateway  </div><div class="line">server.port=<span class="number">5555</span> </div><div class="line">eureka.client.serviceUrl.defaultZone=http://localhost:<span class="number">11111</span>/eureka/</div></pre></td></tr></table></figure></p>
-<p>在Zuul中提供了两种映射方式：</p>
-<h2 id="通过url直接映射，我们可以如下配置："><a href="#通过url直接映射，我们可以如下配置：" class="headerlink" title="通过url直接映射，我们可以如下配置："></a>通过url直接映射，我们可以如下配置：</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># routes to url</span></div><div class="line">zuul.routes.api-a-url.path=/api-a-url/**  </div><div class="line">zuul.routes.api-a-url.url=http://localhost:<span class="number">2222</span>/</div></pre></td></tr></table></figure>
-<p>该配置，定义了，所有到Zuul的中规则为：/api-a-url/**的访问都映射到<a href="http://localhost:2222/上，" target="_blank" rel="external">http://localhost:2222/上，</a><br>也就是说当我们访问<a href="http://localhost:5555/api-a-url/add?a=1&amp;b=2的时候，Zuul会将该请求路由到：" target="_blank" rel="external">http://localhost:5555/api-a-url/add?a=1&amp;b=2的时候，Zuul会将该请求路由到：</a><br><a href="http://localhost:2222/add?a=1&amp;b=2上。" target="_blank" rel="external">http://localhost:2222/add?a=1&amp;b=2上。</a></p>
-<h2 id="通过serviceId的映射"><a href="#通过serviceId的映射" class="headerlink" title="通过serviceId的映射"></a>通过serviceId的映射</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">zuul.routes.api-a.path=/api-a/**  </div><div class="line">zuul.routes.api-a.serviceId=service-A</div><div class="line"></div><div class="line">zuul.routes.api-b.path=/api-b/**  </div><div class="line">zuul.routes.api-b.serviceId=service-B</div></pre></td></tr></table></figure>
-<p>通过浏览器就可以访问了。如<a href="http://localhost:5555/api-b" target="_blank" rel="external">http://localhost:5555/api-b</a></p>
-<h1 id="服务过滤"><a href="#服务过滤" class="headerlink" title="服务过滤"></a>服务过滤</h1><p>在完成了服务路由之后，我们对外开放服务还需要一些安全措施来保护客户端只能访问它应该访问到的资源。<br>所以我们需要利用Zuul的过滤器来实现我们对外服务的安全控制。<br>在服务网关中定义过滤器只需要继承ZuulFilter抽象类实现其定义的四个抽象函数就可对请求进行拦截与过滤。</p>
-<p>自定义过滤器的实现，需要继承ZuulFilter，需要重写实现下面四个方法：<br>filterType：返回一个字符串代表过滤器的类型，在zuul中定义了四种不同生命周期的过滤器类型，具体如下：<br>    pre：可以在请求被路由之前调用<br>    routing：在路由请求时候被调用<br>    post：在routing和error过滤器之后被调用<br>    error：处理请求时发生错误时被调用<br>filterOrder：通过int值来定义过滤器的执行顺序<br>shouldFilter：返回一个boolean类型来判断该过滤器是否要执行，所以通过此函数可实现过滤器的开关，默认false，不执行<br>run：过滤器的具体逻辑</p>
-<p>然后在主类中注入该类<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@Bean</div><div class="line">public FilterTest filterTest() &#123;</div><div class="line">	return new FilterTest();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>最后在浏览器中输入<a href="http://localhost:5555/api-b/add?a=1&amp;b=2就不可以访问，" target="_blank" rel="external">http://localhost:5555/api-b/add?a=1&amp;b=2就不可以访问，</a><br>而<a href="http://localhost:5555/api-b/add?a=1&amp;b=2&amp;c=d可以访问了" target="_blank" rel="external">http://localhost:5555/api-b/add?a=1&amp;b=2&amp;c=d可以访问了</a></p>
-<p>根据之前对filterType生命周期介绍，可以参考下图去理解，并根据自己的需要在不同的生命周期中去实现不同类型的过滤器。<br><img src="/2016/08/25/Spring-Cloud服务网关/zuul1.jpg" alt="filterType生命周期" title="filterType生命周期"></p>
-<p>总结：<br>服务网关的优点：<br>不仅仅实现了路由功能来屏蔽诸多服务细节，更实现了服务级别、均衡负载的路由。<br>实现了接口权限校验与微服务业务逻辑的解耦。通过服务网关中的过滤器，在各生命周期中去校验请求的内容，<br>将原本在对外服务层做的校验前移，保证了微服务的无状态性，同时降低了微服务的测试难度，<br>让服务本身更集中关注业务逻辑的处理。<br>实现了断路器，不会因为具体微服务的故障而导致服务网关的阻塞，依然可以对外服务。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/25/Spring-Cloud服务网关/" data-id="cisfm40iq0012o4otp7zgwblp" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Spring-Cloud分布式配置" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/24/Spring-Cloud分布式配置/" class="article-date">
-  <time datetime="2016-08-24T11:45:01.000Z" itemprop="datePublished">2016-08-24</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/24/Spring-Cloud分布式配置/">Spring Cloud分布式配置</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Spring Cloud Config为服务端和客户端提供了分布式系统的外部化配置支持。<br>配置服务器为各应用的所有环境提供了一个中心化的外部配置。它实现了对服务端和客户端对Spring Environment<br>和PropertySource抽象的映射，所以它除了适用于Spring构建的应用程序，也可以在任何其他语言运行的应用程序中使用。<br>作为一个应用可以通过部署管道来进行测试或者投入生产，我们可以分别为这些环境创建配置，<br>并且在需要迁移环境的时候获取对应环境的配置来运行。<br>配置服务器默认采用git来存储配置信息，这样就有助于对环境配置进行版本管理，并且可以通过git客户端工具来方便的<br>管理和访问配置内容。当然他也提供本地化文件系统的存储方式，下面从这两方面介绍如何使用分布式配置来存储微服务<br>应用多环境的配置内容。</p>
-<h1 id="构建Config-Server"><a href="#构建Config-Server" class="headerlink" title="构建Config Server"></a>构建Config Server</h1><p>场景Spring Boot初始项目，然后在pom.xml中添加如下依赖。<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&lt;dependency<span class="string">&gt;</span></div><div class="line">         &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">         &lt;artifactId&gt;spring-cloud-config-server&lt;/artifactId&gt;</div><div class="line">     &lt;/dependency&gt;</div><div class="line">     &lt;dependencyManagement&gt;</div><div class="line">     	&lt;dependencies&gt;</div><div class="line">         	&lt;dependency&gt;</div><div class="line">              &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">              &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;</div><div class="line">              &lt;version&gt;Brixton.RELEASE&lt;/version&gt;</div><div class="line">              &lt;type&gt;pom&lt;/type&gt;</div><div class="line">              &lt;scope&gt;import&lt;/scope&gt;</div><div class="line">         	&lt;/dependency&gt;</div><div class="line">    	 	&lt;/dependencies&gt;</div><div class="line">    &lt;/dependencyManagement&gt;</div></pre></td></tr></table></figure></p>
-<p>在Spring Boot主类中添加@EnableConfigServer注解，开启config-server功能<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@EnableConfigServer</div><div class="line">@SpringBootApplication</div><div class="line">public class Application &#123;</div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        new SpringApplicationBuilder(Application.class).web(<span class="literal">true</span>).run(args);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>在application.properties中配置服务信息以及git信息，如：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">spring.application.name=config-server</div><div class="line">server.port=<span class="number">7001</span></div><div class="line"></div><div class="line"><span class="comment"># git管理配置</span></div><div class="line">spring.cloud.config.server.git.uri=https://github.com/yangzhiw/Simple-Spring-Cloud</div><div class="line">spring.cloud.config.server.git.searchPaths=config-repo</div><div class="line">spring.cloud.config.server.git.username=username</div><div class="line">spring.cloud.config.server.git.password=password</div><div class="line"></div><div class="line"><span class="comment"># 开启本地配置</span></div><div class="line"><span class="comment"># spring.profiles.active=native</span></div></pre></td></tr></table></figure></p>
-<p>spring.cloud.config.server.git.uri：配置git仓库位置<br>spring.cloud.config.server.git.searchPaths：配置仓库路径下的相对搜索位置，可以配置多个<br>spring.cloud.config.server.git.username：访问git仓库的用户名<br>spring.cloud.config.server.git.password：访问git仓库的用户密码</p>
-<p>Spring Cloud Config也提供本地存储配置的方式。我们只需要设置属性spring.profiles.active=native，<br>Config Server会默认从应用的src/main/resource目录下检索配置文件。也可以通过<br>spring.cloud.config.server.native.searchLocations=file:D:/properties/属性来指定配置文件的位置。<br>虽然Spring Cloud Config提供了这样的功能，但是为了支持更好的管理内容和版本控制的功能，<br>还是推荐使用git的方式</p>
-<h1 id="服务端验证"><a href="#服务端验证" class="headerlink" title="服务端验证"></a>服务端验证</h1><p>在项目中创建一个config-repo文件夹，配置了四个配置文件<br>配置文件分别为：<br>juzi.properties<br>juzi-dev.properties<br>juzi-test.properties<br>juzi-prod.properties<br>可以在四个配置文件中设置属性</p>
-<h2 id="URL与配置文件的映射关系如下："><a href="#URL与配置文件的映射关系如下：" class="headerlink" title="URL与配置文件的映射关系如下："></a>URL与配置文件的映射关系如下：</h2><p>/{application}/{profile}[/{label}]<br>/{application}-{profile}.yml<br>/{label}/{application}-{profile}.yml<br>/{application}-{profile}.properties<br>/{label}/{application}-{profile}.properties<br>上面的url会映射{application}-{profile}.properties对应的配置文件，{label}对应git上不同的分支，默认为master。<br>然后我们就可访问我们的配置文件了。如：<a href="http://localhost:7001/juzi/prod/" target="_blank" rel="external">http://localhost:7001/juzi/prod/</a><br>这便是访问生成环境的配置文件。</p>
-<h1 id="服务端配置映射"><a href="#服务端配置映射" class="headerlink" title="服务端配置映射"></a>服务端配置映射</h1><p>在完成并验证了配置服务中心之后，下面看看我们如何在微服务应用中获取配置信息。</p>
-<p>创建一个Spring Boot应用，在pom.xml中引入spring-cloud-starter-config依赖，完整依赖关系如下：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"> </div><div class="line">&lt;dependency<span class="string">&gt;</span></div><div class="line">    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-cloud-starter-config&lt;/artifactId&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line"></div><div class="line">&lt;dependencyManagement&gt;</div><div class="line">    &lt;dependencies&gt;</div><div class="line">        &lt;dependency&gt;</div><div class="line">            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;</div><div class="line">            &lt;version&gt;Brixton.RELEASE&lt;/version&gt;</div><div class="line">            &lt;type&gt;pom&lt;/type&gt;</div><div class="line">            &lt;scope&gt;import&lt;/scope&gt;</div><div class="line">        &lt;/dependency&gt;</div><div class="line">    &lt;/dependencies&gt;</div><div class="line">&lt;/dependencyManagement&gt;</div></pre></td></tr></table></figure></p>
-<p>创建bootstrap.properties配置，来指定config server，例如：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">spring.application.name=didispace  </div><div class="line">spring.cloud.config.profile=dev  </div><div class="line">spring.cloud.config.label=master  </div><div class="line">spring.cloud.config.uri=http://localhost:<span class="number">7001</span>/</div><div class="line"></div><div class="line">server.port=<span class="number">7002</span></div></pre></td></tr></table></figure></p>
-<p>这里需要格外注意：上面这些属性必须配置在bootstrap.properties中，config部分内容才能被正确加载。<br>因为config的相关配置会先于application.properties，<br>而bootstrap.properties的加载也是先于application.properties。</p>
-<p> 这里需要格外注意：上面这些属性必须配置在bootstrap.properties中，config部分内容才能被正确加载。<br> 因为config的相关配置会先于application.properties，<br> 而bootstrap.properties的加载也是先于application.properties。<br> <figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"> @RefreshScope</div><div class="line">@RestController</div><div class="line">class TestController &#123;</div><div class="line"></div><div class="line">    @Value(<span class="string">"$&#123;from&#125;"</span>)</div><div class="line">    private String from;</div><div class="line"></div><div class="line">    @RequestMapping(<span class="string">"/from"</span>)</div><div class="line">    public String from() &#123;</div><div class="line"></div><div class="line">        return this.from;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>通过@Value(“${from}”)绑定配置服务中配置的from属性。</p>
-<p>启动该应用，并访问：<a href="http://localhost:7002/from" target="_blank" rel="external">http://localhost:7002/from</a> ，我们就可以根据配置内容输出对应环境的from内容了。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/24/Spring-Cloud分布式配置/" data-id="cisfm40gt0008o4otdczohamt" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Spring-Cloud路断器" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/24/Spring-Cloud路断器/" class="article-date">
-  <time datetime="2016-08-24T03:07:28.000Z" itemprop="datePublished">2016-08-24</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/24/Spring-Cloud路断器/">Spring Cloud路断器</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="什么是断路器"><a href="#什么是断路器" class="headerlink" title="什么是断路器"></a>什么是断路器</h1><p>断路器模式源于Martin Fowler的Circuit Breaker一文。“断路器”本身是一种开关装置，用于在电路上保护线路过载，<br>当线路中有电器发生短路时，“断路器”能够及时的切断故障电路，防止发生过载、发热、甚至起火等严重后果。</p>
-<p>在分布式架构中，断路器模式的作用也是类似的，当某个服务单元发生故障（类似用电器发生短路）之后，<br>通过断路器的故障监控（类似熔断保险丝），向调用方返回一个错误响应，而不是长时间的等待。<br>这样就不会使得线程因调用故障服务被长时间占用不释放，避免了故障在分布式系统中的蔓延.</p>
-<h1 id="Netflix-Hystrix"><a href="#Netflix-Hystrix" class="headerlink" title="Netflix Hystrix"></a>Netflix Hystrix</h1><p>在Spring Cloud中使用了Hystrix 来实现断路器的功能。Hystrix是Netflix开源的微服务框架套件之一，<br>该框架目标在于通过控制那些访问远程系统、服务和第三方库的节点，从而对延迟和故障提供更强大的容错能力。<br>Hystrix具备拥有回退机制和断路器功能的线程和信号隔离，请求缓存和请求打包，以及监控和配置等功能。</p>
-<p>下面我们来看看如何使用Hystrix。</p>
-<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>启动spring-could，spring-cloud-provide,eureka-ribbon项目</p>
-<p>pom.xml中引入依赖hystrix依赖<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;dependency<span class="string">&gt;  </span></div><div class="line">    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-cloud-starter-hystrix&lt;/artifactId&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
-<p>在eureka-ribbon的主类RibbonApplication中使用@EnableCircuitBreaker注解开启断路器功能<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@SpringBootApplication</div><div class="line">@EnableDiscoveryClient</div><div class="line">@EnableCircuitBreaker</div><div class="line">public class EurekaRibbonApplication &#123;</div></pre></td></tr></table></figure></p>
-<p>新增也service类<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">@Service</div><div class="line">public class SimpleService &#123;</div><div class="line">    @Autowired</div><div class="line">    RestTemplate restTemplate;</div><div class="line"></div><div class="line">    @HystrixCommand(fallbackMethod = <span class="string">"addServiceFallback"</span>)</div><div class="line">    public String addService() &#123;</div><div class="line">        return restTemplate.getForEntity(<span class="string">"http://COMPUTE-SERVICE/add?a=10&amp;b=20"</span>, String.class).getBody();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public String addServiceFallback() &#123;</div><div class="line">        return <span class="string">"error"</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>改变之前Controller中的方法使其掉用Service中的addService即可，没开服务可以发现浏览器中返回了error错误了。<br>完成</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/24/Spring-Cloud路断器/" data-id="cisfm40i7000vo4otmokn3i46" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
 
     </footer>
   </div>
@@ -351,7 +322,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heroku/">Heroku</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异常处理/">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Codis/">Codis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heroku/">Heroku</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java基础/">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异常处理/">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/拦截器/">拦截器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li></ul>
     </div>
   </div>
 
@@ -361,7 +332,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 10px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 16.67px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/日志/" style="font-size: 13.33px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a>
+      <a href="/tags/Codis/" style="font-size: 10px;">Codis</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 10px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 16.67px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/拦截器/" style="font-size: 10px;">拦截器</a> <a href="/tags/日志/" style="font-size: 13.33px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a>
     </div>
   </div>
 
@@ -370,7 +341,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
     </div>
   </div>
 
@@ -383,23 +354,23 @@
       <ul>
         
           <li>
+            <a href="/2016/09/18/Spring-MVC拦截器/">Spring MVC拦截器</a>
+          </li>
+        
+          <li>
+            <a href="/2016/09/18/codis 配置/">codis 配置</a>
+          </li>
+        
+          <li>
+            <a href="/2016/09/07/二叉树的遍历/">二叉树的遍历</a>
+          </li>
+        
+          <li>
             <a href="/2016/08/29/使用heroku免费部署Java应用/">使用Heroku免费部署Java应用</a>
           </li>
         
           <li>
             <a href="/2016/08/28/Spring-Boot-中的统一异常处理/">Spring Boot 中的统一异常处理</a>
-          </li>
-        
-          <li>
-            <a href="/2016/08/25/Spring-Cloud服务网关/">Spring Cloud服务网关</a>
-          </li>
-        
-          <li>
-            <a href="/2016/08/24/Spring-Cloud分布式配置/">Spring Cloud分布式配置</a>
-          </li>
-        
-          <li>
-            <a href="/2016/08/24/Spring-Cloud路断器/">Spring Cloud路断器</a>
           </li>
         
       </ul>
