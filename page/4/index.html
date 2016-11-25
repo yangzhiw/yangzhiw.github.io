@@ -68,6 +68,118 @@
       <div class="outer">
         <section id="main">
   
+    <article id="spring-Boot日志管理" class="article article-type-spring" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/19/Boot日志管理/" class="article-date">
+  <time datetime="2016-08-19T02:25:56.000Z" itemprop="datePublished">2016-08-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/19/Boot日志管理/">Spring Boot日志管理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Spring Boot在所有内部日志中使用Commons Logging，但是默认配置也提供了对常用日志的支持，<br>如：Java Util Logging，Log4J, Log4J2和Logback。每种Logger都可以通过配置使用控制台或者文件输出日志内容。</p>
+<h1 id="日志输出格式"><a href="#日志输出格式" class="headerlink" title="日志输出格式"></a>日志输出格式</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="number">2016</span><span class="bullet">-08</span><span class="bullet">-19</span> <span class="number">10</span>:<span class="number">22</span>:<span class="number">04.233</span>  INFO <span class="number">7368</span> --- [           main] com.juzi.AsyncTest                       : Started AsyncTest in <span class="number">10.084</span> seconds (JVM running for <span class="number">12.545</span>)</div></pre></td></tr></table></figure>
+<p>输出内容元素具体如下：</p>
+<p>时间日期 — 精确到毫秒<br>日志级别 — ERROR, WARN, INFO, DEBUG or TRACE<br>进程ID<br>分隔符 — — 标识实际日志的开始<br>线程名 — 方括号括起来（可能会截断控制台输出）<br>Logger名 — 通常使用源代码的类名<br>日志内容</p>
+<h1 id="控制台输出"><a href="#控制台输出" class="headerlink" title="控制台输出"></a>控制台输出</h1><p>在Spring Boot中默认配置了ERROR、WARN和INFO级别的日志输出到控制台。</p>
+<p>我们可以通过两种方式切换至DEBUG级别：<br>1.在运行命令后加入–debug标志，如：$ java -jar myapp.jar –debug<br>2.在application.properties中配置debug=true，该属性置为true的时候，核心Logger（包含嵌入式容器、hibernate、spring）<br>会输出更多内容，但是你自己应用的日志并不会输出为DEBUG级别。</p>
+<h1 id="多彩输出"><a href="#多彩输出" class="headerlink" title="多彩输出"></a>多彩输出</h1><p>如果你的终端支持ANSI，设置彩色输出会让日志更具可读性。通过在application.properties中设置spring.output.ansi.enabled参数来支持。</p>
+<p>1.NEVER：禁用ANSI-colored输出（默认项）<br>2.DETECT：会检查终端是否支持ANSI，是的话就采用彩色输出（推荐项）<br>3.ALWAYS：总是使用ANSI-colored格式输出，若终端不支持的时候，会有很多干扰信息，不推荐使用</p>
+<h1 id="文件输出"><a href="#文件输出" class="headerlink" title="文件输出"></a>文件输出</h1><p>Spring Boot默认配置只会输出到控制台，并不会记录到文件中，但是我们通常生产环境使用时都需要以文件方式记录。</p>
+<p>若要增加文件输出，需要在application.properties中配置logging.file或logging.path属性。</p>
+<p>1.logging.file，设置文件，可以是绝对路径，也可以是相对路径。如：logging.file=my.log<br>2.logging.path，设置目录，会在该目录下创建spring.log文件，并写入日志内容，如：logging.path=/var/log</p>
+<p>日志文件会在10Mb大小的时候被截断，产生新的日志文件，默认级别为：ERROR、WARN、INFO *</p>
+<h1 id="级别控制"><a href="#级别控制" class="headerlink" title="级别控制"></a>级别控制</h1><p>在Spring Boot中只需要在application.properties中进行配置完成日志记录的级别控制。</p>
+<p>配置格式：logging.level.*=LEVEL</p>
+<p>1.logging.level：日志级别控制前缀，*为包名或Logger名<br>2.LEVEL：选项TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF<br>举例：</p>
+<p>logging.level.com.juzi=DEBUG     com.juzi包下所有class以DEBUG级别输出<br>logging.level.root=WARN      root日志以WARN级别输出</p>
+<h1 id="自定义日志配置"><a href="#自定义日志配置" class="headerlink" title="自定义日志配置"></a>自定义日志配置</h1><p>由于日志服务一般都在ApplicationContext创建前就初始化了，它并不是必须通过Spring的配置文件控制。<br>因此通过系统属性和传统的Spring Boot外部配置文件依然可以很好的支持日志控制和管理。</p>
+<p>根据不同的日志系统，你可以按如下规则组织配置文件名，就能被正确加载：</p>
+<p>1.Logback：logback-spring.xml, logback-spring.groovy, logback.xml, logback.groovy    <a href="2016/07/21/logback">logback日志配置</a><br>2.Log4j：log4j-spring.properties, log4j-spring.xml, log4j.properties, log4j.xml<br>3.Log4j2：log4j2-spring.xml, log4j2.xml<br>4.JDK (Java Util Logging)：logging.properties</p>
+<p>Spring Boot官方推荐优先使用带有-spring的文件名作为你的日志配置（如使用logback-spring.xml，而不是logback.xml）</p>
+<h1 id="自定义输出格式"><a href="#自定义输出格式" class="headerlink" title="自定义输出格式"></a>自定义输出格式</h1><p>在Spring Boot中可以通过在application.properties配置如下参数控制输出格式：</p>
+<p>1.logging.pattern.console：定义输出到控制台的样式（不支持JDK Logger）<br>2.logging.pattern.file：定义输出到文件的样式（不支持JDK Logger）</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/19/Boot日志管理/" data-id="civxh3ami0003anhjqv3s98oj" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/日志/">日志</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-EnableJpaRepositories配置详解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/18/EnableJpaRepositories配置详解/" class="article-date">
+  <time datetime="2016-08-18T03:23:40.000Z" itemprop="datePublished">2016-08-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/18/EnableJpaRepositories配置详解/">@EnableJpaRepositories配置详解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-简单配置"><a href="#1-简单配置" class="headerlink" title="1,简单配置"></a>1,简单配置</h1><p>@EnableJpaRepositories(“com.juzi.repository”)<br>或者 @EnableJpaRepositories({“com.juzi.repository”, “com.cshtong.second.repository”})</p>
+<h1 id="2-完整的-EnableJpaRepositories注解"><a href="#2-完整的-EnableJpaRepositories注解" class="headerlink" title="2,完整的@EnableJpaRepositories注解"></a>2,完整的@EnableJpaRepositories注解</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"> @EnableJpaRepositories(</div><div class="line">     basePackages = &#123;&#125;,</div><div class="line">     basePackageClasses = &#123;&#125;,</div><div class="line">     includeFilters = &#123;&#125;,</div><div class="line">     excludeFilters = &#123;&#125;,</div><div class="line">     repositoryImplementationPostfix = <span class="string">"Impl"</span>,</div><div class="line">     namedQueriesLocation = <span class="string">""</span>,//META-INF/jpa-named-queries.properties</div><div class="line">     queryLookupStrategy=QueryLookupStrategy.Key.CREATE_IF_NOT_FOUND, //QueryLookupStrategy.Key.x</div><div class="line">     repositoryFactoryBeanClass=JpaRepositoryFactoryBean.class, //class</div><div class="line">     entityManagerFactoryRef=<span class="string">"entityManagerFactory"</span>,</div><div class="line">     transactionManagerRef=<span class="string">"transactionManager"</span>,</div><div class="line">     considerNestedRepositories=<span class="literal">false</span>, </div><div class="line">     enableDefaultTransactions=<span class="literal">true</span></div><div class="line">)</div></pre></td></tr></table></figure>
+<p>各个配置项的作用<br>1）basePackage<br>用于配置扫描Repositories所在的package及子package。简单配置中的配置则等同于此项配置值，<br>basePackages可以配置为单个字符串，也可以配置为字符串数组形式。<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">@EnableJpaRepositories(</div><div class="line">        basePackages = <span class="string">"com.juzi"</span>)</div><div class="line">多个包路径</div><div class="line">@EnableJpaRepositories(</div><div class="line">        basePackages = &#123;<span class="string">"com.juzi.repository"</span>, <span class="string">"com.juzi.second.repository"</span>&#125;)</div></pre></td></tr></table></figure></p>
+<p>2）basePackageClasses<br>指定 Repository 类<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@EnableJpaRepositories(basePackageClasses = BookRepository.class)</div><div class="line"></div><div class="line">@EnableJpaRepositories(</div><div class="line">         basePackageClasses = &#123;ShopRepository.class, OrganizationRepository.class&#125;)</div></pre></td></tr></table></figure></p>
+<p>3）includeFilters<br>过滤器，该过滤区采用ComponentScan的过滤器类<br>@EnableJpaRepositories(<br>      includeFilters={@ComponentScan.Filter(type=FilterType.ANNOTATION, value=Repository.class)})<br>4）excludeFilters<br>不包含过滤器</p>
+<p>@EnableJpaRepositories(<br>         excludeFilters={<br>                 @ComponentScan.Filter(type=FilterType.ANNOTATION, value=Service.class),<br>                 @ComponentScan.Filter(type=FilterType.ANNOTATION, value=Controller.class)})</p>
+<p>5）repositoryImplementationPostfix<br>实现类追加的尾部，比如ShopRepository，对应的为ShopRepositoryImpl</p>
+<p>6）namedQueriesLocation<br>named SQL存放的位置，默认为META-INF/jpa-named-queries.properties</p>
+<p>7）queryLookupStrategy<br>构建条件查询的策略，包含三种方式CREATE，USE_DECLARED_QUERY，CREATE_IF_NOT_FOUND</p>
+<p>CREATE：按照接口名称自动构建查询<br>USE_DECLARED_QUERY：用户声明查询<br>CREATE_IF_NOT_FOUND：先搜索用户声明的，不存在则自动构建</p>
+<p>8）repositoryFactoryBeanClass<br>指定Repository的工厂类</p>
+<p>9)entityManagerFactoryRef<br>实体管理工厂引用名称，对应到@Bean注解对应的方法</p>
+<p>10)transactionManagerRef</p>
+<p>事务管理工厂引用名称，对应到@Bean注解对应的方法</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/18/EnableJpaRepositories配置详解/" data-id="civxh3amm0005anhjelieigit" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="spring-Security进行安全控制" class="article article-type-spring" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/08/17/Security进行安全控制/" class="article-date">
@@ -94,7 +206,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/17/Security进行安全控制/" data-id="cit8lamw20006cwotiusqddz5" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/17/Security进行安全控制/" data-id="civxh3amv000aanhjznyxyju3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li></ul>
@@ -141,7 +253,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/16/JavaWeb基础/" data-id="cit8lamwk0008cwot60j3iji5" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/16/JavaWeb基础/" data-id="civxh3amt0008anhjz89ebf3w" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li></ul>
@@ -179,164 +291,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/12/计算机网络知识复习/" data-id="cit8lan88001dcwotfoaog5sg" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/12/计算机网络知识复习/" data-id="civxh3ao0001lanhju98ee38z" class="article-share-link">Share</a>
       
       
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-获取文件流的编码" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/10/获取文件流的编码/" class="article-date">
-  <time datetime="2016-08-10T02:29:47.000Z" itemprop="datePublished">2016-08-10</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/10/获取文件流的编码/">获取文件流编码</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="1，获取文件的流"><a href="#1，获取文件的流" class="headerlink" title="1，获取文件的流"></a>1，获取文件的流</h1><pre><code>InportStream importStream = file.getInputStream()；
-</code></pre><h1 id="2，把文件流转化为字节流"><a href="#2，把文件流转化为字节流" class="headerlink" title="2，把文件流转化为字节流"></a>2，把文件流转化为字节流</h1><pre><code>//字节数组输出流
-ByteArrayOutputStream baos = new ByteArrayOutputStream();
-try {
-    byte[] buffer = new byte[1024];
-    int len;
-    while ((len = inputStream.read(buffer)) &gt; -1) {
-        baos.write(buffer, 0, len);
-    }
-    baos.flush();
-}catch(IOException e){
-    e.printStackTrace();
-}
-return new ByteArrayInputStream(baos.toByteArray());
-</code></pre><h1 id="3，根据字节流的判断文件的编码"><a href="#3，根据字节流的判断文件的编码" class="headerlink" title="3，根据字节流的判断文件的编码"></a>3，根据字节流的判断文件的编码</h1><pre><code>//默认编码
-String charset = &quot;GBK&quot;;
-byte[] first3Bytes = new byte[3];
-//缓存流
-BufferedInputStream bis = new BufferedInputStream(inputStream1);
-try {
-    boolean checked = false;
-    //标记
-    bis.mark(0);
-    //读取文件的前3个字符
-    int read = bis.read(first3Bytes, 0, 3);
-    if (read == -1) return charset;
-    if (first3Bytes[0] == (byte) 0xFF &amp;&amp; first3Bytes[1] == (byte) 0xFE) {
-        charset = &quot;UTF-16LE&quot;;
-        checked = true;
-    } else if (first3Bytes[0] == (byte) 0xFE &amp;&amp; first3Bytes[1] == (byte) 0xFF) {
-        charset = &quot;UTF-16BE&quot;;
-        checked = true;
-    } else if (first3Bytes[0] == (byte) 0xEF &amp;&amp; first3Bytes[1] == (byte) 0xBB &amp;&amp; first3Bytes[2] == (byte) 0xBF) {
-        charset = &quot;UTF-8&quot;;
-        checked = true;
-    }
-    bis.reset();
-    if (!checked) {
-
-        int loc = 0;
-        while ((read = bis.read()) != -1) {
-            loc++;
-            if (read &gt;= 0xF0) break;
-            if (0x80 &lt;= read &amp;&amp; read &lt;= 0xBF) // 单独出现BF以下的，也算是GBK
-                break;
-            if (0xC0 &lt;= read &amp;&amp; read &lt;= 0xDF) {
-                read = bis.read();
-                if (0x80 &lt;= read &amp;&amp; read &lt;= 0xBF) // 双字节 (0xC0 - 0xDF) (0x80
-                    continue;
-                else break;
-            } else if (0xE0 &lt;= read &amp;&amp; read &lt;= 0xEF) {// 也有可能出错，但是几率较小
-                read = bis.read();
-                if (0x80 &lt;= read &amp;&amp; read &lt;= 0xBF) {
-                    read = bis.read();
-                    if (0x80 &lt;= read &amp;&amp; read &lt;= 0xBF) {
-                        charset = &quot;UTF-8&quot;;
-                        break;
-                    } else break;
-                } else break;
-            }
-        }
-    }
-} catch (Exception e) {
-    e.printStackTrace();
-} finally {
-    try {
-        bis.close();
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-}
-</code></pre>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/10/获取文件流的编码/" data-id="cit8lan7h001bcwottq41deuy" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/编码/">编码</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-spring定时任务" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/10/spring定时任务/" class="article-date">
-  <time datetime="2016-08-10T02:29:47.000Z" itemprop="datePublished">2016-08-10</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/10/spring定时任务/">Spring定时任务</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="获取昨天时间"><a href="#获取昨天时间" class="headerlink" title="获取昨天时间"></a>获取昨天时间</h2><pre><code>Calendar c=Calendar.getInstance();
-c.add(Calendar.DAY_OF_MONTH,-1);   //日期月是0-11
-c.set(Calendar.HOUR_OF_DAY,0);     
-c.set(Calendar.MINUTE,0);
-c.set(Calendar.SECOND,0);
-c.set(Calendar.MILLISECOND,0);
-return c.getTime();
-</code></pre><h2 id="在类上加上注解"><a href="#在类上加上注解" class="headerlink" title="在类上加上注解"></a>在类上加上注解</h2><p>@Configuration<br>@EnableScheduling<br>@Scheduled(fixedRate = 5000) ：上一次开始执行时间点之后5秒再执行<br>@Scheduled(fixedDelay = 5000) ：上一次执行完毕时间点之后5秒再执行<br>@Scheduled(initialDelay=1000, fixedRate=5000) ：第一次延迟1秒后执行，之后按fixedRate的规则每5秒执行一次<br>@Scheduled(cron=”<em>/5 </em> <em> </em> <em> </em>“) ：通过cron表达式定义规则        </p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/10/spring定时任务/" data-id="cit8lan6a0013cwotfd5iekb4" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
-
     </footer>
   </div>
   
@@ -347,7 +304,7 @@ return c.getTime();
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/page/3/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/">__('next') &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/3/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -379,7 +336,7 @@ return c.getTime();
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
     </div>
   </div>
 
@@ -392,6 +349,14 @@ return c.getTime();
       <ul>
         
           <li>
+            <a href="/2016/11/25/分布式系统/">分布式系统</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/24/spring-kafak集成学习/">spring-kafak集成学习</a>
+          </li>
+        
+          <li>
             <a href="/2016/09/18/Spring-MVC拦截器/">Spring MVC拦截器</a>
           </li>
         
@@ -400,15 +365,7 @@ return c.getTime();
           </li>
         
           <li>
-            <a href="/2016/09/07/二叉树的遍历/">二叉树的遍历</a>
-          </li>
-        
-          <li>
-            <a href="/2016/08/29/使用heroku免费部署Java应用/">使用Heroku免费部署Java应用</a>
-          </li>
-        
-          <li>
-            <a href="/2016/08/28/Spring-Boot-中的统一异常处理/">Spring Boot 中的统一异常处理</a>
+            <a href="/2016/09/18/二叉树的遍历/">二叉树的遍历</a>
           </li>
         
       </ul>
