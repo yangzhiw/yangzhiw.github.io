@@ -68,6 +68,106 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Spring-Cloud分布式配置" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/24/Spring-Cloud分布式配置/" class="article-date">
+  <time datetime="2016-08-24T11:45:01.000Z" itemprop="datePublished">2016-08-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/24/Spring-Cloud分布式配置/">Spring Cloud分布式配置</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Spring Cloud Config为服务端和客户端提供了分布式系统的外部化配置支持。<br>配置服务器为各应用的所有环境提供了一个中心化的外部配置。它实现了对服务端和客户端对Spring Environment<br>和PropertySource抽象的映射，所以它除了适用于Spring构建的应用程序，也可以在任何其他语言运行的应用程序中使用。<br>作为一个应用可以通过部署管道来进行测试或者投入生产，我们可以分别为这些环境创建配置，<br>并且在需要迁移环境的时候获取对应环境的配置来运行。<br>配置服务器默认采用git来存储配置信息，这样就有助于对环境配置进行版本管理，并且可以通过git客户端工具来方便的<br>管理和访问配置内容。当然他也提供本地化文件系统的存储方式，下面从这两方面介绍如何使用分布式配置来存储微服务<br>应用多环境的配置内容。</p>
+<h1 id="构建Config-Server"><a href="#构建Config-Server" class="headerlink" title="构建Config Server"></a>构建Config Server</h1><p>场景Spring Boot初始项目，然后在pom.xml中添加如下依赖。<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&lt;dependency<span class="string">&gt;</span></div><div class="line">         &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">         &lt;artifactId&gt;spring-cloud-config-server&lt;/artifactId&gt;</div><div class="line">     &lt;/dependency&gt;</div><div class="line">     &lt;dependencyManagement&gt;</div><div class="line">     	&lt;dependencies&gt;</div><div class="line">         	&lt;dependency&gt;</div><div class="line">              &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">              &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;</div><div class="line">              &lt;version&gt;Brixton.RELEASE&lt;/version&gt;</div><div class="line">              &lt;type&gt;pom&lt;/type&gt;</div><div class="line">              &lt;scope&gt;import&lt;/scope&gt;</div><div class="line">         	&lt;/dependency&gt;</div><div class="line">    	 	&lt;/dependencies&gt;</div><div class="line">    &lt;/dependencyManagement&gt;</div></pre></td></tr></table></figure></p>
+<p>在Spring Boot主类中添加@EnableConfigServer注解，开启config-server功能<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@EnableConfigServer</div><div class="line">@SpringBootApplication</div><div class="line">public class Application &#123;</div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        new SpringApplicationBuilder(Application.class).web(<span class="literal">true</span>).run(args);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在application.properties中配置服务信息以及git信息，如：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">spring.application.name=config-server</div><div class="line">server.port=<span class="number">7001</span></div><div class="line"></div><div class="line"><span class="comment"># git管理配置</span></div><div class="line">spring.cloud.config.server.git.uri=https://github.com/yangzhiw/Simple-Spring-Cloud</div><div class="line">spring.cloud.config.server.git.searchPaths=config-repo</div><div class="line">spring.cloud.config.server.git.username=username</div><div class="line">spring.cloud.config.server.git.password=password</div><div class="line"></div><div class="line"><span class="comment"># 开启本地配置</span></div><div class="line"><span class="comment"># spring.profiles.active=native</span></div></pre></td></tr></table></figure></p>
+<p>spring.cloud.config.server.git.uri：配置git仓库位置<br>spring.cloud.config.server.git.searchPaths：配置仓库路径下的相对搜索位置，可以配置多个<br>spring.cloud.config.server.git.username：访问git仓库的用户名<br>spring.cloud.config.server.git.password：访问git仓库的用户密码</p>
+<p>Spring Cloud Config也提供本地存储配置的方式。我们只需要设置属性spring.profiles.active=native，<br>Config Server会默认从应用的src/main/resource目录下检索配置文件。也可以通过<br>spring.cloud.config.server.native.searchLocations=file:D:/properties/属性来指定配置文件的位置。<br>虽然Spring Cloud Config提供了这样的功能，但是为了支持更好的管理内容和版本控制的功能，<br>还是推荐使用git的方式</p>
+<h1 id="服务端验证"><a href="#服务端验证" class="headerlink" title="服务端验证"></a>服务端验证</h1><p>在项目中创建一个config-repo文件夹，配置了四个配置文件<br>配置文件分别为：<br>juzi.properties<br>juzi-dev.properties<br>juzi-test.properties<br>juzi-prod.properties<br>可以在四个配置文件中设置属性</p>
+<h2 id="URL与配置文件的映射关系如下："><a href="#URL与配置文件的映射关系如下：" class="headerlink" title="URL与配置文件的映射关系如下："></a>URL与配置文件的映射关系如下：</h2><p>/{application}/{profile}[/{label}]<br>/{application}-{profile}.yml<br>/{label}/{application}-{profile}.yml<br>/{application}-{profile}.properties<br>/{label}/{application}-{profile}.properties<br>上面的url会映射{application}-{profile}.properties对应的配置文件，{label}对应git上不同的分支，默认为master。<br>然后我们就可访问我们的配置文件了。如：<a href="http://localhost:7001/juzi/prod/" target="_blank" rel="external">http://localhost:7001/juzi/prod/</a><br>这便是访问生成环境的配置文件。</p>
+<h1 id="服务端配置映射"><a href="#服务端配置映射" class="headerlink" title="服务端配置映射"></a>服务端配置映射</h1><p>在完成并验证了配置服务中心之后，下面看看我们如何在微服务应用中获取配置信息。</p>
+<p>创建一个Spring Boot应用，在pom.xml中引入spring-cloud-starter-config依赖，完整依赖关系如下：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"> </div><div class="line">&lt;dependency<span class="string">&gt;</span></div><div class="line">    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-cloud-starter-config&lt;/artifactId&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line"></div><div class="line">&lt;dependencyManagement&gt;</div><div class="line">    &lt;dependencies&gt;</div><div class="line">        &lt;dependency&gt;</div><div class="line">            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;</div><div class="line">            &lt;version&gt;Brixton.RELEASE&lt;/version&gt;</div><div class="line">            &lt;type&gt;pom&lt;/type&gt;</div><div class="line">            &lt;scope&gt;import&lt;/scope&gt;</div><div class="line">        &lt;/dependency&gt;</div><div class="line">    &lt;/dependencies&gt;</div><div class="line">&lt;/dependencyManagement&gt;</div></pre></td></tr></table></figure></p>
+<p>创建bootstrap.properties配置，来指定config server，例如：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">spring.application.name=didispace  </div><div class="line">spring.cloud.config.profile=dev  </div><div class="line">spring.cloud.config.label=master  </div><div class="line">spring.cloud.config.uri=http://localhost:<span class="number">7001</span>/</div><div class="line"></div><div class="line">server.port=<span class="number">7002</span></div></pre></td></tr></table></figure></p>
+<p>这里需要格外注意：上面这些属性必须配置在bootstrap.properties中，config部分内容才能被正确加载。<br>因为config的相关配置会先于application.properties，<br>而bootstrap.properties的加载也是先于application.properties。</p>
+<p> 这里需要格外注意：上面这些属性必须配置在bootstrap.properties中，config部分内容才能被正确加载。<br> 因为config的相关配置会先于application.properties，<br> 而bootstrap.properties的加载也是先于application.properties。<br> <figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"> @RefreshScope</div><div class="line">@RestController</div><div class="line">class TestController &#123;</div><div class="line"></div><div class="line">    @Value(<span class="string">"$&#123;from&#125;"</span>)</div><div class="line">    private String from;</div><div class="line"></div><div class="line">    @RequestMapping(<span class="string">"/from"</span>)</div><div class="line">    public String from() &#123;</div><div class="line"></div><div class="line">        return this.from;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>通过@Value(“${from}”)绑定配置服务中配置的from属性。</p>
+<p>启动该应用，并访问：<a href="http://localhost:7002/from" target="_blank" rel="external">http://localhost:7002/from</a> ，我们就可以根据配置内容输出对应环境的from内容了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/24/Spring-Cloud分布式配置/" data-id="cixdgfzws000hmk9o53ztwnzh" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Spring-Cloud路断器" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/24/Spring-Cloud路断器/" class="article-date">
+  <time datetime="2016-08-24T03:07:28.000Z" itemprop="datePublished">2016-08-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/24/Spring-Cloud路断器/">Spring Cloud路断器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="什么是断路器"><a href="#什么是断路器" class="headerlink" title="什么是断路器"></a>什么是断路器</h1><p>断路器模式源于Martin Fowler的Circuit Breaker一文。“断路器”本身是一种开关装置，用于在电路上保护线路过载，<br>当线路中有电器发生短路时，“断路器”能够及时的切断故障电路，防止发生过载、发热、甚至起火等严重后果。</p>
+<p>在分布式架构中，断路器模式的作用也是类似的，当某个服务单元发生故障（类似用电器发生短路）之后，<br>通过断路器的故障监控（类似熔断保险丝），向调用方返回一个错误响应，而不是长时间的等待。<br>这样就不会使得线程因调用故障服务被长时间占用不释放，避免了故障在分布式系统中的蔓延.</p>
+<h1 id="Netflix-Hystrix"><a href="#Netflix-Hystrix" class="headerlink" title="Netflix Hystrix"></a>Netflix Hystrix</h1><p>在Spring Cloud中使用了Hystrix 来实现断路器的功能。Hystrix是Netflix开源的微服务框架套件之一，<br>该框架目标在于通过控制那些访问远程系统、服务和第三方库的节点，从而对延迟和故障提供更强大的容错能力。<br>Hystrix具备拥有回退机制和断路器功能的线程和信号隔离，请求缓存和请求打包，以及监控和配置等功能。</p>
+<p>下面我们来看看如何使用Hystrix。</p>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>启动spring-could，spring-cloud-provide,eureka-ribbon项目</p>
+<p>pom.xml中引入依赖hystrix依赖<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;dependency<span class="string">&gt;  </span></div><div class="line">    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-cloud-starter-hystrix&lt;/artifactId&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
+<p>在eureka-ribbon的主类RibbonApplication中使用@EnableCircuitBreaker注解开启断路器功能<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@SpringBootApplication</div><div class="line">@EnableDiscoveryClient</div><div class="line">@EnableCircuitBreaker</div><div class="line">public class EurekaRibbonApplication &#123;</div></pre></td></tr></table></figure></p>
+<p>新增也service类<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">@Service</div><div class="line">public class SimpleService &#123;</div><div class="line">    @Autowired</div><div class="line">    RestTemplate restTemplate;</div><div class="line"></div><div class="line">    @HystrixCommand(fallbackMethod = <span class="string">"addServiceFallback"</span>)</div><div class="line">    public String addService() &#123;</div><div class="line">        return restTemplate.getForEntity(<span class="string">"http://COMPUTE-SERVICE/add?a=10&amp;b=20"</span>, String.class).getBody();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public String addServiceFallback() &#123;</div><div class="line">        return <span class="string">"error"</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>改变之前Controller中的方法使其掉用Service中的addService即可，没开服务可以发现浏览器中返回了error错误了。<br>完成</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/24/Spring-Cloud路断器/" data-id="cixdgfzxa0012mk9ou93v6z4q" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Spring-Cloud服务消费者" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/08/24/Spring-Cloud服务消费者/" class="article-date">
@@ -102,7 +202,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/24/Spring-Cloud服务消费者/" data-id="civxh3an8000ianhjbqv326vb" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/24/Spring-Cloud服务消费者/" data-id="cixdgfzwy000kmk9o3oca69xo" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
@@ -156,7 +256,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/23/Spring-Cloud服务注册与发现/" data-id="civxh3an5000hanhjpoy3uw15" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/23/Spring-Cloud服务注册与发现/" data-id="cixdgfzx0000lmk9otx5kcdgh" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
@@ -207,91 +307,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/23/Kafkar入门/" data-id="civxh3amu0009anhjnm3vj4vu" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/23/Kafkar入门/" data-id="cixdgfzwp000cmk9oj8zey7dy" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Kafka/">Kafka</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-使用Redis做集中式缓存" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/19/使用Redis做集中式缓存/" class="article-date">
-  <time datetime="2016-08-19T06:08:30.000Z" itemprop="datePublished">2016-08-19</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/19/使用Redis做集中式缓存/">使用Redis做集中式缓存</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/19/使用Redis做集中式缓存/" data-id="civxh3ann001aanhjh686142j" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="spring-Boot中使用log4j记录日志" class="article article-type-spring" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/19/Boot中使用log4j记录日志/" class="article-date">
-  <time datetime="2016-08-19T03:07:43.000Z" itemprop="datePublished">2016-08-19</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/19/Boot中使用log4j记录日志/">Sporing Boot中使用log4j记录日志</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="引入log4j依赖"><a href="#引入log4j依赖" class="headerlink" title="引入log4j依赖"></a>引入log4j依赖</h1><p>在创建Spring Boot工程时，我们引入了spring-boot-starter，其中包含了spring-boot-starter-logging，该依赖内容就是<br>Spring Boot默认的日志框架Logback，所以我们在引入log4j之前，需要先排除该包的依赖，再引入log4j的依赖，就像下面这样：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&lt;dependency<span class="string">&gt;  </span></div><div class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-boot-starter&lt;/artifactId&gt;</div><div class="line">    &lt;exclusions&gt;</div><div class="line">        &lt;exclusion&gt; </div><div class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;spring-boot-starter-logging&lt;/artifactId&gt;</div><div class="line">        &lt;/exclusion&gt;</div><div class="line">    &lt;/exclusions&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line"></div><div class="line">&lt;dependency&gt;  </div><div class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-boot-starter-log4j&lt;/artifactId&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
-<h1 id="配置log4j-properties"><a href="#配置log4j-properties" class="headerlink" title="配置log4j.properties"></a>配置log4j.properties</h1><p>在引入了log4j依赖之后，只需要在src/main/resources目录下加入log4j.properties配置文件，就可以开始对应用的日志进行配置使用。</p>
-<h2 id="控制台输出"><a href="#控制台输出" class="headerlink" title="控制台输出"></a>控制台输出</h2><p>通过如下配置，设定root日志的输出级别为INFO，appender为控制台输出stdout</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># LOG4J配置</span></div><div class="line">log4j.rootCategory=INFO, stdout</div><div class="line"></div><div class="line"><span class="comment"># 控制台输出</span></div><div class="line">	log4j.appender.stdout=org.apache.log4j.ConsoleAppender  </div><div class="line">	log4j.appender.stdout.layout=org.apache.log4j.PatternLayout  </div><div class="line">	log4j.appender.stdout.layout.ConversionPattern=%d&#123;yyyy-MM-dd HH:mm:ss,SSS&#125; %<span class="number">5</span>p %c&#123;<span class="number">1</span>&#125;:%L - %m%n</div></pre></td></tr></table></figure>
-<h2 id="输出到文件"><a href="#输出到文件" class="headerlink" title="输出到文件"></a>输出到文件</h2><p>在开发环境，我们只是输出到控制台没有问题，但是到了生产或测试环境，或许持久化日志内容，方便追溯问题原因。<br>可以通过添加如下的appender内容，按天输出到不同的文件中去，同时还需要为log4j.rootCategory添加名为file的appender，<br>这样root日志就可以输出到logs/all.log文件中了。<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#</span></div><div class="line">log4j.rootCategory=INFO, stdout, file</div><div class="line"></div><div class="line"><span class="comment"># root日志输出</span></div><div class="line">log4j.appender.file=org.apache.log4j.DailyRollingFileAppender  </div><div class="line">log4j.appender.file.file=logs/all.log  </div><div class="line">log4j.appender.file.DatePattern=<span class="string">'.'</span>yyyy-MM-dd  </div><div class="line">log4j.appender.file.layout=org.apache.log4j.PatternLayout  </div><div class="line">log4j.appender.file.layout.ConversionPattern=%d&#123;yyyy-MM-dd HH:mm:ss,SSS&#125; %<span class="number">5</span>p %c&#123;<span class="number">1</span>&#125;:%L - %m%n</div></pre></td></tr></table></figure></p>
-<h2 id="分类输出"><a href="#分类输出" class="headerlink" title="分类输出"></a>分类输出</h2><p>1.可以按不同package进行输出。通过定义输出到logs/my.log的appender，并对com.didispace包下的日志级别设定<br>为DEBUG级别、appender设置为输出到logs/my.log的名为didifile的appender。<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># com.juzi包下的日志配置</span></div><div class="line">log4j.category.com.juzi=DEBUG, didifile</div><div class="line"></div><div class="line"><span class="comment"># com.didispace下的日志输出</span></div><div class="line">log4j.appender.didifile=org.apache.log4j.DailyRollingFileAppender  </div><div class="line">log4j.appender.didifile.file=logs/my.log  </div><div class="line">log4j.appender.didifile.DatePattern=<span class="string">'.'</span>yyyy-MM-dd  </div><div class="line">log4j.appender.didifile.layout=org.apache.log4j.PatternLayout  </div><div class="line">log4j.appender.didifile.layout.ConversionPattern=%d&#123;yyyy-MM-dd HH:mm:ss,SSS&#125; %<span class="number">5</span>p %c&#123;<span class="number">1</span>&#125;:%L ---- %m%n</div></pre></td></tr></table></figure></p>
-<p>可以对不同级别进行分类，比如对ERROR级别输出到特定的日志文件中，具体配置可以如下。<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">og4j.logger.error=errorfile  </div><div class="line"><span class="comment"># error日志输出</span></div><div class="line">log4j.appender.errorfile=org.apache.log4j.DailyRollingFileAppender  </div><div class="line">log4j.appender.errorfile.file=logs/error.log  </div><div class="line">log4j.appender.errorfile.DatePattern=<span class="string">'.'</span>yyyy-MM-dd  </div><div class="line">log4j.appender.errorfile.Threshold = ERROR  </div><div class="line">log4j.appender.errorfile.layout=org.apache.log4j.PatternLayout  </div><div class="line">log4j.appender.errorfile.layout.ConversionPattern=%d&#123;yyyy-MM-dd HH:mm:ss,SSS&#125; %<span class="number">5</span>p %c&#123;<span class="number">1</span>&#125;:%L - %m%n</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/19/Boot中使用log4j记录日志/" data-id="civxh3amd0001anhjbph27g5c" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/log4j/">log4j</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/日志/">日志</a></li></ul>
 
     </footer>
   </div>
@@ -316,7 +335,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Codis/">Codis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heroku/">Heroku</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java基础/">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异常处理/">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/拦截器/">拦截器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Codis/">Codis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heroku/">Heroku</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java基础/">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异常处理/">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/拦截器/">拦截器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/随记/">随记</a></li></ul>
     </div>
   </div>
 
@@ -326,7 +345,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Codis/" style="font-size: 10px;">Codis</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 10px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 16.67px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/拦截器/" style="font-size: 10px;">拦截器</a> <a href="/tags/日志/" style="font-size: 13.33px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a>
+      <a href="/tags/Codis/" style="font-size: 10px;">Codis</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 10px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 16.67px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/拦截器/" style="font-size: 10px;">拦截器</a> <a href="/tags/日志/" style="font-size: 13.33px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a> <a href="/tags/随记/" style="font-size: 10px;">随记</a>
     </div>
   </div>
 
@@ -335,7 +354,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
     </div>
   </div>
 
@@ -348,6 +367,14 @@
       <ul>
         
           <li>
+            <a href="/2016/12/31/2016这一年的回顾/">2016、才觉远去，便起怀念</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/31/Java设计模式/">Java设计模式</a>
+          </li>
+        
+          <li>
             <a href="/2016/11/25/分布式系统/">分布式系统</a>
           </li>
         
@@ -357,14 +384,6 @@
         
           <li>
             <a href="/2016/09/18/Spring-MVC拦截器/">Spring MVC拦截器</a>
-          </li>
-        
-          <li>
-            <a href="/2016/09/18/codis 配置/">codis 配置</a>
-          </li>
-        
-          <li>
-            <a href="/2016/09/18/二叉树的遍历/">二叉树的遍历</a>
           </li>
         
       </ul>
@@ -379,7 +398,7 @@
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2016 John Doe<br>
+      &copy; 2017 John Doe<br>
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
