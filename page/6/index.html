@@ -68,6 +68,65 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-java-基础题" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/01/java-基础题/" class="article-date">
+  <time datetime="2016-08-01T01:54:12.000Z" itemprop="datePublished">2016-08-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/01/java-基础题/">java 复习资料</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="java基础"><a href="#java基础" class="headerlink" title="java基础"></a>java基础</h1><p>1，面向对象和面向过程的区别<br>2，java的三大特性</p>
+<hr>
+<pre><code>封装，继承，多态
+</code></pre><p>3，OverLoad与Override的区别<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">   Override（重写，覆盖） </div><div class="line">方法名、参数、返回值相同。</div><div class="line">子类方法不能缩小父类方法的访问权限。</div><div class="line">子类方法不能抛出比父类方法更多的异常(但子类方法可以不抛出异常)。</div><div class="line">存在于父类和子类之间。</div><div class="line">方法被定义为final不能被重写。</div><div class="line"></div><div class="line">   Overload（重载，过载）</div><div class="line">参数类型、个数、顺序至少有一个不相同。  </div><div class="line">不能重载只有返回值不同的方法名。</div><div class="line">存在于父类和子类、同类中。</div></pre></td></tr></table></figure></p>
+<p>4，构造器不能被修饰Override<br>5，访问控制符public,protected,private,以及默认的区别<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">作用域      当前类      同包   子类    其他</div><div class="line">public        √        √       √      √</div><div class="line">protected     √        √       √      ×</div><div class="line">default       √        √       ×      ×</div><div class="line">private       √        ×       ×      ×</div></pre></td></tr></table></figure></p>
+<p>6，String和StringBuffer、StringBuilder的区别<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">可变与不可变</div><div class="line">String类中使用字符数组保存字符串，如下就是，因为有“final”修饰符，所以可以知道string对象是不可变的。</div><div class="line">private final char value[];</div><div class="line"></div><div class="line">StringBuilder与StringBuffer都继承自AbstractStringBuilder类，在AbstractStringBuilder中也是使用字符</div><div class="line">数组保存字符串，如下就是，可知这两种对象都是可变的。</div><div class="line"></div><div class="line">char[] value;</div><div class="line">线程是否安全</div><div class="line">StringBuffer对方法加了同步锁或者对调用的方法加了同步锁，所以是线程安全的。</div><div class="line">StringBuilder并没有对方法进行加同步锁，所以是非线程安全的。</div></pre></td></tr></table></figure></p>
+<p>7，抽象类和接口的区别<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="number">1</span>）抽象类可以提供成员方法的实现细节，而接口中只能存在public abstract 方法；</div><div class="line"></div><div class="line">　　<span class="number">2</span>）抽象类中的成员变量可以是各种类型的，而接口中的成员变量只能是public static final类型的；</div><div class="line"></div><div class="line">　　<span class="number">3</span>）接口中不能含有静态代码块以及静态方法，而抽象类可以有静态代码块和静态方法；</div><div class="line"></div><div class="line">　　<span class="number">4</span>）一个类只能继承一个抽象类，而一个类却可以实现多个接口。</div></pre></td></tr></table></figure></p>
+<p>8，自动装箱与拆箱<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">基本数据类型的自动装箱(autoboxing)、拆箱(unboxing)是自J2SE <span class="number">5.0</span>开始提供的功能。 </div><div class="line">基本数据与对象的区别</div><div class="line">如：int t = <span class="number">1</span>；     t.  后面是没有方法滴。</div><div class="line"></div><div class="line">    Integer t =<span class="number">1</span>； t.  后面就有很多方法可让你调用了。</div><div class="line"></div><div class="line">Integer i = <span class="number">100</span>; // 自动装箱</div><div class="line">相当于编译器自动为您作以下的语法编译：Integer i = Integer.valueOf(<span class="number">100</span>);</div><div class="line">Integer i = <span class="number">10</span>; //装箱 </div><div class="line">int t = i; //拆箱，实际上执行了 int t = i.intValue();    </div><div class="line"></div><div class="line">注意：integer值得默认大小是<span class="bullet">-127</span><span class="bullet">-128</span></div></pre></td></tr></table></figure></p>
+<p>7，泛型<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">泛型是Java SE <span class="number">1.5</span>的新特性，泛型的本质是参数化类型，也就是说所操作的数据类型被指定为一个参数,</div><div class="line">类型擦除可以简单的理解为将泛型java代码转换为普通java代码，只不过编译器更直接点，</div><div class="line">将泛型java代码直接转换成普通java字节码。</div><div class="line">     类型擦除的主要过程如下：</div><div class="line">     <span class="number">1.</span>将所有的泛型参数用其最左边界（最顶级的父类型）类型替换。</div><div class="line">     <span class="number">2.</span>移除所有的类型参数。</div></pre></td></tr></table></figure></p>
+<p>8,Java中的集合类及其关系图<br>关系图<br><img src="/2016/08/01/java-基础题/java_collection.jpg" alt="微服务架构图" title="微服务架构图"><br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">　上述类图中，实线边框的是实现类，比如ArrayList，LinkedList，HashMap等，</div><div class="line">  折线边框的是抽象类，比如AbstractCollection，AbstractList，AbstractMap等，</div><div class="line">  而点线边框的是接口，比如Collection，Iterator，List等。</div><div class="line">  	　		是否有序	是否允许元素重复</div><div class="line">Collection		否		是</div><div class="line">List			是		是</div><div class="line">Set	AbstractSet	否		否</div><div class="line">　	HashSet    	 否		否</div><div class="line">　	TreeSet		是		否</div><div class="line">Map	AbstractMap	否	使用key-value来映射和存储数据，key必须唯一，value可以重复</div><div class="line">　	HashMap</div><div class="line">　	TreeMap		是（用二叉排序树）</div></pre></td></tr></table></figure></p>
+<p>9，HashMap的实现原理<br>   见此链接<br>10，HashTable实现原理<br>   见此链接<br>11，HashMap与HashTable的区别<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">第一，继承不同。</div><div class="line"></div><div class="line">public class Hashtable extends Dictionary implements Map</div><div class="line">public class HashMap  extends AbstractMap implements Map</div><div class="line">第二</div><div class="line"></div><div class="line">Hashtable 中的方法是同步的，而HashMap中的方法在缺省情况下是非同步的。在多线程并发的环境下，</div><div class="line">可以直接使用Hashtable，但是要使用HashMap的话就要自己增加同步处理了。</div><div class="line">如果为了要线程安全，可以使用CurrentHashMap</div><div class="line"></div><div class="line">第三</div><div class="line"></div><div class="line">Hashtable中，key和value都不允许出现<span class="literal">null</span>值。</div><div class="line"></div><div class="line">在HashMap中，<span class="literal">null</span>可以作为键，这样的键只有一个；可以有一个或多个键所对应的值为<span class="literal">null</span>。当get()方法返回<span class="literal">null</span>值时，即可以表示 HashMap中没有该键，也可以表示该键所对应的值为<span class="literal">null</span>。因此，在HashMap中不能由get()方法来判断HashMap中是否存在某个键， 而应该用containsKey()方法来判断。</div><div class="line"></div><div class="line">第四，两个遍历方式的内部实现上不同。</div><div class="line"></div><div class="line">Hashtable、HashMap都使用了 Iterator。而由于历史原因，Hashtable还使用了Enumeration的方式 。</div><div class="line"></div><div class="line">第五</div><div class="line"></div><div class="line">哈希值的使用不同，HashTable直接使用对象的hashCode。而HashMap重新计算hash值。</div><div class="line"></div><div class="line">第六</div><div class="line"></div><div class="line">Hashtable和HashMap它们两个内部实现方式的数组的初始大小和扩容的方式。HashTable中hash数组默认大小是<span class="number">11</span>，增加的方式是 old*<span class="number">2</span>+<span class="number">1</span>。HashMap中hash数组的默认大小是<span class="number">16</span>，而且一定是<span class="number">2</span>的指数。</div></pre></td></tr></table></figure></p>
+<p>12，ArrayList和vector区别<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="number">1</span>）  Vector的方法都是同步的(Synchronized),是线程安全的(thread-safe)，而ArrayList的方法不是，由于线程的同步必然要影响性能，因此,ArrayList的性能比Vector好。 </div><div class="line"><span class="number">2</span>） 当Vector或ArrayList中的元素超过它的初始大小时,Vector会将它的容量翻倍,而ArrayList只增加<span class="number">50</span>%的大小，这样,ArrayList就有利于节约内存空间。</div></pre></td></tr></table></figure></p>
+<p>13,ArrayList和LinkedList区别及使用场景<br>区别<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">ArryList初始化时，elementData数组大小默认为<span class="number">10</span>；</div><div class="line">每次add（）时，先调用ensureCapacity（）保证数组不会溢出，如果此时已满，会扩展为数组length的<span class="number">1.5</span>倍+<span class="number">1</span>，</div><div class="line">然后用array.copy的方法，将原数组拷贝到新的数组中；线程不安全。</div><div class="line"></div><div class="line">LinkedList是基于双链表实现的：</div><div class="line">使用header的优点是：在任何一个条目（包括第一个和最后一个）都有一个前置条目和一个后置条目，</div><div class="line">因此在LinkedList对象的开始或者末尾进行插入操作没有特殊的地方；</div></pre></td></tr></table></figure></p>
+<p>使用场景<br>   （1）查询操作多，ArrayList对象要远优于LinkedList对象；</p>
+<p>   （2）修改和删除操作多，LinkedList对象要远优于ArrayList对象；</p>
+<p>14，static和final区别和用途<br> static<br> <figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">修饰变量：静态变量随着类被加载时被完全初始化，在内存中只有一个，并且JVM只会为它分配一次内存，所有类共享此变量。</div><div class="line">修饰方法：在类加载时存在，不依赖任何实例，方法必须实现，不能用abstract修饰。</div><div class="line">修饰代码块：在类加载完之后执行代码块的内容。</div><div class="line">   父类静态代码块-&gt;子类静态代码块-&gt;父类非静态代码块-&gt;父类构造方法—&gt;子类非静态代码块-&gt;子类构造方法</div></pre></td></tr></table></figure></p>
+<p> final<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"> 修饰变量：</div><div class="line">  编译器常量：类加载是完成初始化，编译后带入到任何计算中，只能基本数据类型。</div><div class="line">  运行时常量：基本数据类型或引用数据类型，引用不可变，但引用的类型可变。</div><div class="line">修饰方法：方法不能被继承，不能被子类修改。</div><div class="line">修饰类：不能被继承。</div><div class="line">修饰形参：final形参不可变。</div></pre></td></tr></table></figure></p>
+<p>15,HashMap和ConcurrentHashMap的区别<br>HashMap不是线程安全的，ConcurrentHashMap是线程安全的。<br>ConcurrentHashMap将整个Hash桶进行了分段segment，每个segment上面都有锁的存在。<br>ConcurrentHashMap的锁的粒度越细，并发性能越好。</p>
+<p>16，线程安全<br>定义：类的行为与其的规范一致。<br>如何保证线程安全：<br>   对变量使用validate<br>   对程序进行加锁<br>17，多线程如何进行信息交互<br>Object中的方法，wait，notify(),notifyAll()</p>
+<p>18,多线程共用一个变量需要注意什么<br>在线程对象runnable中定义了全局变量，run方法会修改该变量时，如果有多个线程同时使用该变量时候，可能有错误发生。<br>ThreadLocal是JDK引入的一种机制，它用于解决线程的共享变量，使用ThreadLocal声明的变量，即使在线程中属于全局变量，<br>针对每个线程来讲，这个变量是独立的。<br>validate变量每次被线程访问时，都会使得线程从主内存中重读该变量的最新值，而该变量发生修改时，也是把修改的值写入到<br>内存中去。</p>
+<p>19，线程池<br>基本组成部分：<br>  线程管理器(ThreadPool) :用户创建并管理线程池，包括创建，摧毁线程池，添加新任务。<br>  工作线程（poolwork）:线程池中的线程，在没有任务时，处于等待状态，可以循环使用。<br>  任务接口（Task）：每个任务必须实现的接口，以供工作线程调度的执行，它主要规定了任务的入口，<br>    任务完成的收尾工作，任务的执行状态等。<br>  任务队列（Taskqueue）：用于存放没有处理的任务，提供一种缓存机制。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/01/java-基础题/" data-id="ciy19444y000yzg9opnzees5b" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java基础/">Java基础</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-spring-AOP-注解开发" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/07/28/spring-AOP-注解开发/" class="article-date">
@@ -105,7 +164,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/28/spring-AOP-注解开发/" data-id="cixdzpjky0013qd9o2wgw9j9r" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/07/28/spring-AOP-注解开发/" data-id="ciy1944550016zg9ojckcsyqo" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li></ul>
@@ -156,7 +215,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/27/Docker-应用/" data-id="cixdzpjk70005qd9o72rdq3ti" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/07/27/Docker-应用/" data-id="ciy1944420005zg9ow0j2rw72" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Docker/">Docker</a></li></ul>
@@ -202,7 +261,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/27/spring-Boot-Cloud2/" data-id="cixdzpjl00017qd9of9r5o7t5" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/07/27/spring-Boot-Cloud2/" data-id="ciy194456001azg9o36okb189" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
@@ -269,85 +328,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/27/spring-Boot-Cloud/" data-id="cixdzpjl00015qd9o32enflf2" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/07/27/spring-Boot-Cloud/" data-id="ciy1944560018zg9o39hlnazy" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-markDown" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/07/22/markDown/" class="article-date">
-  <time datetime="2016-07-22T06:08:08.000Z" itemprop="datePublished">2016-07-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/22/markDown/">markDown 的使用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 一级标题</span></div><div class="line"><span class="comment">## 二级标题</span></div><div class="line">依次类推</div></pre></td></tr></table></figure>
-<h1 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">在 Markdown 下，列表的显示只需要在文字前加上 - 或 * 即可变为无序列表，</div><div class="line">有序列表则直接在文字前加 <span class="number">1.</span> <span class="number">2.</span> <span class="number">3.</span> 符号要和文字之间加上一个字符的空格。</div></pre></td></tr></table></figure>
-<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">只需要在文本前加入 &gt; 这种尖括号（大于号）即可</div></pre></td></tr></table></figure>
-<h1 id="图片与链接"><a href="#图片与链接" class="headerlink" title="图片与链接"></a>图片与链接</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">插入链接与插入图片的语法很像，区别在一个 !号</div></pre></td></tr></table></figure>
-<h1 id="粗体与斜体"><a href="#粗体与斜体" class="headerlink" title="粗体与斜体"></a>粗体与斜体</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Markdown 的粗体和斜体也非常简单，用两个 * 包含一段文本就是粗体的语法，</div><div class="line">用一个 * 包含一段文本就是斜体的语法。</div></pre></td></tr></table></figure>
-<p><strong>我只粗体</strong>，<em>我是斜体</em>。</p>
-<h1 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h1><p>表格是我觉得 Markdown 比较累人的地方，例子如下：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">| Tables        | Are           | Cool  <span class="string">|</span></div><div class="line">| ------------- |:-------------:| -----:|</div><div class="line">| col 3 is      | right-aligned | $1600 |</div><div class="line">| col 2 is      | centered      |   $12 |</div><div class="line">| zebra stripes | are neat      |    $1 |</div></pre></td></tr></table></figure></p>
-<table>
-<thead>
-<tr>
-<th>Tables</th>
-<th style="text-align:center">Are</th>
-<th style="text-align:right">Cool</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>col 3 is</td>
-<td style="text-align:center">right-aligned</td>
-<td style="text-align:right">$1600</td>
-</tr>
-<tr>
-<td>col 2 is</td>
-<td style="text-align:center">centered</td>
-<td style="text-align:right">$12</td>
-</tr>
-<tr>
-<td>zebra stripes</td>
-<td style="text-align:center">are neat</td>
-<td style="text-align:right">$1</td>
-</tr>
-</tbody>
-</table>
-<h1 id="分割线"><a href="#分割线" class="headerlink" title="分割线"></a>分割线</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">分割线的语法只需要另起一行，连续输入三个星号 *** 即可。</div></pre></td></tr></table></figure>
-<hr>
-<h1 id="代码框"><a href="#代码框" class="headerlink" title="代码框"></a>代码框</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">如果你是个程序猿，需要在文章里优雅的引用代码框，在 Markdown 下实现也非常简单，</div><div class="line">只需要用两个 ` 把中间的代码包裹起来.</div><div class="line"></div><div class="line">如 `System.out.println()`</div></pre></td></tr></table></figure>
-<p><code>System.out.println()</code></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/07/22/markDown/" data-id="cixdzpjkw000zqd9orozjp4ll" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Markdown/">Markdown</a></li></ul>
 
     </footer>
   </div>
@@ -382,7 +366,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Codis/" style="font-size: 10px;">Codis</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 10px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 16.67px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/拦截器/" style="font-size: 10px;">拦截器</a> <a href="/tags/日志/" style="font-size: 13.33px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a> <a href="/tags/随记/" style="font-size: 10px;">随记</a>
+      <a href="/tags/Codis/" style="font-size: 10px;">Codis</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 12.5px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 17.5px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/拦截器/" style="font-size: 10px;">拦截器</a> <a href="/tags/日志/" style="font-size: 15px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a> <a href="/tags/随记/" style="font-size: 10px;">随记</a>
     </div>
   </div>
 
@@ -391,7 +375,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
     </div>
   </div>
 
@@ -402,6 +386,10 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2017/01/17/ScheduledThreadPoolExecutor的使用/">ScheduledThreadPoolExecutor的使用</a>
+          </li>
         
           <li>
             <a href="/2016/12/31/才觉远去，便起回忆/">2016、才觉远去，便起怀念</a>
@@ -417,10 +405,6 @@
         
           <li>
             <a href="/2016/10/24/spring-kafak集成学习/">spring-kafak集成学习</a>
-          </li>
-        
-          <li>
-            <a href="/2016/09/18/Spring-MVC拦截器/">Spring MVC拦截器</a>
           </li>
         
       </ul>
