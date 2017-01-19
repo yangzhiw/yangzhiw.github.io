@@ -3,17 +3,24 @@
 <head>
   <meta charset="utf-8">
   
-  <title>橘子不酸的博客</title>
+  <title>并发编程之多线程 | 橘子不酸的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记录生活点滴">
-<meta property="og:type" content="website">
-<meta property="og:title" content="橘子不酸的博客">
-<meta property="og:url" content="https://yangzhiw.github.io/index.html">
+  <meta name="description" content="线程安全概念1231、当多个线程访问访问某一个类(对象或方法)时，这个类或对象或方法始终能表现出正确的行为或我们想要的结果，那么这个类(对象或方法)就是线程安全的。2、synchronized：可以在任意的对象及方法上加锁，而加锁的这段代码称之为互斥区或者临界区。
+线程和锁多个线程多个锁:多个线程，每个线程都可以拿到自己指定的锁，分别获得锁之后，执行synchronized方法体的内容。
+代码示例">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并发编程之多线程">
+<meta property="og:url" content="https://yangzhiw.github.io/2017/01/19/并发编程之多线程/index.html">
 <meta property="og:site_name" content="橘子不酸的博客">
-<meta property="og:description" content="记录生活点滴">
+<meta property="og:description" content="线程安全概念1231、当多个线程访问访问某一个类(对象或方法)时，这个类或对象或方法始终能表现出正确的行为或我们想要的结果，那么这个类(对象或方法)就是线程安全的。2、synchronized：可以在任意的对象及方法上加锁，而加锁的这段代码称之为互斥区或者临界区。
+线程和锁多个线程多个锁:多个线程，每个线程都可以拿到自己指定的锁，分别获得锁之后，执行synchronized方法体的内容。
+代码示例">
+<meta property="og:updated_time" content="2017-01-19T13:02:42.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="橘子不酸的博客">
-<meta name="twitter:description" content="记录生活点滴">
+<meta name="twitter:title" content="并发编程之多线程">
+<meta name="twitter:description" content="线程安全概念1231、当多个线程访问访问某一个类(对象或方法)时，这个类或对象或方法始终能表现出正确的行为或我们想要的结果，那么这个类(对象或方法)就是线程安全的。2、synchronized：可以在任意的对象及方法上加锁，而加锁的这段代码称之为互斥区或者临界区。
+线程和锁多个线程多个锁:多个线程，每个线程都可以拿到自己指定的锁，分别获得锁之后，执行synchronized方法体的内容。
+代码示例">
   
     <link rel="alternate" href="/atom.xml" title="橘子不酸的博客" type="application/atom+xml">
   
@@ -66,9 +73,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-并发编程之多线程" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-并发编程之多线程" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/01/19/并发编程之多线程/" class="article-date">
   <time datetime="2017-01-19T11:38:07.000Z" itemprop="datePublished">2017-01-19</time>
@@ -81,8 +86,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/19/并发编程之多线程/">并发编程之多线程</a>
+    <h1 class="article-title" itemprop="name">
+      并发编程之多线程
     </h1>
   
 
@@ -120,205 +125,20 @@
     </footer>
   </div>
   
-</article>
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-ScheduledThreadPoolExecutor的使用" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/17/ScheduledThreadPoolExecutor的使用/" class="article-date">
-  <time datetime="2017-01-17T07:40:58.000Z" itemprop="datePublished">2017-01-17</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/17/ScheduledThreadPoolExecutor的使用/">ScheduledThreadPoolExecutor的使用</a>
-    </h1>
+    <a href="/2017/01/17/ScheduledThreadPoolExecutor的使用/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ScheduledThreadPoolExecutor的使用</div>
+    </a>
   
+</nav>
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Java Executor框架提供了ThreadPoolExecutor类去执行Callable和Runnable任务，这样避免了大量的复杂代码的操作，但是有时你需要定时去执行你的任务，这个时候你就要使用ScheduledThreadPoolExecutor类了。</p>
-<h1 id="先写个基本的任务"><a href="#先写个基本的任务" class="headerlink" title="先写个基本的任务"></a>先写个基本的任务</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Task</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">private</span> String name;</div><div class="line"> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Task</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.name = name;</div><div class="line">    &#125;</div><div class="line">     </div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> name;</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            System.out.println(<span class="string">"Doing a task during : "</span> + name + <span class="string">" - Time - "</span> + <span class="keyword">new</span> Date());</div><div class="line">        &#125; </div><div class="line">        <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="一段时间后执行"><a href="#一段时间后执行" class="headerlink" title="一段时间后执行"></a>一段时间后执行</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ScheduledThreadPoolExecutorExample</span></span></div><div class="line">&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span></div><div class="line">    &#123;</div><div class="line">        ScheduledExecutorService executor = Executors.newScheduledThreadPool(<span class="number">2</span>);</div><div class="line">        Task task1 = <span class="keyword">new</span> Task (<span class="string">"Demo Task 1"</span>);</div><div class="line">        Task task2 = <span class="keyword">new</span> Task (<span class="string">"Demo Task 2"</span>);</div><div class="line">         </div><div class="line">        System.out.println(<span class="string">"The time is : "</span> + <span class="keyword">new</span> Date());</div><div class="line">         </div><div class="line">        executor.schedule(task1, <span class="number">5</span> , TimeUnit.SECONDS);</div><div class="line">        executor.schedule(task2, <span class="number">10</span> , TimeUnit.SECONDS);</div><div class="line">         </div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">              executor.awaitTermination(<span class="number">1</span>, TimeUnit.DAYS);</div><div class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">              e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">         </div><div class="line">        executor.shutdown();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>The time is : Tue Jan 25 16:14:07 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:14:12 IST 2017<br>Doing a task during : Demo Task 2 - Time - Tue Jan 25 16:14:17 IST 2017</p>
-<h1 id="执行任务时间片的形式"><a href="#执行任务时间片的形式" class="headerlink" title="执行任务时间片的形式"></a>执行任务时间片的形式</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ScheduledThreadPoolExecutorExample</span></span></div><div class="line">&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span></div><div class="line">    &#123;</div><div class="line">        ScheduledExecutorService executor = Executors.newScheduledThreadPool(<span class="number">1</span>);</div><div class="line">        Task task1 = <span class="keyword">new</span> Task (<span class="string">"Demo Task 1"</span>);</div><div class="line">         </div><div class="line">        System.out.println(<span class="string">"The time is : "</span> + <span class="keyword">new</span> Date());</div><div class="line">         </div><div class="line">        ScheduledFuture&lt;?&gt; result = executor.scheduleAtFixedRate(task1, <span class="number">2</span>, <span class="number">5</span>, TimeUnit.SECONDS);</div><div class="line">         </div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            TimeUnit.MILLISECONDS.sleep(<span class="number">20000</span>);</div><div class="line">        &#125; </div><div class="line">        <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">         </div><div class="line">        executor.shutdown();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>Output:</p>
-<p>The time is : Tue Jan 25 16:20:12 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:20:14 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:20:19 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:20:24 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:20:29 IST 2017</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2017/01/17/ScheduledThreadPoolExecutor的使用/" data-id="ciy4b6gzv000dq69o18bsfxme" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Scheduler/">Scheduler</a></li></ul>
-
-    </footer>
-  </div>
   
 </article>
 
-
-  
-    <article id="post-才觉远去，便起回忆" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/31/才觉远去，便起回忆/" class="article-date">
-  <time datetime="2016-12-31T12:04:15.000Z" itemprop="datePublished">2016-12-31</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/31/才觉远去，便起回忆/">2016、才觉远去，便起怀念</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>   一年的开始，总是伴着喜庆的色彩。1月份，往往很多公司都要开始准备年会了。作为公司最年轻的团队，也忘记了是哪个家伙想的，让我们年会上唱bigbang的loser😭。我和另外4个小伙伴不幸就被选上了，拼了，就算是为了我们这个团队，依稀的记得的那一晚，我们玩的很嗨。虽然还是在实习阶段，可是我已觉得我早已融入进这个团队了，和他们成为了好朋友。从大三暑期实习开始，我就已经知道我没有寒假和暑假了，这一年的春节，虽然在家里呆的时间也不长。对我来说是不同的，因为我自己可以赚钱了，拿着这些钱给父母买了些东西，可以外婆包红包了就像当初她给我们一样。</p>
-<p>   匆匆茫茫的回到了公司，重新开始了工作。元宵节，和几个大学一起过的，在一个城市，有些同学还是不错的，至少平时我们可以相互发发牢骚。感觉到了3月份，工作才慢慢进入正轨，这个时候的我也开始思考了毕业之后的去向了，思考着是继续留在实习的公司还是去重新找一家，最终考虑的结果是留在这个公司，因为这里有很多我熟悉的人和事。3月末，了解到团队中有些实习生要走了，有要去读研深造的，有要换公司的，在送别聚餐的那一晚，我们很多都喝多了。或许我们都知道有相聚就有离开，但是没想到这才是刚刚开始而已。</p>
-<p>   杭州的4月天是很舒服的，听说一个高中的同桌同学来到了浙大读研，我当初怎么没看出来你还有这个潜力。我们一起在杭州西湖旁边的山上踏着青，记得她说过，还是老同学在一起实在啊。是啊，高中时的那些同学们，我还记的和你们一起奋斗和玩耍的时光啊。五月初，我们团队自驾游去了安吉的天荒坪了，虽然那个周末天气不是很好，但我们还是玩的很开心的。回来的路上，我们在车上把后备箱的几瓶酒在路上全吹掉了，一种宿醉的感觉。</p>
-<p>   想到马上要回到学校，内心还是很激动过的，可能都知道大学四年就剩下这1个多月时间了，同学宿舍之间走动更加的频繁了。时间流逝的总是快的，做毕设、写论文、答辩、拍毕业照、毕业酒会。马上就要毕业了，谁又能想到答辩那天走出教室后，直到现在我都没有再进去过大学教室。是啊，要再见了，我的小伙伴们。</p>
-<p>   6月25号，从南昌来到杭州，其实内心还是很激动的，因为我知道我再也不是实习生了，我马上要转为公司的正式员工了。可是令我想不到的是很多事情都在改变，领导也不再是之前的领导，一年时间真的是习惯了你们的存在(后面在新的一家公司上班时，叫错了几次领导的名字😅)。接下来公司工作环境就变得有些诡异了，当时也没想太多，更深层次的东西我也想不到，只是感觉，这种工作状态还不如之前实习的那个团队，当工作失去激情，离离开也就不远了。好在，我并没有因为这样的状态而颓废，这段时间，本人开了博客，开始写写技术文章，学习新技术以充实自己，这段时间的知识积累，也对我后面找新的工作有了帮助。接下来杭州慢慢开始成为世界上最安全最干净的城市了，因为受全世界关注的G20要在杭州举行了，杭州真的很不错，我喜欢这座城。</p>
-<p>   离开，9月20号，因某些原因，从公司离开。接下来，很多的散伙饭，这让我想起了毕业时的场景，没有不散的宴席，谁会饿着肚子去呐喊，开始准备写简历去迎接新的工作了。面了6家企业，我最终还是选择了感觉最有发展前景的C公司，准备国庆后迎接新的环境。</p>
-<p>   深刻体会来到一家新的企业，都要给时间去适应的。10月基本上也就是去适应公司环境的过程了；公司发展迅速，项目时间安排紧，而这给我带来的影响就是经常加班了。可能是为了缓解压力，11月份公司安排一次团建，是去安吉，顿时有种熟悉的感觉。</p>
-<p>   一年过的真的很快啊，突然就到了一年的最后一个月了，这个月真是工作以来忙碌的一个月啊，就连今天这一年的最后一天，都在公司加班（😂，其实心根本不在状态）。还有就是这个月也是最难忘的，因为我遇到了一个让我心动的女孩，是的，那是心动的感觉。</p>
-<p>   在新的一年里，希望自己能养成看书的习惯吧，然后让自己运动起来，最后希望就是工作轻松些，似乎这也不太实际了，成长总要付出努力和汗水。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/12/31/才觉远去，便起回忆/" data-id="ciy4b6h0x001sq69oham4ugsb" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/随记/">随记</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Java设计模式" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/31/Java设计模式/" class="article-date">
-  <time datetime="2016-12-31T12:01:24.000Z" itemprop="datePublished">2016-12-31</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/31/Java设计模式/">Java设计模式</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/12/31/Java设计模式/" data-id="ciy4b6gzq0008q69odfgnx859" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-分布式系统" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/11/25/分布式系统/" class="article-date">
-  <time datetime="2016-11-25T07:31:06.000Z" itemprop="datePublished">2016-11-25</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/25/分布式系统/">分布式系统</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="高吞吐，高并发，底延迟"><a href="#高吞吐，高并发，底延迟" class="headerlink" title="高吞吐，高并发，底延迟"></a>高吞吐，高并发，底延迟</h1><h1 id="分布式系统提高承载量的基本手段"><a href="#分布式系统提高承载量的基本手段" class="headerlink" title="分布式系统提高承载量的基本手段"></a>分布式系统提高承载量的基本手段</h1><pre><code>## 分层模型（路由，代理）
-
-    典型的的就是三层结构：接入，逻辑，存储
-
-## 并发模型（多线程，异步）
-    多线程
-    异步回调基于非阻塞的I/O操作（网络和文件）
-
-## 缓冲技术
-## 存储技术（NoSQL）
-</code></pre><h1 id="分布式系统在可管理性上造成的问题"><a href="#分布式系统在可管理性上造成的问题" class="headerlink" title="分布式系统在可管理性上造成的问题"></a>分布式系统在可管理性上造成的问题</h1><pre><code>## 硬件故障率
-
-## 资源利用率优化
-
-## 软件服务内容更新
-
- ## 数据统计和决策
-</code></pre><h1 id="解决分布式系统可管理性的基本手段"><a href="#解决分布式系统可管理性的基本手段" class="headerlink" title="解决分布式系统可管理性的基本手段"></a>解决分布式系统可管理性的基本手段</h1><pre><code>## 目录服务（ZooKeeper）
-
-## 消息队列服务（ActiveMQ、ZeroMQ、Jgroups）
-
-## 事务系统
-
-## 自动部署工具（Docker）
-
-## 日志服务（log4j）
-</code></pre><h1 id="分布式系统在开发效率上造成的问题和解决思路"><a href="#分布式系统在开发效率上造成的问题和解决思路" class="headerlink" title="分布式系统在开发效率上造成的问题和解决思路"></a>分布式系统在开发效率上造成的问题和解决思路</h1>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/11/25/分布式系统/" data-id="ciy4b6h0v001oq69o15fkl7e0" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-
-
-  <nav id="page-nav">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
-  </nav>
 </section>
         
           <aside id="sidebar">
