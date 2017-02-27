@@ -68,6 +68,128 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-线程池的使用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/02/27/线程池的使用/" class="article-date">
+  <time datetime="2017-02-27T07:26:36.000Z" itemprop="datePublished">2017-02-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/27/线程池的使用/">线程池的使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h1><h2 id="为什么要用线程池"><a href="#为什么要用线程池" class="headerlink" title="为什么要用线程池:"></a>为什么要用线程池:</h2><p>1.减少了创建和销毁线程的次数，每个工作线程都可以被重复利用，可执行多个任务。<br>2.可以根据系统的承受能力，调整线程池中工作线线程的数目，防止因为消耗过多的内存，而把服务器累趴下(每个线程需要大约1MB内存，线程开的越多，消耗的内存也就越大，最后死机)。</p>
+<p>Java里面线程池的顶级接口是Executor，但是严格意义上讲Executor并不是一个线程池，而只是一个执行线程的工具。真正的线程池接口是ExecutorService。</p>
+<h2 id="重要的类"><a href="#重要的类" class="headerlink" title="重要的类"></a>重要的类</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ExecutorServcie                 <span class="comment">//真正的线程池接口。</span></div><div class="line">ScheduledExecutorService	    <span class="comment">//能和Timer/TimerTask类似，解决那些需要任务重复执行的问题。</span></div><div class="line">ThreadPoolExecutor              <span class="comment">//ExecutorService的默认实现。</span></div><div class="line">ScheduledThreadPoolExecutor     <span class="comment">//继承ThreadPoolExecutor的ScheduledExecutorService接口实现，周期性任务调度的类实现</span></div></pre></td></tr></table></figure>
+<h2 id="线程池工具类"><a href="#线程池工具类" class="headerlink" title="线程池工具类"></a>线程池工具类</h2><p>要配置一个线程池是比较复杂的，尤其是对于线程池的原理不是很清楚的情况下，很有可能配置的线程池不是较优的，因此在Executors类里面提供了一些静态工厂，生成一些常用的线程池。<br><strong>1. newSingleThreadExecutor</strong><br>创建一个单线程的线程池。这个线程池只有一个线程在工作，也就是相当于单线程串行执行所有任务。如果这个唯一的线程因为异常结束，那么会有一个新的线程来替代它。此线程池保证所有任务的执行顺序按照任务的提交顺序执行。<br><strong>2. newFixedThreadPool</strong><br>创建固定大小的线程池。每次提交一个任务就创建一个线程，直到线程达到线程池的最大大小。线程池的大小一旦达到最大值就会保持不变，如果某个线程因为执行异常而结束，那么线程池会补充一个新线程。<br><strong>3. newCachedThreadPool</strong><br>创建一个可缓存的线程池。如果线程池的大小超过了处理任务所需要的线程，<br>那么就会回收部分空闲（60秒不执行任务）的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统（或者说JVM）能够创建的最大线程大小。<br><strong>4. newScheduledThreadPool</strong><br>创建一个大小无限的线程池。此线程池支持定时以及周期性执行任务的需求。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2017/02/27/线程池的使用/" data-id="cizns6rlz001kb2hjepy9uzv2" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/并发编程/">并发编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-设计模式之装饰者模式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/02/05/设计模式之装饰者模式/" class="article-date">
+  <time datetime="2017-02-05T03:40:30.000Z" itemprop="datePublished">2017-02-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/05/设计模式之装饰者模式/">设计模式之装饰者模式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2017/02/05/设计模式之装饰者模式/" data-id="cizns6rm6001wb2hj6vbqztu4" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-设计模式之观察者模式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/21/设计模式之观察者模式/" class="article-date">
+  <time datetime="2017-01-21T12:32:53.000Z" itemprop="datePublished">2017-01-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/21/设计模式之观察者模式/">设计模式之观察者模式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>在对象之间定义一对多的依赖，这样一来，当一个对象改变状态，依赖它的对象都全部受到通知并自动更新。</p>
+<h2 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h2><ul>
+<li>使用此模式时，你可从被观察者处推（push）或拉（pull）数据。</li>
+<li>有多个观察者时，不可以依赖特定的通知次序。</li>
+<li>Java有多个观察者模式的实现，包括了通用的java.util.Observable,要注意这种实现带来的一些问题</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2017/01/21/设计模式之观察者模式/" data-id="cizns6rm7001yb2hjrklgvqi3" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/设计模式/">设计模式</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-并发编程之多线程" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/01/19/并发编程之多线程/" class="article-date">
@@ -112,7 +234,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2017/01/19/并发编程之多线程/" data-id="ciy4fo1ct001qnk9ogk5dvpws" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2017/01/19/并发编程之多线程/" data-id="cizns6rm3001sb2hjkpsxrmqr" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/并发编程/">并发编程</a></li></ul>
@@ -157,7 +279,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2017/01/17/ScheduledThreadPoolExecutor的使用/" data-id="ciy4fo1bj000ank9oqz3rahgv" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2017/01/17/ScheduledThreadPoolExecutor的使用/" data-id="cizns6rks0008b2hjf08xl0g7" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Scheduler/">Scheduler</a></li></ul>
@@ -169,155 +291,10 @@
 
 
   
-    <article id="post-才觉远去，便起回忆" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/31/才觉远去，便起回忆/" class="article-date">
-  <time datetime="2016-12-31T12:04:15.000Z" itemprop="datePublished">2016-12-31</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/31/才觉远去，便起回忆/">2016、才觉远去，便起怀念</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>   一年的开始，总是伴着喜庆的色彩。1月份，往往很多公司都要开始准备年会了。作为公司最年轻的团队，也忘记了是哪个家伙想的，让我们年会上唱bigbang的loser😭。我和另外4个小伙伴不幸就被选上了，拼了，就算是为了我们这个团队，依稀的记得的那一晚，我们玩的很嗨。虽然还是在实习阶段，可是我已觉得我早已融入进这个团队了，和他们成为了好朋友。从大三暑期实习开始，我就已经知道我没有寒假和暑假了，这一年的春节，虽然在家里呆的时间也不长。对我来说是不同的，因为我自己可以赚钱了，拿着这些钱给父母买了些东西，可以外婆包红包了就像当初她给我们一样。</p>
-<p>   匆匆茫茫的回到了公司，重新开始了工作。元宵节，和几个大学一起过的，在一个城市，有些同学还是不错的，至少平时我们可以相互发发牢骚。感觉到了3月份，工作才慢慢进入正轨，这个时候的我也开始思考了毕业之后的去向了，思考着是继续留在实习的公司还是去重新找一家，最终考虑的结果是留在这个公司，因为这里有很多我熟悉的人和事。3月末，了解到团队中有些实习生要走了，有要去读研深造的，有要换公司的，在送别聚餐的那一晚，我们很多都喝多了。或许我们都知道有相聚就有离开，但是没想到这才是刚刚开始而已。</p>
-<p>   杭州的4月天是很舒服的，听说一个高中的同桌同学来到了浙大读研，我当初怎么没看出来你还有这个潜力。我们一起在杭州西湖旁边的山上踏着青，记得她说过，还是老同学在一起实在啊。是啊，高中时的那些同学们，我还记的和你们一起奋斗和玩耍的时光啊。五月初，我们团队自驾游去了安吉的天荒坪了，虽然那个周末天气不是很好，但我们还是玩的很开心的。回来的路上，我们在车上把后备箱的几瓶酒在路上全吹掉了，一种宿醉的感觉。</p>
-<p>   想到马上要回到学校，内心还是很激动过的，可能都知道大学四年就剩下这1个多月时间了，同学宿舍之间走动更加的频繁了。时间流逝的总是快的，做毕设、写论文、答辩、拍毕业照、毕业酒会。马上就要毕业了，谁又能想到答辩那天走出教室后，直到现在我都没有再进去过大学教室。是啊，要再见了，我的小伙伴们。</p>
-<p>   6月25号，从南昌来到杭州，其实内心还是很激动的，因为我知道我再也不是实习生了，我马上要转为公司的正式员工了。可是令我想不到的是很多事情都在改变，领导也不再是之前的领导，一年时间真的是习惯了你们的存在(后面在新的一家公司上班时，叫错了几次领导的名字😅)。接下来公司工作环境就变得有些诡异了，当时也没想太多，更深层次的东西我也想不到，只是感觉，这种工作状态还不如之前实习的那个团队，当工作失去激情，离离开也就不远了。好在，我并没有因为这样的状态而颓废，这段时间，本人开了博客，开始写写技术文章，学习新技术以充实自己，这段时间的知识积累，也对我后面找新的工作有了帮助。接下来杭州慢慢开始成为世界上最安全最干净的城市了，因为受全世界关注的G20要在杭州举行了，杭州真的很不错，我喜欢这座城。</p>
-<p>   离开，9月20号，因某些原因，从公司离开。接下来，很多的散伙饭，这让我想起了毕业时的场景，没有不散的宴席，谁会饿着肚子去呐喊，开始准备写简历去迎接新的工作了。面了6家企业，我最终还是选择了感觉最有发展前景的C公司，准备国庆后迎接新的环境。</p>
-<p>   深刻体会来到一家新的企业，都要给时间去适应的。10月基本上也就是去适应公司环境的过程了；公司发展迅速，项目时间安排紧，而这给我带来的影响就是经常加班了。可能是为了缓解压力，11月份公司安排一次团建，是去安吉，顿时有种熟悉的感觉。</p>
-<p>   一年过的真的很快啊，突然就到了一年的最后一个月了，这个月真是工作以来忙碌的一个月啊，就连今天这一年的最后一天，都在公司加班（😂，其实心根本不在状态）。还有就是这个月也是最难忘的，因为我遇到了一个让我心动的女孩，是的，那是心动的感觉。</p>
-<p>   在新的一年里，希望自己能养成看书的习惯吧，然后让自己运动起来，最后希望就是工作轻松些，似乎这也不太实际了，成长总要付出努力和汗水。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/12/31/才觉远去，便起回忆/" data-id="ciy4fo1cs001onk9oxer57zm4" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/随记/">随记</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Java设计模式" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/31/Java设计模式/" class="article-date">
-  <time datetime="2016-12-31T12:01:24.000Z" itemprop="datePublished">2016-12-31</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/31/Java设计模式/">Java设计模式</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/12/31/Java设计模式/" data-id="ciy4fo1ba0005nk9okfuthb6e" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-分布式系统" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/11/25/分布式系统/" class="article-date">
-  <time datetime="2016-11-25T07:31:06.000Z" itemprop="datePublished">2016-11-25</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/25/分布式系统/">分布式系统</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="高吞吐，高并发，底延迟"><a href="#高吞吐，高并发，底延迟" class="headerlink" title="高吞吐，高并发，底延迟"></a>高吞吐，高并发，底延迟</h1><h1 id="分布式系统提高承载量的基本手段"><a href="#分布式系统提高承载量的基本手段" class="headerlink" title="分布式系统提高承载量的基本手段"></a>分布式系统提高承载量的基本手段</h1><pre><code>## 分层模型（路由，代理）
-
-    典型的的就是三层结构：接入，逻辑，存储
-
-## 并发模型（多线程，异步）
-    多线程
-    异步回调基于非阻塞的I/O操作（网络和文件）
-
-## 缓冲技术
-## 存储技术（NoSQL）
-</code></pre><h1 id="分布式系统在可管理性上造成的问题"><a href="#分布式系统在可管理性上造成的问题" class="headerlink" title="分布式系统在可管理性上造成的问题"></a>分布式系统在可管理性上造成的问题</h1><pre><code>## 硬件故障率
-
-## 资源利用率优化
-
-## 软件服务内容更新
-
- ## 数据统计和决策
-</code></pre><h1 id="解决分布式系统可管理性的基本手段"><a href="#解决分布式系统可管理性的基本手段" class="headerlink" title="解决分布式系统可管理性的基本手段"></a>解决分布式系统可管理性的基本手段</h1><pre><code>## 目录服务（ZooKeeper）
-
-## 消息队列服务（ActiveMQ、ZeroMQ、Jgroups）
-
-## 事务系统
-
-## 自动部署工具（Docker）
-
-## 日志服务（log4j）
-</code></pre><h1 id="分布式系统在开发效率上造成的问题和解决思路"><a href="#分布式系统在开发效率上造成的问题和解决思路" class="headerlink" title="分布式系统在开发效率上造成的问题和解决思路"></a>分布式系统在开发效率上造成的问题和解决思路</h1>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/11/25/分布式系统/" data-id="ciy4fo1cr001mnk9of7wvg0o9" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
 
 
   <nav id="page-nav">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -330,7 +307,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Codis/">Codis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heroku/">Heroku</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java基础/">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异常处理/">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/拦截器/">拦截器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/随记/">随记</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Codis/">Codis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heroku/">Heroku</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java基础/">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异常处理/">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/拦截器/">拦截器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/设计模式/">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/随记/">随记</a></li></ul>
     </div>
   </div>
 
@@ -340,7 +317,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Codis/" style="font-size: 10px;">Codis</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 12.5px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 17.5px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/并发编程/" style="font-size: 10px;">并发编程</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/拦截器/" style="font-size: 10px;">拦截器</a> <a href="/tags/日志/" style="font-size: 15px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a> <a href="/tags/随记/" style="font-size: 10px;">随记</a>
+      <a href="/tags/Codis/" style="font-size: 10px;">Codis</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 12.5px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 17.5px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/拦截器/" style="font-size: 10px;">拦截器</a> <a href="/tags/日志/" style="font-size: 15px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a> <a href="/tags/设计模式/" style="font-size: 12.5px;">设计模式</a> <a href="/tags/随记/" style="font-size: 10px;">随记</a>
     </div>
   </div>
 
@@ -349,7 +326,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
     </div>
   </div>
 
@@ -362,23 +339,23 @@
       <ul>
         
           <li>
+            <a href="/2017/02/27/线程池的使用/">线程池的使用</a>
+          </li>
+        
+          <li>
+            <a href="/2017/02/05/设计模式之装饰者模式/">设计模式之装饰者模式</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/21/设计模式之观察者模式/">设计模式之观察者模式</a>
+          </li>
+        
+          <li>
             <a href="/2017/01/19/并发编程之多线程/">并发编程之多线程</a>
           </li>
         
           <li>
             <a href="/2017/01/17/ScheduledThreadPoolExecutor的使用/">ScheduledThreadPoolExecutor的使用</a>
-          </li>
-        
-          <li>
-            <a href="/2016/12/31/才觉远去，便起回忆/">2016、才觉远去，便起怀念</a>
-          </li>
-        
-          <li>
-            <a href="/2016/12/31/Java设计模式/">Java设计模式</a>
-          </li>
-        
-          <li>
-            <a href="/2016/11/25/分布式系统/">分布式系统</a>
           </li>
         
       </ul>

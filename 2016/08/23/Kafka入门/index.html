@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Kafka入门 | 橘子不酸的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="基础知识介绍Kafka是一个分布式的、可分区的、可复制的消息系统。它提供了普通消息系统的功能，但具有自己独特的设计。首先让我们看几个基本的消息系统术语：Kafka将消息以topic为单位进行归纳。将向Kafka topic发布消息的程序成为producers.将预订topics并消费消息的程序成为consumer.Kafka以集群的方式运行，可以由一个或多个服务组成，每个服务叫做一个broker.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kafka入门">
+<meta property="og:url" content="https://yangzhiw.github.io/2016/08/23/Kafka入门/index.html">
+<meta property="og:site_name" content="橘子不酸的博客">
+<meta property="og:description" content="基础知识介绍Kafka是一个分布式的、可分区的、可复制的消息系统。它提供了普通消息系统的功能，但具有自己独特的设计。首先让我们看几个基本的消息系统术语：Kafka将消息以topic为单位进行归纳。将向Kafka topic发布消息的程序成为producers.将预订topics并消费消息的程序成为consumer.Kafka以集群的方式运行，可以由一个或多个服务组成，每个服务叫做一个broker.">
+<meta property="og:updated_time" content="2016-08-23T07:49:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kafka入门">
+<meta name="twitter:description" content="基础知识介绍Kafka是一个分布式的、可分区的、可复制的消息系统。它提供了普通消息系统的功能，但具有自己独特的设计。首先让我们看几个基本的消息系统术语：Kafka将消息以topic为单位进行归纳。将向Kafka topic发布消息的程序成为producers.将预订topics并消费消息的程序成为consumer.Kafka以集群的方式运行，可以由一个或多个服务组成，每个服务叫做一个broker.">
+  
+    <link rel="alternate" href="/atom.xml" title="橘子不酸的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">橘子不酸的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一天进步一点</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://yangzhiw.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Kafka入门" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/23/Kafka入门/" class="article-date">
+  <time datetime="2016-08-23T03:25:06.000Z" itemprop="datePublished">2016-08-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Kafka入门
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>Kafka是一个分布式的、可分区的、可复制的消息系统。它提供了普通消息系统的功能，但具有自己独特的设计。<br>首先让我们看几个基本的消息系统术语：<br>Kafka将消息以topic为单位进行归纳。<br>将向Kafka topic发布消息的程序成为producers.<br>将预订topics并消费消息的程序成为consumer.<br>Kafka以集群的方式运行，可以由一个或多个服务组成，每个服务叫做一个broker.<br></p>
+<h2 id="分布式"><a href="#分布式" class="headerlink" title="分布式"></a>分布式</h2><p>每个分区在Kafka集群的若干服务中都有副本，这样这些持有副本的服务可以共同处理数据和请求，副本数量是可以配置的。副本使Kafka具备了容错能力。<br>每个分区都由一个服务器作为“leader”，零或若干服务器作为“followers”,leader负责处理消息的读和写，followers则去复制leader.如果leader down了，<br>followers中的一台则会自动成为leader。集群中的每个服务都会同时扮演两个角色：<br>作为它所持有的一部分分区的leader，同时作为其他分区的followers，这样集群就会据有较好的负载均衡。</p>
+<h2 id="Producers"><a href="#Producers" class="headerlink" title="Producers"></a>Producers</h2><p>Producer将消息发布到它指定的topic中,并负责决定发布到哪个分区。通常简单的由负载均衡机制随机选择分区，但也可以通过特定的分区函数选择分区。<br>使用的更多的是第二种。</p>
+<h2 id="Consumers"><a href="#Consumers" class="headerlink" title="Consumers"></a>Consumers</h2><p>发布消息通常有两种模式：队列模式（queuing）和发布-订阅模式(publish-subscribe)。队列模式中，consumers可以同时从服务端读取<br>消息，每个消息只被其中一个consumer读到；发布-订阅模式中消息被广播到所有的consumer中。Consumers可以加入一个consumer<br>组，共同竞争一个topic，topic中的消息将被分发到组中的一个成员中。同一组中的consumer可以在不同的程序中，也可以在不同的<br>机器上。如果所有的consumer都在一个组中，这就成为了传统的队列模式，在各consumer中实现负载均衡。如果所有的consumer<br>不在不同的组中，这就成为了发布-订阅模式，所有的消息都被分发到所有的consumer中。更常见的是，每个topic都有若干数量<br>的consumer组，每个组都是一个逻辑上的“订阅者”，为了容错和更好的稳定性，每个组由若干consumer组成。这其实就是一个<br>发布-订阅模式，只不过订阅者是个组而不是单个consumer。<br><br>由两个机器组成的集群拥有4个分区 (P0-P3) 2个consumer组. A组有两个consumerB组有4个<br>相比传统的消息系统，Kafka可以很好的保证有序性。<br>传统的队列在服务器上保存有序的消息，如果多个consumers同时从这个服务器消费消息，服务器就会以消息存储的顺序向<br>consumer分发消息。虽然服务器按顺序发布消息，但是消息是被异步的分发到各consumer上，所以当消息到达时可能已经失去了<br>原来的顺序，这意味着并发消费将导致顺序错乱。为了避免故障，这样的消息系统通常使用“专用consumer”的概念，其实就是<br>只允许一个消费者消费消息，当然这就意味着失去了并发性。<br>在这方面Kafka做的更好，通过分区的概念，Kafka可以在多个consumer组并发的情况下提供较好的有序性和负载均衡。<br>将每个分区分只分发给一个consumer组，这样一个分区就只被这个组的一个consumer消费，就可以顺序的消费这个分区的消息。<br>为有多个分区，依然可以在多个consumer组之间进行负载均衡。注意consumer组的数量不能多于分区的数量，也就是有多少<br>分区就允许多少并发消费。<br>Kafka只能保证一个分区之内消息的有序性，在不同的分区之间是不可以的，这已经可以满足大部分应用的需求。<br>如果需要topic中所有消息的有序性，那就只能让这个topic只有一个分区，当然也就只有一个consumer组消费它。</p>
+<h1 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h1><h2 id="下载并解压"><a href="#下载并解压" class="headerlink" title="下载并解压"></a>下载并解压</h2><p>从<a href="http://kafka.apache.org/downloads.html" target="_blank" rel="external">官网</a>选择下载最新的二进制文件<br>解压<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">tar -vxzf kafka_2<span class="number">.11</span><span class="bullet">-0.10</span><span class="number">.0</span><span class="number">.1</span>.tgz</div><div class="line">cd kafka_2<span class="number">.11</span><span class="bullet">-0.10</span><span class="number">.0</span><span class="number">.1</span></div></pre></td></tr></table></figure></p>
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><p>1.启动zookeeper<br>2.启动kafka<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bin/kafka-server-start.sh config/server.properties</div></pre></td></tr></table></figure></p>
+<p>3.创建topic<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">使用kafka-topics.sh 创建单分区单副本的topic test：</div><div class="line">bin/kafka-topics.sh --create --zookeeper localhost:<span class="number">2181</span> --replication-factor <span class="number">1</span> --partitions <span class="number">1</span> --topic test</div><div class="line">查看</div><div class="line">bin/kafka-topics.sh --list --zookeeper localhost:<span class="number">2181</span></div><div class="line">test</div></pre></td></tr></table></figure></p>
+<p>4.产生消息<br>使用kafka-console-producer.sh 发送消息：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">bin/kafka-console-producer.sh --broker-list localhost:<span class="number">9092</span> --topic test </div><div class="line">Hello world！</div><div class="line">Hello Kafka！</div></pre></td></tr></table></figure></p>
+<p>按Ctrl+C退出<br>5.消费消息<br>使用kafka-console-consumer.sh 接收消息并在终端打印：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">bin/kafka-console-consumer.sh --zookeeper localhost:<span class="number">2181</span> --topic test --from-beginning</div><div class="line">Hello world!</div><div class="line">Hello Kafka!</div></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<h1 id="集群部署"><a href="#集群部署" class="headerlink" title="集群部署"></a>集群部署</h1><h2 id="单机多broker-集群配置"><a href="#单机多broker-集群配置" class="headerlink" title="单机多broker 集群配置"></a>单机多broker 集群配置</h2><p>利用单节点部署多个broker。 不同的broker 设置不同的 id，监听端口及日志目录。 例如：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cp config/server.properties config/server<span class="bullet">-1.</span>properties </div><div class="line">cp config/server.properties config/server<span class="bullet">-2.</span>properties</div></pre></td></tr></table></figure></p>
+<p>编辑配置<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">config/server<span class="bullet">-1.</span>properties:</div><div class="line">    broker.id=<span class="number">1</span></div><div class="line">    port=<span class="number">9093</span></div><div class="line">    log.dir=/tmp/kafka-logs<span class="bullet">-1</span></div><div class="line">config/server<span class="bullet">-2.</span>properties:</div><div class="line">    broker.id=<span class="number">2</span></div><div class="line">    port=<span class="number">9094</span></div><div class="line">    log.dir=/tmp/kafka-logs<span class="bullet">-2</span></div></pre></td></tr></table></figure></p>
+<p>启动Kafka服务：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">bin/kafka-server-start.sh config/server<span class="bullet">-1.</span>properties &amp;</div><div class="line">bin/kafka-server-start.sh config/server<span class="bullet">-2.</span>properties &amp;</div></pre></td></tr></table></figure></p>
+<p>创建一个拥有3个副本的topic:<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bin/kafka-topics.sh --create --zookeeper localhost:<span class="number">2181</span> --replication-factor <span class="number">3</span> --partitions <span class="number">1</span> --topic my-replicated-topic</div></pre></td></tr></table></figure></p>
+<p>现在我们搭建了一个集群，怎么知道每个节点的信息呢？运行“describe topics”命令就可以了：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">bin/kafka-topics.sh --describe --zookeeper localhost:<span class="number">2181</span> --topic my-replicated-topic</div><div class="line"></div><div class="line">显示</div><div class="line"><span class="attr">Topic:</span>my-replicated-topic       PartitionCount:<span class="number">1</span>        ReplicationFactor:<span class="number">3</span>     Configs:</div><div class="line"><span class="attr">        Topic:</span> my-replicated-topic      Partition: <span class="number">0</span>    Leader: <span class="number">1</span>       Replicas: <span class="number">1</span>,<span class="number">2</span>,<span class="number">0</span> Isr: <span class="number">1</span>,<span class="number">2</span>,<span class="number">0</span></div></pre></td></tr></table></figure></p>
+<p>下面解释一下这些输出。第一行是对所有分区的一个描述，然后每个分区都会对应一行，因为我们只有一个分区所以下面就只加了一行。<br>leader：负责处理消息的读和写，leader是从所有节点中随机选择的.<br>replicas：列出了所有的副本节点，不管节点是否在服务中.<br>isr：是正在服务中的节点.<br>在我们的例子中，节点1是作为leader运行。<br>向topic发送消息：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bin/kafka-console-producer.sh --broker-list localhost:<span class="number">9092</span> --topic my-replicated-topic</div></pre></td></tr></table></figure></p>
+<p>my test message 1<br>my test message 2<br>消费者接受这些消息<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&gt; bin/kafka-console-consumer.sh --zookeeper localhost:<span class="number">2181</span> --from-beginning --topic my-replicated-topic</div></pre></td></tr></table></figure></p>
+<p>测试一下容错能力.Broker 1作为leader运行，现在我们kill掉它：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; ps | grep server<span class="bullet">-1.</span>properties7564 ttys002    <span class="number">0</span>:<span class="number">15.91</span> /System/Library/Frameworks/JavaVM.framework/Versions/<span class="number">1.6</span>/Home/bin/java...</div><div class="line">&gt; kill <span class="bullet">-9</span> <span class="number">7564</span></div></pre></td></tr></table></figure></p>
+<p>另外一个节点被选做了leader,node 1 不再出现在 in-sync 副本列表中：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">bin/kafka-topics.sh --describe --zookeeper localhost:<span class="number">218192</span> --topic my-replicated-topic</div><div class="line"><span class="attr">Topic:</span>my-replicated-topic       PartitionCount:<span class="number">1</span>        ReplicationFactor:<span class="number">3</span>     Configs:</div><div class="line"><span class="attr">        Topic:</span> my-replicated-topic      Partition: <span class="number">0</span>    Leader: <span class="number">2</span>       Replicas: <span class="number">1</span>,<span class="number">2</span>,<span class="number">0</span> Isr: <span class="number">2</span>,<span class="number">0</span></div></pre></td></tr></table></figure></p>
+<p>虽然最初负责续写消息的leader down掉了，但之前的消息还是可以消费的.</p>
+<h2 id="多机多broker-集群配置"><a href="#多机多broker-集群配置" class="headerlink" title="多机多broker 集群配置"></a>多机多broker 集群配置</h2><p>分别在多个节点按上述方式安装Kafka，配置启动多个Zookeeper 实例。<br>例如： 在10.4.253.22，10.4.253.23，10.4.253.24三台机器部署，Zookeeper配置如下：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">initLimit=<span class="number">5</span></div><div class="line">syncLimit=<span class="number">2</span></div><div class="line">server<span class="number">.1</span>=<span class="number">10.4</span><span class="number">.253</span><span class="number">.22</span>:<span class="number">2888</span>:<span class="number">3888</span></div><div class="line">server<span class="number">.2</span>=<span class="number">10.4</span><span class="number">.253</span><span class="number">.23</span>:<span class="number">2888</span>:<span class="number">3888</span></div><div class="line">server<span class="number">.3</span>=<span class="number">10.4</span><span class="number">.253</span><span class="number">.24</span>:<span class="number">2888</span>:<span class="number">3888</span></div></pre></td></tr></table></figure></p>
+<p>分别配置多个机器上的Kafka服务 设置不同的broke id，zookeeper.connect设置如下:<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">zookeeper.connect=<span class="number">10.4</span><span class="number">.253</span><span class="number">.22</span>:<span class="number">2181</span>,<span class="number">10.4</span><span class="number">.253</span><span class="number">.23</span>:<span class="number">2181</span>,<span class="number">10.4</span><span class="number">.253</span><span class="number">.24</span>:<span class="number">2181</span></div></pre></td></tr></table></figure></p>
+<p>启动Zookeeper与Kafka服务，按上文方式产生和消费消息，验证集群功能(本人未验证)。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/23/Kafka入门/" data-id="cizns6rkr0007b2hj6k2donfv" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Kafka/">Kafka</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/08/23/Spring-Cloud服务注册与发现/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Spring Cloud服务注册与发现
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/08/19/使用Redis做集中式缓存/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">使用Redis做集中式缓存</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Codis/">Codis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heroku/">Heroku</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java基础/">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异常处理/">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/拦截器/">拦截器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/设计模式/">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/随记/">随记</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Codis/" style="font-size: 10px;">Codis</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 12.5px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 17.5px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/拦截器/" style="font-size: 10px;">拦截器</a> <a href="/tags/日志/" style="font-size: 15px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a> <a href="/tags/设计模式/" style="font-size: 12.5px;">设计模式</a> <a href="/tags/随记/" style="font-size: 10px;">随记</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/02/27/线程池的使用/">线程池的使用</a>
+          </li>
+        
+          <li>
+            <a href="/2017/02/05/设计模式之装饰者模式/">设计模式之装饰者模式</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/21/设计模式之观察者模式/">设计模式之观察者模式</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/19/并发编程之多线程/">并发编程之多线程</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/17/ScheduledThreadPoolExecutor的使用/">ScheduledThreadPoolExecutor的使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
