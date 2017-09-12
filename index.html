@@ -120,8 +120,25 @@
 <p>信号量（Semaphore）的用途，1. 二值信号量，互斥体（mutex） 2. 实现资源池 3.有界阻塞容器</p>
 </blockquote>
 </li>
-<li>栅栏与闭锁区别在于，所有线程必须同时到达栅栏位置，才能继续执行（闭锁是ABCD全部并行执行完毕后，E执行；栅栏是ABCD全部准备好后，一起并发执行）</li>
+<li><p>栅栏与闭锁区别在于，所有线程必须同时到达栅栏位置，才能继续执行（闭锁是ABCD全部并行执行完毕后，E执行；栅栏是ABCD全部准备好后，一起并发执行）</p>
+</li>
+<li><p>任务执行</p>
+</li>
 </ul>
+<ol>
+<li>在生产环境中，为每个任务分配一个线程存在缺陷，避免无限制创建线程,尽量少使用newCachedThreadPool</li>
+<li><p>线程池的创建，调用Executors中的静态工厂方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">newFixedThreadPool: 每当提交一个任务是就创建一个线程，直到达到线程池的最大数量，这时线程池的规模将不再变化（异常的，会补充线程）</div><div class="line"></div><div class="line">newCachedThreadPool：可缓存线程池，多了回收，少了添加，规模没有任何限制</div><div class="line"></div><div class="line">newSingleThreadExecutor：单线程的Executor，确保依照任务在队列中的顺序来串行执行</div><div class="line"></div><div class="line">newScheduledThreadPool：创建固定长度的线程池，而且以延迟或定时的方式来执行任务，类似于Timer</div></pre></td></tr></table></figure>
+</li>
+<li><p>有关延迟任务与周期任务：Timer在执行所有定时任务时只会创建一个线程，如果某个任务的执行时间过长，那么将破坏其他TimerTask的定时准确性，而newScheduledThreadPool线程池可以弥补这个缺陷，提供多个线程来执行</p>
+</li>
+<li>Executor执行的任务有4个生命周期阶段：创建，提交，开始和完成。已提交但尚未开始的任务可以取消，但对于那些已经开始执行的任务，只有当它们能响应中断时，才能取消</li>
+<li>为任务设置时效，在支持时间限制的Future.get中支持这种需求，当结果可用时，立即返回，如果在指定时限内没有计算出结果，将抛出TimeoutException</li>
+<li>Executor任务执行框架将任务提交与执行策略解耦开来，同时还支持多种不同类型的执行策略<h1 id="取消与关闭"><a href="#取消与关闭" class="headerlink" title="取消与关闭"></a>取消与关闭</h1></li>
+<li>线程中断是一种协作机制，线程可以通过这种机制来通知另一个线程，告诉它在合适的时候或者可能的情况下停止当前工作，并转而执行其他工作；通常，中断是实现取消的最合理方式</li>
+<li>每个线程都有一个boolean类型的中断状态，在中断线程时，这个线程中断状态将被设置为true,列举Thread中有关<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">interrupt：中断目标线程</div><div class="line"></div><div class="line">isInterrupted:  返回目标线程的中断状态</div><div class="line"></div><div class="line"><span class="keyword">static</span> interrupted：清除当前线程的中断状态，返回它之前的值</div></pre></td></tr></table></figure>
+</li>
+</ol>
 
       
     </div>
