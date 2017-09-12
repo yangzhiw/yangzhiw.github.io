@@ -93,7 +93,17 @@
         <h1 id="线程安全性"><a href="#线程安全性" class="headerlink" title="线程安全性"></a>线程安全性</h1><ul>
 <li>竞态条件：又有不恰当的执行顺序而出现的的不正确的结果</li>
 <li>当某个线程请求一个由其他线程持有的锁时，发出请求的线程就会阻塞。然而，由于内置锁是可重入的，因此如果某个线程视图获得一个已经由它自己持有的锁，那么这个请求就会成功</li>
+<li>一种常见的加锁约定是，将所有的可变状态都封装在对象内部，并通过对象的内置锁对所有访问可变状态的代码路径进行同步，使得在该对象上不会发生并发访问</li>
+<li>当执行时间较长的计算或者可能无法快速完成的操作时（例如，网络I/O或控制台I/O），一定不要持有锁</li>
 </ul>
+<h1 id="对象的共享"><a href="#对象的共享" class="headerlink" title="对象的共享"></a>对象的共享</h1><ol>
+<li>非原子的64位操作：多线程程序中使用共享且可变的long和double等类型的变量是不安全的，除非用关键字volatile来声明它们，或者用锁保护起来（分解为两个32位操作）</li>
+<li>volatile变量是一种比sychronized关键字更轻量级的同步机制</li>
+<li>加锁机制既可以确保可见性又可以确保原子性，而volatile变量只能确保可见性</li>
+<li>确保只有单个线程对共享的volatile变量执行写入操作，那么就可以安全地在这些共享的volatile变量上执行“读取-修改-写入”的操作</li>
+<li>线程封闭（某个对象封闭在一个线程中）包括 Ad-hoc,栈封闭,ThreadLocal类<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="number">1.</span>  线程封闭：线程封闭的对象只能由一个线程拥有，对象被封闭在该线程中，并且只能由这个线程修改</div><div class="line"></div><div class="line"><span class="number">2.</span> 只读共享：在没有额外同步的情况下，共享的只读对象可以由多个线程并发访问，但任何线程都不能修改它。共享的只读对象包括不可变对象和事实不可变对象</div><div class="line"></div><div class="line"><span class="number">3.</span> 线程安全共享：线程安全的对象在其内部实现同步，因此多个线程可以通过对象的公有接口进行访问而不需要进一步的同步</div><div class="line"></div><div class="line"><span class="number">4.</span> 保护对象：被保护的对象只能通过持有特定的锁来访问。保护对象包括封装在其他线程安全对象中的对象，以及已发布的并且由某个特定锁保护的对象</div></pre></td></tr></table></figure>
+</li>
+</ol>
 
       
     </div>
