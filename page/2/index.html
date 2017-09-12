@@ -68,6 +68,51 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-ScheduledThreadPoolExecutor的使用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/17/ScheduledThreadPoolExecutor的使用/" class="article-date">
+  <time datetime="2017-01-17T07:40:58.000Z" itemprop="datePublished">2017-01-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/17/ScheduledThreadPoolExecutor的使用/">ScheduledThreadPoolExecutor的使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Java Executor框架提供了ThreadPoolExecutor类去执行Callable和Runnable任务，这样避免了大量的复杂代码的操作，但是有时你需要定时去执行你的任务，这个时候你就要使用ScheduledThreadPoolExecutor类了。</p>
+<h1 id="先写个基本的任务"><a href="#先写个基本的任务" class="headerlink" title="先写个基本的任务"></a>先写个基本的任务</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Task</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">private</span> String name;</div><div class="line"> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Task</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.name = name;</div><div class="line">    &#125;</div><div class="line">     </div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> name;</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            System.out.println(<span class="string">"Doing a task during : "</span> + name + <span class="string">" - Time - "</span> + <span class="keyword">new</span> Date());</div><div class="line">        &#125; </div><div class="line">        <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="一段时间后执行"><a href="#一段时间后执行" class="headerlink" title="一段时间后执行"></a>一段时间后执行</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ScheduledThreadPoolExecutorExample</span></span></div><div class="line">&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span></div><div class="line">    &#123;</div><div class="line">        ScheduledExecutorService executor = Executors.newScheduledThreadPool(<span class="number">2</span>);</div><div class="line">        Task task1 = <span class="keyword">new</span> Task (<span class="string">"Demo Task 1"</span>);</div><div class="line">        Task task2 = <span class="keyword">new</span> Task (<span class="string">"Demo Task 2"</span>);</div><div class="line">         </div><div class="line">        System.out.println(<span class="string">"The time is : "</span> + <span class="keyword">new</span> Date());</div><div class="line">         </div><div class="line">        executor.schedule(task1, <span class="number">5</span> , TimeUnit.SECONDS);</div><div class="line">        executor.schedule(task2, <span class="number">10</span> , TimeUnit.SECONDS);</div><div class="line">         </div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">              executor.awaitTermination(<span class="number">1</span>, TimeUnit.DAYS);</div><div class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">              e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">         </div><div class="line">        executor.shutdown();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>The time is : Tue Jan 25 16:14:07 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:14:12 IST 2017<br>Doing a task during : Demo Task 2 - Time - Tue Jan 25 16:14:17 IST 2017</p>
+<h1 id="执行任务时间片的形式"><a href="#执行任务时间片的形式" class="headerlink" title="执行任务时间片的形式"></a>执行任务时间片的形式</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ScheduledThreadPoolExecutorExample</span></span></div><div class="line">&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span></div><div class="line">    &#123;</div><div class="line">        ScheduledExecutorService executor = Executors.newScheduledThreadPool(<span class="number">1</span>);</div><div class="line">        Task task1 = <span class="keyword">new</span> Task (<span class="string">"Demo Task 1"</span>);</div><div class="line">         </div><div class="line">        System.out.println(<span class="string">"The time is : "</span> + <span class="keyword">new</span> Date());</div><div class="line">         </div><div class="line">        ScheduledFuture&lt;?&gt; result = executor.scheduleAtFixedRate(task1, <span class="number">2</span>, <span class="number">5</span>, TimeUnit.SECONDS);</div><div class="line">         </div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            TimeUnit.MILLISECONDS.sleep(<span class="number">20000</span>);</div><div class="line">        &#125; </div><div class="line">        <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">         </div><div class="line">        executor.shutdown();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Output:</p>
+<p>The time is : Tue Jan 25 16:20:12 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:20:14 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:20:19 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:20:24 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:20:29 IST 2017</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2017/01/17/ScheduledThreadPoolExecutor的使用/" data-id="cj7gyprq60009hi9o422sw7cd" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Scheduler/">Scheduler</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-才觉远去，便起回忆" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/12/31/才觉远去，便起回忆/" class="article-date">
@@ -103,7 +148,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/12/31/才觉远去，便起回忆/" data-id="cizns6rm2001qb2hjbzyg88n3" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/12/31/才觉远去，便起回忆/" data-id="cj7gyprrc001khi9ofvt2pyxz" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/随记/">随记</a></li></ul>
@@ -143,7 +188,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/12/31/设计模式之策略模式/" data-id="cizns6rm4001ub2hj4iawgd5x" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/12/31/设计模式之策略模式/" data-id="cj7gyprrl0021hi9o53rpdja9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/设计模式/">设计模式</a></li></ul>
@@ -207,7 +252,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/11/25/分布式系统/" data-id="cizns6rlz001ib2hja3wm0oxu" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/11/25/分布式系统/" data-id="cj7gyprre001nhi9o7u6stmkq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -243,53 +288,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/10/24/spring-kafak集成学习/" data-id="cizns6rlk0015b2hjcupc9bb4" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/10/24/spring-kafak集成学习/" data-id="cj7gyprr1001bhi9o9kw0i10m" class="article-share-link">Share</a>
       
       
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Spring-MVC拦截器" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/09/18/Spring-MVC拦截器/" class="article-date">
-  <time datetime="2016-09-18T11:45:36.000Z" itemprop="datePublished">2016-09-18</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/18/Spring-MVC拦截器/">Spring MVC拦截器</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h1><p>记录web请求的相关日志，可以做信息监控，统计，分析<br>检查web的访问权限，例如发现用户没有登录后，重定向到登录页面。<br>打开关闭数据库连接–预处理打开，后处理关闭，可以避免所有的业务方法中都编写相似的类。</p>
-<h1 id="Spring-MVC的请求流程"><a href="#Spring-MVC的请求流程" class="headerlink" title="Spring MVC的请求流程"></a>Spring MVC的请求流程</h1><img src="/2016/09/18/Spring-MVC拦截器/spring-mvc1.jpg" alt="Spring-MVC请求流程" title="Spring-MVC请求流程">
-<h1 id="HandlerInterceptor接口"><a href="#HandlerInterceptor接口" class="headerlink" title="HandlerInterceptor接口"></a>HandlerInterceptor接口</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public interface HandlerInterceptor &#123;</div><div class="line">    boolean preHandle(HttpServletRequest request, </div><div class="line">                      HttpServletResponse response, </div><div class="line">                      Object handler) throws Exception;</div><div class="line"></div><div class="line">    void postHandle(HttpServletRequest request, </div><div class="line">                    HttpServletResponse response, </div><div class="line">                    Object handler, ModelAndView modelAndView) throws Exception;</div><div class="line"></div><div class="line">    void afterCompletion(HttpServletRequest request, </div><div class="line">                         HttpServletResponse response, </div><div class="line">                         Object handler, Exception ex) throws Exception;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>1.preHandle()：预处理回调方法，若方法返回值为true，请求继续（调用下一个拦截器或处理器方法）；若方法返回值为false，请求处理流程中断，不会继续调用其他的拦截器或处理器方法，此时需要通过response产生响应；<br>2.postHandle()：后处理回调方法，实现处理器的后处理（但在渲染视图之前），此时可以通过modelAndView对模型数据进行处理或对视图进行处理<br>3.afterCompletion()：整个请求处理完毕回调方法，即在视图渲染完毕时调用</p>
-<h1 id="实例：用户登录检查"><a href="#实例：用户登录检查" class="headerlink" title="实例：用户登录检查"></a>实例：用户登录检查</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public class LoginInterceptor extends HandlerInterceptorAdapter &#123;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public boolean preHandle(HttpServletRequest request,</div><div class="line">                             HttpServletResponse response,</div><div class="line">                             Object handler) throws Exception &#123;</div><div class="line">        if (request.getSession().getAttribute(Constants.USER_SESSION_ATTR) != <span class="literal">null</span>) &#123;</div><div class="line">            return <span class="literal">true</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        response.sendRedirect(<span class="string">"/"</span>);</div><div class="line">        return <span class="literal">false</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="配置Interceptor"><a href="#配置Interceptor" class="headerlink" title="配置Interceptor"></a>配置Interceptor</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">@Configuration</div><div class="line">public class WebMvcConfig extends WebMvcConfigurerAdapter &#123;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void addInterceptors(InterceptorRegistry registry) &#123;</div><div class="line">        registry.addInterceptor(new LoginInterceptor())</div><div class="line">                .addPathPatterns(<span class="string">"/**"</span>)</div><div class="line">                .excludePathPatterns(<span class="string">"/account/*"</span>).excludePathPatterns(<span class="string">"/"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/09/18/Spring-MVC拦截器/" data-id="cizns6rla000tb2hj58hgitcv" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/拦截器/">拦截器</a></li></ul>
-
     </footer>
   </div>
   
@@ -323,7 +324,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Codis/" style="font-size: 10px;">Codis</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 12.5px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 17.5px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/并发编程/" style="font-size: 12.5px;">并发编程</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/拦截器/" style="font-size: 10px;">拦截器</a> <a href="/tags/日志/" style="font-size: 15px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a> <a href="/tags/设计模式/" style="font-size: 12.5px;">设计模式</a> <a href="/tags/随记/" style="font-size: 10px;">随记</a>
+      <a href="/tags/Codis/" style="font-size: 10px;">Codis</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 12.5px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 17.5px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/并发编程/" style="font-size: 15px;">并发编程</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/拦截器/" style="font-size: 10px;">拦截器</a> <a href="/tags/日志/" style="font-size: 15px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a> <a href="/tags/设计模式/" style="font-size: 12.5px;">设计模式</a> <a href="/tags/随记/" style="font-size: 10px;">随记</a>
     </div>
   </div>
 
@@ -332,7 +333,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
     </div>
   </div>
 
@@ -345,11 +346,15 @@
       <ul>
         
           <li>
+            <a href="/2017/09/12/Java并发编程实战总结/">Java并发编程实战总结</a>
+          </li>
+        
+          <li>
             <a href="/2017/02/27/线程池的使用/">线程池的使用</a>
           </li>
         
           <li>
-            <a href="/2017/02/05/设计模式之装饰者模式/">设计模式之装饰者模式</a>
+            <a href="/2017/02/05/使用heroku免费部署Java应用/设计模式之装饰者模式/">设计模式之装饰者模式</a>
           </li>
         
           <li>
@@ -358,10 +363,6 @@
         
           <li>
             <a href="/2017/01/19/并发编程之多线程/">并发编程之多线程</a>
-          </li>
-        
-          <li>
-            <a href="/2017/01/17/ScheduledThreadPoolExecutor的使用/">ScheduledThreadPoolExecutor的使用</a>
           </li>
         
       </ul>
