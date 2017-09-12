@@ -21,7 +21,7 @@
 当某个线程请求一个由其他线程持有的锁时，发出请求的线程就会阻塞。然而，由于内置锁是可重入的，因此如果某个线程视图获得一个已经由它自己持有的锁，那么这个请求就会成功
 一种常见的加锁约定是，将所有的可变状态都封装在对象内部，并通过对象的内置锁对所有访问可变状态的代码路径进行同步，使得在该对象上不会发生并发访问
 当执行时间较">
-<meta property="og:updated_time" content="2017-09-12T02:35:05.000Z">
+<meta property="og:updated_time" content="2017-09-12T02:37:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java并发编程实战总结">
 <meta name="twitter:description" content="[TOC]
@@ -120,7 +120,11 @@
 <li>线程封闭（某个对象封闭在一个线程中）包括 Ad-hoc,栈封闭,ThreadLocal类<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">线程封闭：线程封闭的对象只能由一个线程拥有，对象被封闭在该线程中，并且只能由这个线程修改</div><div class="line"></div><div class="line">只读共享：在没有额外同步的情况下，共享的只读对象可以由多个线程并发访问，但任何线程都不能修改它。共享的只读对象包括不可变对象和事实不可变对象</div><div class="line"></div><div class="line">线程安全共享：线程安全的对象在其内部实现同步，因此多个线程可以通过对象的公有接口进行访问而不需要进一步的同步</div><div class="line"></div><div class="line">保护对象：被保护的对象只能通过持有特定的锁来访问。保护对象包括封装在其他线程安全对象中的对象，以及已发布的并且由某个特定锁保护的对象</div></pre></td></tr></table></figure>
 </li>
 </ol>
-<h1 id="对象的组合"><a href="#对象的组合" class="headerlink" title="对象的组合"></a>对象的组合</h1><h2 id="深拷贝与浅拷贝，举例说明：对象A1中包含对B1的引用，B1中包含对C1的引用。浅拷贝A1得到A2，A2-中依然包含对B1的引用，B1中依然包含对C1的引用。深拷贝则是对浅拷贝的递归，深拷贝A1得到A2，A2中包含对B2（B1的copy）的引用，B2-中包含对C2（C1的copy）的引用。"><a href="#深拷贝与浅拷贝，举例说明：对象A1中包含对B1的引用，B1中包含对C1的引用。浅拷贝A1得到A2，A2-中依然包含对B1的引用，B1中依然包含对C1的引用。深拷贝则是对浅拷贝的递归，深拷贝A1得到A2，A2中包含对B2（B1的copy）的引用，B2-中包含对C2（C1的copy）的引用。" class="headerlink" title="深拷贝与浅拷贝，举例说明：对象A1中包含对B1的引用，B1中包含对C1的引用。浅拷贝A1得到A2，A2 中依然包含对B1的引用，B1中依然包含对C1的引用。深拷贝则是对浅拷贝的递归，深拷贝A1得到A2，A2中包含对B2（B1的copy）的引用，B2 中包含对C2（C1的copy）的引用。"></a>深拷贝与浅拷贝，举例说明：对象A1中包含对B1的引用，B1中包含对C1的引用。浅拷贝A1得到A2，A2 中依然包含对B1的引用，B1中依然包含对C1的引用。深拷贝则是对浅拷贝的递归，深拷贝A1得到A2，A2中包含对B2（B1的copy）的引用，B2 中包含对C2（C1的copy）的引用。</h2><p># </p>
+<h1 id="对象的组合"><a href="#对象的组合" class="headerlink" title="对象的组合"></a>对象的组合</h1><h2 id="深拷贝与浅拷贝，举例说明：对象A1中包含对B1的引用，B1中包含对C1的引用。浅拷贝A1得到A2，A2-中依然包含对B1的引用，B1中依然包含对C1的引用。深拷贝则是对浅拷贝的递归，深拷贝A1得到A2，A2中包含对B2（B1的copy）的引用，B2-中包含对C2（C1的copy）的引用。"><a href="#深拷贝与浅拷贝，举例说明：对象A1中包含对B1的引用，B1中包含对C1的引用。浅拷贝A1得到A2，A2-中依然包含对B1的引用，B1中依然包含对C1的引用。深拷贝则是对浅拷贝的递归，深拷贝A1得到A2，A2中包含对B2（B1的copy）的引用，B2-中包含对C2（C1的copy）的引用。" class="headerlink" title="深拷贝与浅拷贝，举例说明：对象A1中包含对B1的引用，B1中包含对C1的引用。浅拷贝A1得到A2，A2 中依然包含对B1的引用，B1中依然包含对C1的引用。深拷贝则是对浅拷贝的递归，深拷贝A1得到A2，A2中包含对B2（B1的copy）的引用，B2 中包含对C2（C1的copy）的引用。"></a>深拷贝与浅拷贝，举例说明：对象A1中包含对B1的引用，B1中包含对C1的引用。浅拷贝A1得到A2，A2 中依然包含对B1的引用，B1中依然包含对C1的引用。深拷贝则是对浅拷贝的递归，深拷贝A1得到A2，A2中包含对B2（B1的copy）的引用，B2 中包含对C2（C1的copy）的引用。</h2><h1 id="基础构建模块"><a href="#基础构建模块" class="headerlink" title="基础构建模块"></a>基础构建模块</h1><ul>
+<li>迭代器与ConcurrentModificationException，在迭代期间对容器加锁或者“克隆”容器，并在副本上进行迭代</li>
+<li>通过并发容器（ConcurrentHashMap等）来代替同步容器（synchronizedMap包装的），可以极大地提高伸缩性并降低风险</li>
+<li>ConcurrentHashMap并不是将每个方法都在同一个锁上同步并使得每次只能有一个线程访问容器，而是使用一种粒度更细的加锁机制来实现更大程度的共享，这种机制称为分段锁(Lock Striping),在这种机制中，任意数量的读取线程可以并发地访问Map，执行读取操作的线程和执行写入操作的线程可以并发地访问Map，并且一定数量的写入线程可以并发地修改Map。ConcurrentHashMap带来的结果是，在并发访问环境下将实现更高的吞吐量，而在单线程环境中只损失非常小的性能</li>
+</ul>
 
       
     </div>
