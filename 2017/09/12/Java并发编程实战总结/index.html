@@ -5,28 +5,31 @@
   
   <title>Java并发编程实战总结 | 橘子不酸的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="线程安全性
+  <meta name="description" content="[TOC]
+线程安全性
 竞态条件：又有不恰当的执行顺序而出现的的不正确的结果
 当某个线程请求一个由其他线程持有的锁时，发出请求的线程就会阻塞。然而，由于内置锁是可重入的，因此如果某个线程视图获得一个已经由它自己持有的锁，那么这个请求就会成功
 一种常见的加锁约定是，将所有的可变状态都封装在对象内部，并通过对象的内置锁对所有访问可变状态的代码路径进行同步，使得在该对象上不会发生并发访问
-当执行时间较长的计算或者可">
+当执行时间较长">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java并发编程实战总结">
 <meta property="og:url" content="https://yangzhiw.github.io/2017/09/12/Java并发编程实战总结/index.html">
 <meta property="og:site_name" content="橘子不酸的博客">
-<meta property="og:description" content="线程安全性
+<meta property="og:description" content="[TOC]
+线程安全性
 竞态条件：又有不恰当的执行顺序而出现的的不正确的结果
 当某个线程请求一个由其他线程持有的锁时，发出请求的线程就会阻塞。然而，由于内置锁是可重入的，因此如果某个线程视图获得一个已经由它自己持有的锁，那么这个请求就会成功
 一种常见的加锁约定是，将所有的可变状态都封装在对象内部，并通过对象的内置锁对所有访问可变状态的代码路径进行同步，使得在该对象上不会发生并发访问
-当执行时间较长的计算或者可">
-<meta property="og:updated_time" content="2017-09-12T02:27:30.000Z">
+当执行时间较长">
+<meta property="og:updated_time" content="2017-09-12T02:33:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java并发编程实战总结">
-<meta name="twitter:description" content="线程安全性
+<meta name="twitter:description" content="[TOC]
+线程安全性
 竞态条件：又有不恰当的执行顺序而出现的的不正确的结果
 当某个线程请求一个由其他线程持有的锁时，发出请求的线程就会阻塞。然而，由于内置锁是可重入的，因此如果某个线程视图获得一个已经由它自己持有的锁，那么这个请求就会成功
 一种常见的加锁约定是，将所有的可变状态都封装在对象内部，并通过对象的内置锁对所有访问可变状态的代码路径进行同步，使得在该对象上不会发生并发访问
-当执行时间较长的计算或者可">
+当执行时间较长">
   
     <link rel="alternate" href="/atom.xml" title="橘子不酸的博客" type="application/atom+xml">
   
@@ -101,7 +104,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="线程安全性"><a href="#线程安全性" class="headerlink" title="线程安全性"></a>线程安全性</h1><ul>
+        <p>[TOC]</p>
+<h1 id="线程安全性"><a href="#线程安全性" class="headerlink" title="线程安全性"></a>线程安全性</h1><ul>
 <li>竞态条件：又有不恰当的执行顺序而出现的的不正确的结果</li>
 <li>当某个线程请求一个由其他线程持有的锁时，发出请求的线程就会阻塞。然而，由于内置锁是可重入的，因此如果某个线程视图获得一个已经由它自己持有的锁，那么这个请求就会成功</li>
 <li>一种常见的加锁约定是，将所有的可变状态都封装在对象内部，并通过对象的内置锁对所有访问可变状态的代码路径进行同步，使得在该对象上不会发生并发访问</li>
@@ -115,7 +119,7 @@
 <li>线程封闭（某个对象封闭在一个线程中）包括 Ad-hoc,栈封闭,ThreadLocal类<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="number">1.</span>  线程封闭：线程封闭的对象只能由一个线程拥有，对象被封闭在该线程中，并且只能由这个线程修改</div><div class="line"></div><div class="line"><span class="number">2.</span> 只读共享：在没有额外同步的情况下，共享的只读对象可以由多个线程并发访问，但任何线程都不能修改它。共享的只读对象包括不可变对象和事实不可变对象</div><div class="line"></div><div class="line"><span class="number">3.</span> 线程安全共享：线程安全的对象在其内部实现同步，因此多个线程可以通过对象的公有接口进行访问而不需要进一步的同步</div><div class="line"></div><div class="line"><span class="number">4.</span> 保护对象：被保护的对象只能通过持有特定的锁来访问。保护对象包括封装在其他线程安全对象中的对象，以及已发布的并且由某个特定锁保护的对象</div></pre></td></tr></table></figure>
 </li>
 </ol>
-
+<h1 id="对象的组合"><a href="#对象的组合" class="headerlink" title="对象的组合"></a>对象的组合</h1><h2 id="深拷贝与浅拷贝，举例说明：对象A1中包含对B1的引用，B1中包含对C1的引用。浅拷贝A1得到A2，A2-中依然包含对B1的引用，B1中依然包含对C1的引用。深拷贝则是对浅拷贝的递归，深拷贝A1得到A2，A2中包含对B2（B1的copy）的引用，B2-中包含对C2（C1的copy）的引用。"><a href="#深拷贝与浅拷贝，举例说明：对象A1中包含对B1的引用，B1中包含对C1的引用。浅拷贝A1得到A2，A2-中依然包含对B1的引用，B1中依然包含对C1的引用。深拷贝则是对浅拷贝的递归，深拷贝A1得到A2，A2中包含对B2（B1的copy）的引用，B2-中包含对C2（C1的copy）的引用。" class="headerlink" title="深拷贝与浅拷贝，举例说明：对象A1中包含对B1的引用，B1中包含对C1的引用。浅拷贝A1得到A2，A2 中依然包含对B1的引用，B1中依然包含对C1的引用。深拷贝则是对浅拷贝的递归，深拷贝A1得到A2，A2中包含对B2（B1的copy）的引用，B2 中包含对C2（C1的copy）的引用。"></a>深拷贝与浅拷贝，举例说明：对象A1中包含对B1的引用，B1中包含对C1的引用。浅拷贝A1得到A2，A2 中依然包含对B1的引用，B1中依然包含对C1的引用。深拷贝则是对浅拷贝的递归，深拷贝A1得到A2，A2中包含对B2（B1的copy）的引用，B2 中包含对C2（C1的copy）的引用。</h2>
       
     </div>
     <footer class="article-footer">
