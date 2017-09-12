@@ -19,7 +19,7 @@
 当某个线程请求一个由其他线程持有的锁时，发出请求的线程就会阻塞。然而，由于内置锁是可重入的，因此如果某个线程视图获得一个已经由它自己持有的锁，那么这个请求就会成功
 一种常见的加锁约定是，将所有的可变状态都封装在对象内部，并通过对象的内置锁对所有访问可变状态的代码路径进行同步，使得在该对象上不会发生并发访问
 当执行时间较长的计算或者可">
-<meta property="og:updated_time" content="2017-09-12T02:59:26.000Z">
+<meta property="og:updated_time" content="2017-09-12T06:57:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java并发编程实战总结">
 <meta name="twitter:description" content="线程安全性
@@ -108,26 +108,40 @@
 <li>当执行时间较长的计算或者可能无法快速完成的操作时（例如，网络I/O或控制台I/O），一定不要持有锁</li>
 </ul>
 <h1 id="对象的共享"><a href="#对象的共享" class="headerlink" title="对象的共享"></a>对象的共享</h1><ol>
-<li>非原子的64位操作：多线程程序中使用共享且可变的long和double等类型的变量是不安全的，除非用关键字volatile来声明它们，或者用锁保护起来（分解为两个32位操作）</li>
-<li>volatile变量是一种比sychronized关键字更轻量级的同步机制</li>
-<li>加锁机制既可以确保可见性又可以确保原子性，而volatile变量只能确保可见性</li>
-<li>确保只有单个线程对共享的volatile变量执行写入操作，那么就可以安全地在这些共享的volatile变量上执行“读取-修改-写入”的操作</li>
-<li>线程封闭（某个对象封闭在一个线程中）包括 Ad-hoc,栈封闭,ThreadLocal类<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">线程封闭：线程封闭的对象只能由一个线程拥有，对象被封闭在该线程中，并且只能由这个线程修改</div><div class="line"></div><div class="line">只读共享：在没有额外同步的情况下，共享的只读对象可以由多个线程并发访问，但任何线程都不能修改它。共享的只读对象包括不可变对象和事实不可变对象</div><div class="line"></div><div class="line">线程安全共享：线程安全的对象在其内部实现同步，因此多个线程可以通过对象的公有接口进行访问而不需要进一步的同步</div><div class="line"></div><div class="line">保护对象：被保护的对象只能通过持有特定的锁来访问。保护对象包括封装在其他线程安全对象中的对象，以及已发布的并且由某个特定锁保护的对象</div></pre></td></tr></table></figure>
+<li><p>非原子的64位操作：多线程程序中使用共享且可变的long和double等类型的变量是不安全的，除非用关键字volatile来声明它们，或者用锁保护起来（分解为两个32位操作）</p>
+</li>
+<li><p>volatile变量是一种比sychronized关键字更轻量级的同步机制</p>
+</li>
+<li><p>加锁机制既可以确保可见性又可以确保原子性，而volatile变量只能确保可见性</p>
+</li>
+<li><p>确保只有单个线程对共享的volatile变量执行写入操作，那么就可以安全地在这些共享的volatile变量上执行“读取-修改-写入”的操作</p>
+</li>
+<li><p>线程封闭（某个对象封闭在一个线程中）包括 Ad-hoc,栈封闭,ThreadLocal类</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">线程封闭：线程封闭的对象只能由一个线程拥有，对象被封闭在该线程中，并且只能由这个线程修改</div><div class="line"></div><div class="line">只读共享：在没有额外同步的情况下，共享的只读对象可以由多个线程并发访问，但任何线程都不能修改它。共享的只读对象包括不可变对象和事实不可变对象</div><div class="line"></div><div class="line">线程安全共享：线程安全的对象在其内部实现同步，因此多个线程可以通过对象的公有接口进行访问而不需要进一步的同步</div><div class="line"></div><div class="line">保护对象：被保护的对象只能通过持有特定的锁来访问。保护对象包括封装在其他线程安全对象中的对象，以及已发布的并且由某个特定锁保护的对象</div></pre></td></tr></table></figure>
 </li>
 </ol>
 <h1 id="对象的组合"><a href="#对象的组合" class="headerlink" title="对象的组合"></a>对象的组合</h1><ul>
 <li>深拷贝与浅拷贝，举例说明：对象A1中包含对B1的引用，B1中包含对C1的引用。浅拷贝A1得到A2，<br>A2 中依然包含对B1的引用，B1中依然包含对C1的引用。深拷贝则是对浅拷贝的递归，深拷贝A1得到A2，A2中包含对B2（B1的copy）的引用，B2 中包含对C2（C1的copy）的引用。</li>
 </ul>
 <h1 id="基础构建模块"><a href="#基础构建模块" class="headerlink" title="基础构建模块"></a>基础构建模块</h1><ul>
-<li>迭代器与ConcurrentModificationException，在迭代期间对容器加锁或者“克隆”容器，并在副本上进行迭代</li>
-<li>通过并发容器（ConcurrentHashMap等）来代替同步容器（synchronizedMap包装的），可以极大地提高伸缩性并降低风险</li>
-<li>ConcurrentHashMap并不是将每个方法都在同一个锁上同步并使得每次只能有一个线程访问容器，而是使用一种粒度更细的加锁机制来实现更大程度的共享，这种机制称为分段锁(Lock Striping),在这种机制中，任意数量的读取线程可以并发地访问Map，执行读取操作的线程和执行写入操作的线程可以并发地访问Map，并且一定数量的写入线程可以并发地修改Map。ConcurrentHashMap带来的结果是，在并发访问环境下将实现更高的吞吐量，而在单线程环境中只损失非常小的性能</li>
-<li>CopyOnWriteArrayList 用于替代同步List，写入时复制（Copy-on-write）在每次修改时，都会创建并重新发布一个新的容器副本，从而实现可变性</li>
-<li>阻塞队列（BlockingQueue，生产者-消费者模式）提供了可阻塞的put和take方法，以及支持定时的offer和poll方法（报错后可执行其他）；类库中其他多种实现 LinkedBlockingQueue和ArrayBlockingQueue是FIFO队列，PriorityBlockingQueue是按优先级排序的队列，SynchronousQueue不会为队列中元素维护存储空间，直接交付工作，从而降低了将数据从生产者移动到消费者的延迟</li>
-<li>双端队列和工作密取：每个消费者都有各自的双端队列，如果一个消费者完成了自己双端队列中的全部工作，那么他可以从其他消费者双端队列末尾秘密地获取工作。工作密取非常适用于既是消费者也是生产者问题，当执行某个工作时可能导致出现更多的工作</li>
-<li>闭锁可以延迟线程的进度直到其到达终止状态，CountDownLatch是一种灵活的闭锁实现</li>
-<li>FutureTask可以用做闭锁</li>
-<li>计数信号量用来控制同时访问某个特定资源的操作数量，或者同时执行某个指定操作的数量<blockquote>
+<li><p>迭代器与ConcurrentModificationException，在迭代期间对容器加锁或者“克隆”容器，并在副本上进行迭代</p>
+</li>
+<li><p>通过并发容器（ConcurrentHashMap等）来代替同步容器（synchronizedMap包装的），可以极大地提高伸缩性并降低风险</p>
+</li>
+<li><p>ConcurrentHashMap并不是将每个方法都在同一个锁上同步并使得每次只能有一个线程访问容器，而是使用一种粒度更细的加锁机制来实现更大程度的共享，这种机制称为分段锁(Lock Striping),在这种机制中，任意数量的读取线程可以并发地访问Map，执行读取操作的线程和执行写入操作的线程可以并发地访问Map，并且一定数量的写入线程可以并发地修改Map。ConcurrentHashMap带来的结果是，在并发访问环境下将实现更高的吞吐量，而在单线程环境中只损失非常小的性能</p>
+</li>
+<li><p>CopyOnWriteArrayList 用于替代同步List，写入时复制（Copy-on-write）在每次修改时，都会创建并重新发布一个新的容器副本，从而实现可变性</p>
+</li>
+<li><p>阻塞队列（BlockingQueue，生产者-消费者模式）提供了可阻塞的put和take方法，以及支持定时的offer和poll方法（报错后可执行其他）；类库中其他多种实现 LinkedBlockingQueue和ArrayBlockingQueue是FIFO队列，PriorityBlockingQueue是按优先级排序的队列，SynchronousQueue不会为队列中元素维护存储空间，直接交付工作，从而降低了将数据从生产者移动到消费者的延迟</p>
+</li>
+<li><p>双端队列和工作密取：每个消费者都有各自的双端队列，如果一个消费者完成了自己双端队列中的全部工作，那么他可以从其他消费者双端队列末尾秘密地获取工作。工作密取非常适用于既是消费者也是生产者问题，当执行某个工作时可能导致出现更多的工作</p>
+</li>
+<li><p>闭锁可以延迟线程的进度直到其到达终止状态，CountDownLatch是一种灵活的闭锁实现</p>
+</li>
+<li><p>FutureTask可以用做闭锁</p>
+</li>
+<li><p>计数信号量用来控制同时访问某个特定资源的操作数量，或者同时执行某个指定操作的数量</p>
+<blockquote>
 <p>信号量（Semaphore）的用途，1. 二值信号量，互斥体（mutex） 2. 实现资源池 3.有界阻塞容器</p>
 </blockquote>
 </li>
@@ -137,19 +151,82 @@
 </li>
 </ul>
 <ol>
-<li>在生产环境中，为每个任务分配一个线程存在缺陷，避免无限制创建线程,尽量少使用newCachedThreadPool</li>
+<li><p>在生产环境中，为每个任务分配一个线程存在缺陷，避免无限制创建线程,尽量少使用newCachedThreadPool</p>
+</li>
 <li><p>线程池的创建，调用Executors中的静态工厂方法</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">newFixedThreadPool: 每当提交一个任务是就创建一个线程，直到达到线程池的最大数量，这时线程池的规模将不再变化（异常的，会补充线程）</div><div class="line"></div><div class="line">newCachedThreadPool：可缓存线程池，多了回收，少了添加，规模没有任何限制</div><div class="line"></div><div class="line">newSingleThreadExecutor：单线程的Executor，确保依照任务在队列中的顺序来串行执行</div><div class="line"></div><div class="line">newScheduledThreadPool：创建固定长度的线程池，而且以延迟或定时的方式来执行任务，类似于Timer</div></pre></td></tr></table></figure>
 </li>
 <li><p>有关延迟任务与周期任务：Timer在执行所有定时任务时只会创建一个线程，如果某个任务的执行时间过长，那么将破坏其他TimerTask的定时准确性，而newScheduledThreadPool线程池可以弥补这个缺陷，提供多个线程来执行</p>
 </li>
-<li>Executor执行的任务有4个生命周期阶段：创建，提交，开始和完成。已提交但尚未开始的任务可以取消，但对于那些已经开始执行的任务，只有当它们能响应中断时，才能取消</li>
-<li>为任务设置时效，在支持时间限制的Future.get中支持这种需求，当结果可用时，立即返回，如果在指定时限内没有计算出结果，将抛出TimeoutException</li>
-<li>Executor任务执行框架将任务提交与执行策略解耦开来，同时还支持多种不同类型的执行策略<h1 id="取消与关闭"><a href="#取消与关闭" class="headerlink" title="取消与关闭"></a>取消与关闭</h1></li>
+<li><p>Executor执行的任务有4个生命周期阶段：创建，提交，开始和完成。已提交但尚未开始的任务可以取消，但对于那些已经开始执行的任务，只有当它们能响应中断时，才能取消</p>
+</li>
+<li><p>为任务设置时效，在支持时间限制的Future.get中支持这种需求，当结果可用时，立即返回，如果在指定时限内没有计算出结果，将抛出TimeoutException</p>
+</li>
+<li><p>Executor任务执行框架将任务提交与执行策略解耦开来，同时还支持多种不同类型的执行策略</p>
+</li>
+</ol>
+<h1 id="取消与关闭"><a href="#取消与关闭" class="headerlink" title="取消与关闭"></a>取消与关闭</h1><ol>
 <li>线程中断是一种协作机制，线程可以通过这种机制来通知另一个线程，告诉它在合适的时候或者可能的情况下停止当前工作，并转而执行其他工作；通常，中断是实现取消的最合理方式</li>
 <li>每个线程都有一个boolean类型的中断状态，在中断线程时，这个线程中断状态将被设置为true,列举Thread中有关<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">interrupt：中断目标线程</div><div class="line"></div><div class="line">isInterrupted:  返回目标线程的中断状态</div><div class="line"></div><div class="line"><span class="keyword">static</span> interrupted：清除当前线程的中断状态，返回它之前的值</div></pre></td></tr></table></figure>
 </li>
 </ol>
+<h1 id="线程池的使用"><a href="#线程池的使用" class="headerlink" title="线程池的使用"></a>线程池的使用</h1><ol>
+<li><p>使用ThreadLocal的任务：只有当线程本地值的生命周期受限于任务的生命周期时，在线程池的线程中使用ThreadLocal才有意义，而在线程池的线程中不应该使用ThreadLocal在任务之间传递值</p>
+</li>
+<li><p>线程饥饿死锁：线程池中的任务需要无限期等待一些必须由池中其他任务才能提供的资源或条件，例如某个任务等待另一个任务的返回值或执行结果，那么除非线程池足够大，否则将发生线程饥饿死锁</p>
+</li>
+<li><p>设置线程池的大小：考虑部署的系统有多少个CPU；多大内存；任务是计算密集型；I/O密集型还是两者皆可；比如计算密集型任务，线程池大小为cpu数+1能实现最优，I/O密集型线程池的规模可以更大一些</p>
+</li>
+<li><p>若默认的执行策略，如newCachedThreadPool，newFixedThreadPool，newScheduledThreadExecutor 不能满足需求，可以通过ThreadPoolExecutor的构造函数来实例化一个对象</p>
+</li>
+<li><p>调用构造函数后再定制ThreadPoolExecutor，可以通过Setter来修改；如果Executor是通过Executors中的某个工厂方法创建的，那么可以将结果的类型转换为ThreadPoolExecutor以访问设置器</p>
+</li>
+<li><p>ThreadPoolExecutor是可扩展的，它提供了几个可以在子类化中改写的方法：beforeExecute,afterExecute，terminated</p>
+</li>
+<li><p>如果需要提交一个任务集并等待它们完成，那么可以使用ExecutorService.invokeAll，并且在所有任务都执行完成后调用CompletionService来获取结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">CompletionService&lt;Integer&gt; completionService = <span class="keyword">new</span> ExecutorCompletionService&lt;Integer&gt;(executor);</div><div class="line"><span class="comment">//向线程池提交任务</span></div><div class="line">completionService.submit(<span class="keyword">new</span> Runnable();</div><div class="line">completionService.take().get();</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="避免活跃性危险（有关死锁）"><a href="#避免活跃性危险（有关死锁）" class="headerlink" title="避免活跃性危险（有关死锁）"></a>避免活跃性危险（有关死锁）</h1><ol>
+<li><p>死锁的避免与诊断：支持定时的锁，通过JVM线程转储信息来分析死锁</p>
+</li>
+<li><p>Thread API中定义的线程优先级只是作为线程调度的参考，其中定义了10个优先级，JVM根据需要将它们映射到操作系统的调度优先级，这种映射是于特定平台相关的</p>
+</li>
+<li><p>避免使用线程优先级，因为这会增加平台依赖性，并可能导致活跃性问题，在大多数并发应用程序中，都可以使用默认的线程优先级</p>
+</li>
+<li><p>最常见的活跃性故障就是锁顺序死锁，在设计时应该避免产生锁顺序死锁，确保线程在获取多个锁时采用一致的顺序，最好的解决方法是在程序中始终使用开放调用（调用某个方法时不需要持有锁），这将大大减少需要同时持有多个锁的地方</p>
+</li>
+</ol>
+<h1 id="性能和可伸缩性"><a href="#性能和可伸缩性" class="headerlink" title="性能和可伸缩性"></a>性能和可伸缩性</h1><p>1.可伸缩性指的是增加计算资源时（例如CPU，内存，存储容量，或I/O带宽），程序的吞吐量或者处理能力能相应地增加</p>
+<p>2.在所有并发程序中都包含一些串行部分，如果你认为在程序中不存在串行部分，那么可以在仔细检查一遍<br>3.线程引入开销:<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">上下文切换：若可运行的线程数大于CPU的数量，那么操作系统会将某个正在运行的线程调度出来，从而使其他线程能够使用CPU，导致一次上下文切换</div><div class="line">内存同步：区分有竞争的同步和无竞争的同步非常重要</div><div class="line">阻塞：当在锁上发生竞争时，竞争失败的线程肯定会阻塞</div></pre></td></tr></table></figure></p>
+<ol>
+<li><p>在并发程序中，对可伸缩性的最主要威胁就是独占方式的资源锁。三种方式可以降低锁的竞争程度</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">减少锁的持有时间 ：缩小锁的范围</div><div class="line">降低锁的请求频率 ：减小锁的粒度（锁分解和锁分段）</div><div class="line">使用带有协调机制的独占锁，这些机制允许更高的并发性，比如ReadWriteLock实现一种在多个读取操作以及单个写入操作情况下的加锁规则；原子变量</div></pre></td></tr></table></figure>
+</li>
+<li><p>锁分段：锁分解技术进一步扩展为对一组独立对象上的锁进行分解，这种情况被称为锁分段，例如ConcurrentHashMap的实现中使用了一个包含16个锁的数组，每个锁保护所有散列通的1/16</p>
+</li>
+<li><p>监测CPU的利用率，没有得到充分利用的原因一般包括：负载不充足，I/O密集，外部限制（数据库或web服务），锁竞争</p>
+</li>
+</ol>
+<h1 id="并发程序测试"><a href="#并发程序测试" class="headerlink" title="并发程序测试"></a>并发程序测试</h1><p>1.并发测试大致分为两类：安全性测试，活跃性测试（相关的是性能测试，包括吞吐量，响应性，可伸缩性）</p>
+<p>2.总结：并发程序的许多故障模式都是一些低概率事件，它们对于执行时序，负载情况以及其他难以重现的条件都非常敏感，而且在测试程序中还会引入额外的同步或执行时序限制，用java编写的程序在测试起来更加困难，因为动态编译，垃圾回收以及自动优化等操作都会影响与时间相关的测试结果，因此我们需要将传统的测试技术与代码审查和自动化分析工具结合起来</p>
+<h1 id="显式锁"><a href="#显式锁" class="headerlink" title="显式锁"></a>显式锁</h1><ol>
+<li>在Java5.0之前，在协调对共享对象的访问时可以使用的机制只有synchronized和volatile，Java5.0增加了一种新的机制ReentrantLock是内置加锁机制不适用时的一种高级功能</li>
+<li><p>使用ReentrantLock来保护对象状态，代码如下：必须在finally块中释放锁</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Lock lock = <span class="keyword">new</span> ReentrantLock();</div><div class="line">lock.lock();</div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    System.out.println(<span class="string">"更新对象状态"</span>);</div><div class="line">    System.out.println(<span class="string">"捕获异常，并在必要时恢复不变形条件"</span>);</div><div class="line">&#125; <span class="keyword">finally</span> &#123;</div><div class="line">    lock.unlock();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>与内置加锁机制不同的是，Lock提供了一种无条件的，可轮询的，定时的以及可中断的锁获取操作，所有加锁和解锁的方法都是显式的</p>
+</li>
+<li>在一些内置锁无法满足需求的情况下，ReentrantLock可以作为一种高级工具。当需要一些高级功能时才应该使用ReentrantLock，这些功能包括：可定时的，可轮询的与可中断的锁获取操作，公平队列，以及非块结构的锁。否则，还是应该优先使用synchronized</li>
+<li>有关ReadWriteLock读-写锁：允许多个读操作同时进行，但每次只允许一个写操作，ReentrantReadWriteLock为这两种锁都提供了可重入的加锁定义</li>
+</ol>
+<h1 id="构建自定义的同步工具"><a href="#构建自定义的同步工具" class="headerlink" title="构建自定义的同步工具"></a>构建自定义的同步工具</h1><p>1.状态依赖性的管理：当前提条件未满足时，依赖状态的操作可以抛出一个异常或者返回一个错误状态（使其成为调用者的一个问题），也可以保持阻塞直到对象进入正确的状态</p>
+<p>2.条件队列API中发出通知的方法，即notify和notifyAll。在调用notify时，JVM会从这个条件队列上等待的多个线程中选择一个来唤醒，而调用notifyAll则会唤醒所有在这个条件队列上等待的线程，并且发出通知的线程应该尽快地释放锁，从而确保正在等待的线程尽可能快地解除阻塞</p>
+<p>3.只有同时满足以下两个条件时，才能用单一的notify而不是notifyAll： 所有等待线程的类型都相同<br>单进单出</p>
+<p>4.有关显式的Condition对象：Lock比内置加锁提供了更为丰富的功能，Condition同样比内置条件队列提供了更丰富的功能，在每个锁上可存在多个等待，条件等待可以是可中断的或不可中断的，基于时限的等待，以及公平的或非公平的队列操作</p>
+<p>5.在使用显式的Condition和内置条件队列之间进行选择时，与在ReentrantLock和synchronized之间进行选择是一样的，如果需要一些高级功能，例如使用公平的队列操作或者在每个锁上对应多个等待线程集，那么应该优先使用Condition而不是内置条件队列</p>
+<p>6.有关AbstractQueuedSynchronizer(AQS):是一个用于构建锁和同步器的框架，许多同步器都可以通过AQS很容易并且高效地构造出来，包括ReentrantLock，Semaphore，CountDownLatch，ReetrantReadWriteLock，SynchronousQueue，FutureTask</p>
+<p>7.小结：有时候现有的库类不能提供足够的功能，在这种情况下，可以使用内置的条件队列，显式的Condition对象或者AbstractQueuedSynchronizer来构建自己的同步器</p>
 
       
     </div>
