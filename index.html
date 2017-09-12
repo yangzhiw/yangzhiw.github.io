@@ -134,12 +134,9 @@
 <p>信号量（Semaphore）的用途，1. 二值信号量，互斥体（mutex） 2. 实现资源池 3.有界阻塞容器</p>
 </blockquote>
 </li>
-<li><p>栅栏与闭锁区别在于，所有线程必须同时到达栅栏位置，才能继续执行（闭锁是ABCD全部并行执行完毕后，E执行；栅栏是ABCD全部准备好后，一起并发执行）</p>
-</li>
-<li><p>任务执行</p>
-</li>
+<li>栅栏与闭锁区别在于，所有线程必须同时到达栅栏位置，才能继续执行（闭锁是ABCD全部并行执行完毕后，E执行；栅栏是ABCD全部准备好后，一起并发执行）</li>
 </ul>
-<ol>
+<h1 id="任务执行"><a href="#任务执行" class="headerlink" title="任务执行"></a>任务执行</h1><ol>
 <li><p>在生产环境中，为每个任务分配一个线程存在缺陷，避免无限制创建线程,尽量少使用newCachedThreadPool</p>
 </li>
 <li><p>线程池的创建，调用Executors中的静态工厂方法</p>
@@ -197,8 +194,12 @@
 <li><p>监测CPU的利用率，没有得到充分利用的原因一般包括：负载不充足，I/O密集，外部限制（数据库或web服务），锁竞争</p>
 </li>
 </ol>
-<h1 id="并发程序测试"><a href="#并发程序测试" class="headerlink" title="并发程序测试"></a>并发程序测试</h1><p>1.并发测试大致分为两类：安全性测试，活跃性测试（相关的是性能测试，包括吞吐量，响应性，可伸缩性）</p>
-<p>2.总结：并发程序的许多故障模式都是一些低概率事件，它们对于执行时序，负载情况以及其他难以重现的条件都非常敏感，而且在测试程序中还会引入额外的同步或执行时序限制，用java编写的程序在测试起来更加困难，因为动态编译，垃圾回收以及自动优化等操作都会影响与时间相关的测试结果，因此我们需要将传统的测试技术与代码审查和自动化分析工具结合起来</p>
+<h1 id="并发程序测试"><a href="#并发程序测试" class="headerlink" title="并发程序测试"></a>并发程序测试</h1><ol>
+<li><p>并发测试大致分为两类：安全性测试，活跃性测试（相关的是性能测试，包括吞吐量，响应性，可伸缩性）</p>
+</li>
+<li><p>总结：并发程序的许多故障模式都是一些低概率事件，它们对于执行时序，负载情况以及其他难以重现的条件都非常敏感，而且在测试程序中还会引入额外的同步或执行时序限制，用java编写的程序在测试起来更加困难，因为动态编译，垃圾回收以及自动优化等操作都会影响与时间相关的测试结果，因此我们需要将传统的测试技术与代码审查和自动化分析工具结合起来</p>
+</li>
+</ol>
 <h1 id="显式锁"><a href="#显式锁" class="headerlink" title="显式锁"></a>显式锁</h1><ol>
 <li>在Java5.0之前，在协调对共享对象的访问时可以使用的机制只有synchronized和volatile，Java5.0增加了一种新的机制ReentrantLock是内置加锁机制不适用时的一种高级功能</li>
 <li><p>使用ReentrantLock来保护对象状态，代码如下：必须在finally块中释放锁</p>
@@ -210,12 +211,44 @@
 <li>有关ReadWriteLock读-写锁：允许多个读操作同时进行，但每次只允许一个写操作，ReentrantReadWriteLock为这两种锁都提供了可重入的加锁定义</li>
 </ol>
 <h1 id="构建自定义的同步工具"><a href="#构建自定义的同步工具" class="headerlink" title="构建自定义的同步工具"></a>构建自定义的同步工具</h1><p>1.状态依赖性的管理：当前提条件未满足时，依赖状态的操作可以抛出一个异常或者返回一个错误状态（使其成为调用者的一个问题），也可以保持阻塞直到对象进入正确的状态</p>
-<p>2.条件队列API中发出通知的方法，即notify和notifyAll。在调用notify时，JVM会从这个条件队列上等待的多个线程中选择一个来唤醒，而调用notifyAll则会唤醒所有在这个条件队列上等待的线程，并且发出通知的线程应该尽快地释放锁，从而确保正在等待的线程尽可能快地解除阻塞</p>
-<p>3.只有同时满足以下两个条件时，才能用单一的notify而不是notifyAll： 所有等待线程的类型都相同<br>单进单出</p>
-<p>4.有关显式的Condition对象：Lock比内置加锁提供了更为丰富的功能，Condition同样比内置条件队列提供了更丰富的功能，在每个锁上可存在多个等待，条件等待可以是可中断的或不可中断的，基于时限的等待，以及公平的或非公平的队列操作</p>
-<p>5.在使用显式的Condition和内置条件队列之间进行选择时，与在ReentrantLock和synchronized之间进行选择是一样的，如果需要一些高级功能，例如使用公平的队列操作或者在每个锁上对应多个等待线程集，那么应该优先使用Condition而不是内置条件队列</p>
-<p>6.有关AbstractQueuedSynchronizer(AQS):是一个用于构建锁和同步器的框架，许多同步器都可以通过AQS很容易并且高效地构造出来，包括ReentrantLock，Semaphore，CountDownLatch，ReetrantReadWriteLock，SynchronousQueue，FutureTask</p>
-<p>7.小结：有时候现有的库类不能提供足够的功能，在这种情况下，可以使用内置的条件队列，显式的Condition对象或者AbstractQueuedSynchronizer来构建自己的同步器</p>
+<ol>
+<li><p>条件队列API中发出通知的方法，即notify和notifyAll。在调用notify时，JVM会从这个条件队列上等待的多个线程中选择一个来唤醒，而调用notifyAll则会唤醒所有在这个条件队列上等待的线程，并且发出通知的线程应该尽快地释放锁，从而确保正在等待的线程尽可能快地解除阻塞</p>
+</li>
+<li><p>只有同时满足以下两个条件时，才能用单一的notify而不是notifyAll： 所有等待线程的类型都相同<br>单进单出</p>
+</li>
+<li><p>有关显式的Condition对象：Lock比内置加锁提供了更为丰富的功能，Condition同样比内置条件队列提供了更丰富的功能，在每个锁上可存在多个等待，条件等待可以是可中断的或不可中断的，基于时限的等待，以及公平的或非公平的队列操作</p>
+</li>
+<li><p>在使用显式的Condition和内置条件队列之间进行选择时，与在ReentrantLock和synchronized之间进行选择是一样的，如果需要一些高级功能，例如使用公平的队列操作或者在每个锁上对应多个等待线程集，那么应该优先使用Condition而不是内置条件队列</p>
+</li>
+<li><p>有关AbstractQueuedSynchronizer(AQS):是一个用于构建锁和同步器的框架，许多同步器都可以通过AQS很容易并且高效地构造出来，包括ReentrantLock，Semaphore，CountDownLatch，ReetrantReadWriteLock，SynchronousQueue，FutureTask</p>
+</li>
+<li><p>小结：有时候现有的库类不能提供足够的功能，在这种情况下，可以使用内置的条件队列，显式的Condition对象或者AbstractQueuedSynchronizer来构建自己的同步器</p>
+</li>
+</ol>
+<h1 id="原子变量与非阻塞同步机制"><a href="#原子变量与非阻塞同步机制" class="headerlink" title="原子变量与非阻塞同步机制"></a>原子变量与非阻塞同步机制</h1><p>1.硬件对并发的支持：比较并交换（CAS），Java5.0后引入底层的支持，原子变量中使用了这些底层的JVM支持为数字类型和引用类型提供一种高效的CAS操作，而在java.util.concurrent中的大多数类在实现时则直接或间接地使用了这些原子变量类</p>
+<p>2.原子变量是一种“更好的volatile”：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">有关volatile：</div><div class="line"></div><div class="line"><span class="number">1.</span> 不要将volatile用在getAndOperate场合，仅仅set或者get的场景是适合volatile的</div><div class="line"></div><div class="line"><span class="number">2.</span> 内存屏蔽的概念，是一个CPU指令，告诉CPU和编译器先于这个命令的必须先执行，后于这个命令的必须后执行，另一个作用是强制更新一次不同CPU的缓存</div><div class="line"></div><div class="line"><span class="number">3.</span> volatile与内存屏蔽的关系：从Load到store到内存屏障，一共<span class="number">4</span>步，其中最后一步jvm让这个最新的变量的值在所有线程可见，但中间的步骤是不安全的，非原子性</div><div class="line"></div><div class="line"><span class="number">4.</span> volatile保证对线程的可见性，但不保证原子性</div><div class="line"></div><div class="line">原子变量具有原子性和可变性是因为使用到CAS指令，结合volatile</div></pre></td></tr></table></figure></p>
+<ol>
+<li><p>在中低程度的竞争下，原子变量能提供更高的可伸缩性，而在高强度的竞争下，锁能够更有效地避免竞争。但实际情况中，原子变量在可伸缩性上要高于锁</p>
+</li>
+<li><p>构建非阻塞算法的技巧在于：将执行原子修改的范围缩小到单个变量上</p>
+</li>
+<li><p>非阻塞算法通过底层的并发原语（CAS）来维持线程的安全性，这些底层的原语通过原子变量类向外公开。</p>
+</li>
+</ol>
+<h1 id="java内存模型"><a href="#java内存模型" class="headerlink" title="java内存模型"></a>java内存模型</h1><ol>
+<li>Java并发注解</li>
+</ol>
+<ul>
+<li>类注解（@Immutable，@ThreadSafe，@NotThreadSafe）只是说明作用</li>
+<li>域注解</li>
+<li>方法注解（@GuardedBy（lock）这个方法被哪个锁保护着）</li>
+</ul>
+<ol>
+<li><p>有关静态域：静态初始化期间，内存写入操作将自动对所有线程可见，因此无论是在被构造期间还是被引用时，静态初始化的对象都不需要显式的同步</p>
+</li>
+<li><p>小结：Java内存模型说明了某个线程的内存操作在哪些情况下对于其他线程是可见的，其中包括确保这些操作是按照一种Happens-Before的偏序关系进行排序，而这种关系是基于内存操作和同步操作等级别来定义的，如果缺少充足的同步，那么当线程访问共享数据时，会发生一些非常奇怪的问题，然而使用@GuardedBy和安全发布，即使不考虑Happens-Before底层细节，也能确保线程安全性</p>
+</li>
+</ol>
 
       
     </div>
