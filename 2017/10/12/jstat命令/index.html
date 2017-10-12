@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>jstat命令 | 橘子不酸的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="介绍Jstat用于监控基于HotSpot的JVM，对其堆的使用情况进行实时的命令行的统计，使用jstat我们可以对指定的JVM做如下监控：
+
+类的加载及卸载情况
+查看新生代、老生代及持久代的容量及使用情况
+查看新生代、老生代及持久代的垃圾收集情况，包括垃圾回收的次数及垃圾回收所占用的时间
+查看新生代中Eden区及Survior区中容量及分配情况等jstat工具特别强大，它有众多的可选项，通过提供多">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jstat命令">
+<meta property="og:url" content="https://yangzhiw.github.io/2017/10/12/jstat命令/index.html">
+<meta property="og:site_name" content="橘子不酸的博客">
+<meta property="og:description" content="介绍Jstat用于监控基于HotSpot的JVM，对其堆的使用情况进行实时的命令行的统计，使用jstat我们可以对指定的JVM做如下监控：
+
+类的加载及卸载情况
+查看新生代、老生代及持久代的容量及使用情况
+查看新生代、老生代及持久代的垃圾收集情况，包括垃圾回收的次数及垃圾回收所占用的时间
+查看新生代中Eden区及Survior区中容量及分配情况等jstat工具特别强大，它有众多的可选项，通过提供多">
+<meta property="og:updated_time" content="2017-10-12T13:52:26.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="jstat命令">
+<meta name="twitter:description" content="介绍Jstat用于监控基于HotSpot的JVM，对其堆的使用情况进行实时的命令行的统计，使用jstat我们可以对指定的JVM做如下监控：
+
+类的加载及卸载情况
+查看新生代、老生代及持久代的容量及使用情况
+查看新生代、老生代及持久代的垃圾收集情况，包括垃圾回收的次数及垃圾回收所占用的时间
+查看新生代中Eden区及Survior区中容量及分配情况等jstat工具特别强大，它有众多的可选项，通过提供多">
+  
+    <link rel="alternate" href="/atom.xml" title="橘子不酸的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">橘子不酸的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一天进步一点</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://yangzhiw.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-jstat命令" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/10/12/jstat命令/" class="article-date">
+  <time datetime="2017-10-12T13:52:00.000Z" itemprop="datePublished">2017-10-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      jstat命令
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>Jstat用于监控基于HotSpot的JVM，对其堆的使用情况进行实时的命令行的统计，使用jstat我们可以对指定的JVM做如下监控：</p>
+<ul>
+<li>类的加载及卸载情况</li>
+<li>查看新生代、老生代及持久代的容量及使用情况</li>
+<li>查看新生代、老生代及持久代的垃圾收集情况，包括垃圾回收的次数及垃圾回收所占用的时间</li>
+<li>查看新生代中Eden区及Survior区中容量及分配情况等<br>jstat工具特别强大，它有众多的可选项，通过提供多种不同的监控维度，使我们可以从不同的维度来了解到当前JVM堆的使用情况。详细查看堆内各个部分的使用量，使用的时候必须加上待统计的Java进程号，可选的不同维度参数以及可选的统计频率参数。</li>
+</ul>
+<h1 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h1><pre><code>jstat [ generalOption | outputOptions vmid [interval[s|ms] [count]] ]
+
+generalOption - 单个的常用的命令行选项，如-help, -options, 或 -version。
+
+outputOptions -一个或多个输出选项，由单个的statOption选项组成，可以和-t, -h, and -J等选项配合使用。
+</code></pre><p>statOption：<br>class    用于查看类加载情况的统计<br>compiler    用于查看HotSpot中即时编译器编译情况的统计<br>gc    用于查看JVM中堆的垃圾收集情况的统计<br>gccapacity    用于查看新生代、老生代及持久代的存储容量情况<br>gccause    用于查看垃圾收集的统计情况（这个和-gcutil选项一样），如果有发生垃圾收集，它还会显示最后一次及当前正在发生垃圾收集的原因。<br>gcnew    用于查看新生代垃圾收集的情况<br>gcnewcapacity    用于查看新生代的存储容量情况<br>gcold    用于查看老生代及持久代发生GC的情况<br>gcoldcapacity    用于查看老生代的容量<br>gcpermcapacity    用于查看持久代的容量<br>gcutil    用于查看新生代、老生代及持代垃圾收集的情况<br>printcompilation    HotSpot编译方法的统计</p>
+<pre><code>-h n
+    用于指定每隔几行就输出列头，如果不指定，默认是只在第一行出现列头。
+
+-JjavaOption
+    用于将给定的javaOption传给java应用程序加载器，例如，“-J-Xms48m”将把启动内存设置为48M。如果想查看可以传递哪些选项到应用程序加载器中
+
+-t n
+    用于在输出内容的第一列显示时间戳，这个时间戳代表的时JVM开始启动到现在的时间（注：在IBM JDK5中是没有这个选项的）。
+
+vmid  - VM的进程号，即当前运行的java进程号。
+还有两个关于显示频率的选项：
+interval–间隔时间，单位可以是秒或者毫秒，通过指定s或ms确定，默认单位为毫秒。
+count-打印次数，如果缺省则打印无数次。
+</code></pre><h1 id="不同的统计维度（statOption）及输出说明"><a href="#不同的统计维度（statOption）及输出说明" class="headerlink" title="不同的统计维度（statOption）及输出说明"></a>不同的统计维度（statOption）及输出说明</h1><h2 id="class-类加载情况的统计"><a href="#class-类加载情况的统计" class="headerlink" title="-class   类加载情况的统计"></a>-class   类加载情况的统计</h2><p>列名             说明<br>Loaded    加载了的类的数量<br>Bytes    加载了的类的大小，单为Kb<br>Unloaded    卸载了的类的数量<br>Bytes    卸载了的类的大小，单为Kb<br>Time    花在类的加载及卸载的时间</p>
+<h2 id="compiler-HotSpot中即时编译器编译情况的统计"><a href="#compiler-HotSpot中即时编译器编译情况的统计" class="headerlink" title="-compiler HotSpot中即时编译器编译情况的统计"></a>-compiler HotSpot中即时编译器编译情况的统计</h2><p>列名    说明<br>Compiled    编译任务执行的次数<br>Failed    编译任务执行失败的次数<br>Invalid    编译任务非法执行的次数<br>Time    执行编译花费的时间<br>FailedType    最后一次编译失败的编译类型<br>FailedMethod    最后一次编译失败的类名及方法名</p>
+<h2 id="gc-JVM中堆的垃圾收集情况的统计"><a href="#gc-JVM中堆的垃圾收集情况的统计" class="headerlink" title="-gc JVM中堆的垃圾收集情况的统计"></a>-gc JVM中堆的垃圾收集情况的统计</h2><p>列名    说明<br>S0C    新生代中Survivor space中S0当前容量的大小（KB）<br>S1C    新生代中Survivor space中S1当前容量的大小（KB）<br>S0U    新生代中Survivor space中S0容量使用的大小（KB）<br>S1U    新生代中Survivor space中S1容量使用的大小（KB）<br>EC    Eden space当前容量的大小（KB）<br>EU    Eden space容量使用的大小（KB）<br>OC    Old space当前容量的大小（KB）<br>OU    Old space使用容量的大小（KB）<br>PC    Permanent space当前容量的大小（KB）<br>PU    Permanent space使用容量的大小（KB）<br>YGC    从应用程序启动到采样时发生 Young GC 的次数<br>YGCT    从应用程序启动到采样时 Young GC 所用的时间(秒)<br>FGC    从应用程序启动到采样时发生 Full GC 的次数<br>FGCT    从应用程序启动到采样时 Full GC 所用的时间(秒)<br>GCT    T从应用程序启动到采样时用于垃圾回收的总时间(单位秒)，它的值等于YGC+FGC</p>
+<h2 id="gccapacity-新生代、老生代及持久代的存储容量情况"><a href="#gccapacity-新生代、老生代及持久代的存储容量情况" class="headerlink" title="-gccapacity 新生代、老生代及持久代的存储容量情况"></a>-gccapacity 新生代、老生代及持久代的存储容量情况</h2><p>列名    说明<br>NGCMN    新生代的最小容量大小（KB）<br>NGCMX    新生代的最大容量大小（KB）<br>NGC    当前新生代的容量大小（KB）<br>S0C    当前新生代中survivor space 0的容量大小（KB）<br>S1C    当前新生代中survivor space 1的容量大小（KB）<br>EC    Eden space当前容量的大小（KB）<br>OGCMN    老生代的最小容量大小（KB）<br>OGCMX    老生代的最大容量大小（KB）<br>OGC    当前老生代的容量大小（KB）<br>OC    当前老生代的空间容量大小（KB）<br>PGCMN    持久代的最小容量大小（KB）<br>PGCMX    持久代的最大容量大小（KB）<br>PGC    当前持久代的容量大小（KB）<br>PC    当前持久代的空间容量大小（KB）<br>YGC    从应用程序启动到采样时发生 Young GC 的次数<br>FGC    从应用程序启动到采样时发生 Full GC 的次数</p>
+<h2 id="gccause-用于查看垃圾收集的统计情况，包括最近发生垃圾的原因"><a href="#gccause-用于查看垃圾收集的统计情况，包括最近发生垃圾的原因" class="headerlink" title="-gccause  用于查看垃圾收集的统计情况，包括最近发生垃圾的原因"></a>-gccause  用于查看垃圾收集的统计情况，包括最近发生垃圾的原因</h2><p>列名    说明<br>LGCC    最后一次垃圾收集的原因，可能为“unknown GCCause”、“System.gc()”等<br>GCC    当前垃圾收集的原因</p>
+<h2 id="gcnew-新生代垃圾收集的情况"><a href="#gcnew-新生代垃圾收集的情况" class="headerlink" title="-gcnew 新生代垃圾收集的情况"></a>-gcnew 新生代垃圾收集的情况</h2><p>列名    说明<br>S0C    当前新生代中survivor space 0的容量大小（KB）<br>S1C    当前新生代中survivor space 1的容量大小（KB）<br>S0U    S0已经使用的大小（KB）<br>S1U    S1已经使用的大小（KB）<br>TT    Tenuring threshold，要了解这个参数，我们需要了解一点Java内存对象的结构，在Sun JVM中，（除了数组之外的）对象都有两个机器字（words）的头部。第一个字中包含这个对象的标示哈希码以及其他一些类似锁状态和等标识信息，第二个字中包含一个指向对象的类的引用，其中第二个字节就会被垃圾收集算法使用到。<br>在新生代中做垃圾收集的时候，每次复制一个对象后，将增加这个对象的收集计数，当一个对象在新生代中被复制了一定次数后，该算法即判定该对象是长周期的对象，把他移动到老生代，这个阈值叫着tenuring threshold。这个阈值用于表示某个/些在执行批定次数youngGC后还活着的对象，即使此时新生的的Survior没有满，也同样被认为是长周期对象，将会被移到老生代中。<br>MTT    Maximum tenuring threshold，用于表示TT的最大值。<br>DSS    Desired survivor size (KB).可以参与这里：<a href="http://blog.csdn.net/yangjun2/article/details/6542357" target="_blank" rel="external">http://blog.csdn.net/yangjun2/article/details/6542357</a><br>EC    Eden space当前容量的大小（KB）<br>EU    Eden space已经使用的大小（KB）<br>YGC    从应用程序启动到采样时发生 Young GC 的次数<br>YGCT    从应用程序启动到采样时 Young GC 所用的时间(单位秒)</p>
+<h2 id="gcnewcapacity-新生代的存储容量情况"><a href="#gcnewcapacity-新生代的存储容量情况" class="headerlink" title="gcnewcapacity 新生代的存储容量情况"></a>gcnewcapacity 新生代的存储容量情况</h2><p>列名    说明<br>NGCMN              新生代的最小容量大小（KB）<br>NGCMX        新生代的最大容量大小（KB）<br>NGC        当前新生代的容量大小（KB）<br>S0CMX    新生代中SO的最大容量大小（KB）<br>S0C    当前新生代中SO的容量大小（KB）<br>S1CMX    新生代中S1的最大容量大小（KB）<br>S1C    当前新生代中S1的容量大小（KB）<br>ECMX    新生代中Eden的最大容量大小（KB）<br>EC    当前新生代中Eden的容量大小（KB）<br>YGC    从应用程序启动到采样时发生 Young GC 的次数<br>FGC    从应用程序启动到采样时发生 Full GC 的次数</p>
+<h2 id="gcold-老生代及持久代发生GC的情况"><a href="#gcold-老生代及持久代发生GC的情况" class="headerlink" title="-gcold  老生代及持久代发生GC的情况"></a>-gcold  老生代及持久代发生GC的情况</h2><p>列名    说明<br>PC    当前持久代容量的大小（KB）<br>PU    持久代使用容量的大小（KB）<br>OC    当前老年代容量的大小（KB）<br>OU    老年代使用容量的大小（KB）<br>YGC    从应用程序启动到采样时发生 Young GC 的次数<br>FGC    从应用程序启动到采样时发生 Full GC 的次数<br>FGCT    从应用程序启动到采样时 Full GC 所用的时间(单位秒)<br>GCT    从应用程序启动到采样时用于垃圾回收的总时间(单位秒)，它的值等于YGC+FGC</p>
+<h2 id="gcoldcapacity-老生代的存储容量情况"><a href="#gcoldcapacity-老生代的存储容量情况" class="headerlink" title="-gcoldcapacity 老生代的存储容量情况"></a>-gcoldcapacity 老生代的存储容量情况</h2><p>列名    说明<br>OGCMN    老生代的最小容量大小（KB）<br>OGCMX    老生代的最大容量大小（KB）<br>OGC    当前老生代的容量大小（KB）<br>OC    当前新生代的空间容量大小（KB）<br>YGC    从应用程序启动到采样时发生 Young GC 的次数<br>FGC    从应用程序启动到采样时发生 Full GC 的次数<br>FGCT    从应用程序启动到采样时 Full GC 所用的时间(单位秒)<br>GCT    从应用程序启动到采样时用于垃圾回收的总时间(单位秒)，它的值等于YGC+FGC</p>
+<h2 id="gcpermcapacity-持久代的存储容量情况"><a href="#gcpermcapacity-持久代的存储容量情况" class="headerlink" title="-gcpermcapacity 持久代的存储容量情况"></a>-gcpermcapacity 持久代的存储容量情况</h2><p>列名    说明<br>PGCMN    持久代的最小容量大小（KB）<br>PGCMX    持久代的最大容量大小（KB）<br>PGC    当前持久代的容量大小（KB）<br>PC    当前持久代的空间容量大小（KB）<br>YGC    从应用程序启动到采样时发生 Young GC 的次数<br>FGC 从应用程序启动到采样时发生 Full GC 的次数<br>FGCT    从应用程序启动到采样时 Full GC 所用的时间(单位秒)<br>GCT    从应用程序启动到采样时用于垃圾回收的总时间(单位秒)，它的值等于YGC+FGC</p>
+<h2 id="gcutil-新生代、老生代及持代垃圾收集的情况"><a href="#gcutil-新生代、老生代及持代垃圾收集的情况" class="headerlink" title="-gcutil 新生代、老生代及持代垃圾收集的情况"></a>-gcutil 新生代、老生代及持代垃圾收集的情况</h2><p>列名    说明<br>S0    Heap上的 Survivor space 0 区已使用空间的百分比<br>S1    Heap上的 Survivor space 1 区已使用空间的百分比<br>E    Heap上的 Eden space 区已使用空间的百分比<br>O    Heap上的 Old space 区已使用空间的百分比<br>P    Perm space 区已使用空间的百分比<br>YGC    从应用程序启动到采样时发生 Young GC 的次数<br>YGCT    从应用程序启动到采样时 Young GC 所用的时间(单位秒)<br>FGC    从应用程序启动到采样时发生 Full GC 的次数<br>FGCT    从应用程序启动到采样时 Full GC 所用的时间(单位秒)<br>GCT    从应用程序启动到采样时用于垃圾回收的总时间(单位秒)，它的值等于YGC+FGC</p>
+<h2 id="printcompilation-HotSpot编译方法的统计"><a href="#printcompilation-HotSpot编译方法的统计" class="headerlink" title="-printcompilation HotSpot编译方法的统计"></a>-printcompilation HotSpot编译方法的统计</h2><p>HotSpot编译方法的统计<br>列名    说明<br>Compiled    编译任务执行的次数<br>Size    方法的字节码所占的字节数<br>Type    编译类型<br>Method    指定确定被编译方法的类名及方法名，类名中使名“/”而不是“.”做为命名分隔符，方法名是被指定的类中的方法，这两个字段的格式是由HotSpot中的“-XX:+PrintComplation”选项确定的。</p>
+<h1 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h1><p>jstat -gcutil 11111</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2017/10/12/jstat命令/" data-id="cj8oj12m90016y39os8yo8vsm" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JDK内置工具/">JDK内置工具</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/10/12/其他JDK命令/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          其他JDK命令
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/10/12/jstack命令/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">jstack命令</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Codis/">Codis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heroku/">Heroku</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JDK内置工具/">JDK内置工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java基础/">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异常处理/">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/拦截器/">拦截器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/设计模式/">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/随记/">随记</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Codis/" style="font-size: 10px;">Codis</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/JDK内置工具/" style="font-size: 18px;">JDK内置工具</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 12px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 16px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/并发编程/" style="font-size: 14px;">并发编程</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/拦截器/" style="font-size: 10px;">拦截器</a> <a href="/tags/日志/" style="font-size: 14px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a> <a href="/tags/设计模式/" style="font-size: 12px;">设计模式</a> <a href="/tags/随记/" style="font-size: 10px;">随记</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/10/12/其他JDK命令/">其他JDK命令</a>
+          </li>
+        
+          <li>
+            <a href="/2017/10/12/jstat命令/">jstat命令</a>
+          </li>
+        
+          <li>
+            <a href="/2017/10/12/jstack命令/">jstack命令</a>
+          </li>
+        
+          <li>
+            <a href="/2017/10/12/jps命令/">jps命令</a>
+          </li>
+        
+          <li>
+            <a href="/2017/10/12/jmap命令-Java-Memory-Map/">jmap命令(Java Memory Map)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

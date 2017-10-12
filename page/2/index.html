@@ -68,10 +68,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-ScheduledThreadPoolExecutor的使用" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Java并发编程实战总结" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/01/17/ScheduledThreadPoolExecutor的使用/" class="article-date">
-  <time datetime="2017-01-17T07:40:58.000Z" itemprop="datePublished">2017-01-17</time>
+    <a href="/2017/09/12/Java并发编程实战总结/" class="article-date">
+  <time datetime="2017-09-12T02:09:13.000Z" itemprop="datePublished">2017-09-12</time>
 </a>
     
   </div>
@@ -82,7 +82,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/17/ScheduledThreadPoolExecutor的使用/">ScheduledThreadPoolExecutor的使用</a>
+      <a class="article-title" href="/2017/09/12/Java并发编程实战总结/">Java并发编程实战总结</a>
     </h1>
   
 
@@ -90,21 +90,173 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Java Executor框架提供了ThreadPoolExecutor类去执行Callable和Runnable任务，这样避免了大量的复杂代码的操作，但是有时你需要定时去执行你的任务，这个时候你就要使用ScheduledThreadPoolExecutor类了。</p>
-<h1 id="先写个基本的任务"><a href="#先写个基本的任务" class="headerlink" title="先写个基本的任务"></a>先写个基本的任务</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Task</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">private</span> String name;</div><div class="line"> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Task</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.name = name;</div><div class="line">    &#125;</div><div class="line">     </div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> name;</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            System.out.println(<span class="string">"Doing a task during : "</span> + name + <span class="string">" - Time - "</span> + <span class="keyword">new</span> Date());</div><div class="line">        &#125; </div><div class="line">        <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="一段时间后执行"><a href="#一段时间后执行" class="headerlink" title="一段时间后执行"></a>一段时间后执行</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ScheduledThreadPoolExecutorExample</span></span></div><div class="line">&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span></div><div class="line">    &#123;</div><div class="line">        ScheduledExecutorService executor = Executors.newScheduledThreadPool(<span class="number">2</span>);</div><div class="line">        Task task1 = <span class="keyword">new</span> Task (<span class="string">"Demo Task 1"</span>);</div><div class="line">        Task task2 = <span class="keyword">new</span> Task (<span class="string">"Demo Task 2"</span>);</div><div class="line">         </div><div class="line">        System.out.println(<span class="string">"The time is : "</span> + <span class="keyword">new</span> Date());</div><div class="line">         </div><div class="line">        executor.schedule(task1, <span class="number">5</span> , TimeUnit.SECONDS);</div><div class="line">        executor.schedule(task2, <span class="number">10</span> , TimeUnit.SECONDS);</div><div class="line">         </div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">              executor.awaitTermination(<span class="number">1</span>, TimeUnit.DAYS);</div><div class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">              e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">         </div><div class="line">        executor.shutdown();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>The time is : Tue Jan 25 16:14:07 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:14:12 IST 2017<br>Doing a task during : Demo Task 2 - Time - Tue Jan 25 16:14:17 IST 2017</p>
-<h1 id="执行任务时间片的形式"><a href="#执行任务时间片的形式" class="headerlink" title="执行任务时间片的形式"></a>执行任务时间片的形式</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ScheduledThreadPoolExecutorExample</span></span></div><div class="line">&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span></div><div class="line">    &#123;</div><div class="line">        ScheduledExecutorService executor = Executors.newScheduledThreadPool(<span class="number">1</span>);</div><div class="line">        Task task1 = <span class="keyword">new</span> Task (<span class="string">"Demo Task 1"</span>);</div><div class="line">         </div><div class="line">        System.out.println(<span class="string">"The time is : "</span> + <span class="keyword">new</span> Date());</div><div class="line">         </div><div class="line">        ScheduledFuture&lt;?&gt; result = executor.scheduleAtFixedRate(task1, <span class="number">2</span>, <span class="number">5</span>, TimeUnit.SECONDS);</div><div class="line">         </div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            TimeUnit.MILLISECONDS.sleep(<span class="number">20000</span>);</div><div class="line">        &#125; </div><div class="line">        <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">         </div><div class="line">        executor.shutdown();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>Output:</p>
-<p>The time is : Tue Jan 25 16:20:12 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:20:14 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:20:19 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:20:24 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:20:29 IST 2017</p>
+        <h1 id="线程安全性"><a href="#线程安全性" class="headerlink" title="线程安全性"></a>线程安全性</h1><ul>
+<li>竞态条件：又有不恰当的执行顺序而出现的的不正确的结果</li>
+<li>当某个线程请求一个由其他线程持有的锁时，发出请求的线程就会阻塞。然而，由于内置锁是可重入的，因此如果某个线程视图获得一个已经由它自己持有的锁，那么这个请求就会成功</li>
+<li>一种常见的加锁约定是，将所有的可变状态都封装在对象内部，并通过对象的内置锁对所有访问可变状态的代码路径进行同步，使得在该对象上不会发生并发访问</li>
+<li>当执行时间较长的计算或者可能无法快速完成的操作时（例如，网络I/O或控制台I/O），一定不要持有锁</li>
+</ul>
+<h1 id="对象的共享"><a href="#对象的共享" class="headerlink" title="对象的共享"></a>对象的共享</h1><ol>
+<li><p>非原子的64位操作：多线程程序中使用共享且可变的long和double等类型的变量是不安全的，除非用关键字volatile来声明它们，或者用锁保护起来（分解为两个32位操作）</p>
+</li>
+<li><p>volatile变量是一种比sychronized关键字更轻量级的同步机制</p>
+</li>
+<li><p>加锁机制既可以确保可见性又可以确保原子性，而volatile变量只能确保可见性</p>
+</li>
+<li><p>确保只有单个线程对共享的volatile变量执行写入操作，那么就可以安全地在这些共享的volatile变量上执行“读取-修改-写入”的操作</p>
+</li>
+<li><p>线程封闭（某个对象封闭在一个线程中）包括 Ad-hoc,栈封闭,ThreadLocal类</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">线程封闭：线程封闭的对象只能由一个线程拥有，对象被封闭在该线程中，并且只能由这个线程修改</div><div class="line"></div><div class="line">只读共享：在没有额外同步的情况下，共享的只读对象可以由多个线程并发访问，但任何线程都不能修改它。共享的只读对象包括不可变对象和事实不可变对象</div><div class="line"></div><div class="line">线程安全共享：线程安全的对象在其内部实现同步，因此多个线程可以通过对象的公有接口进行访问而不需要进一步的同步</div><div class="line"></div><div class="line">保护对象：被保护的对象只能通过持有特定的锁来访问。保护对象包括封装在其他线程安全对象中的对象，以及已发布的并且由某个特定锁保护的对象</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="对象的组合"><a href="#对象的组合" class="headerlink" title="对象的组合"></a>对象的组合</h1><ul>
+<li>深拷贝与浅拷贝，举例说明：对象A1中包含对B1的引用，B1中包含对C1的引用。浅拷贝A1得到A2，<br>A2 中依然包含对B1的引用，B1中依然包含对C1的引用。深拷贝则是对浅拷贝的递归，深拷贝A1得到A2，A2中包含对B2（B1的copy）的引用，B2 中包含对C2（C1的copy）的引用。</li>
+</ul>
+<h1 id="基础构建模块"><a href="#基础构建模块" class="headerlink" title="基础构建模块"></a>基础构建模块</h1><ul>
+<li><p>迭代器与ConcurrentModificationException，在迭代期间对容器加锁或者“克隆”容器，并在副本上进行迭代</p>
+</li>
+<li><p>通过并发容器（ConcurrentHashMap等）来代替同步容器（synchronizedMap包装的），可以极大地提高伸缩性并降低风险</p>
+</li>
+<li><p>ConcurrentHashMap并不是将每个方法都在同一个锁上同步并使得每次只能有一个线程访问容器，而是使用一种粒度更细的加锁机制来实现更大程度的共享，这种机制称为分段锁(Lock Striping),在这种机制中，任意数量的读取线程可以并发地访问Map，执行读取操作的线程和执行写入操作的线程可以并发地访问Map，并且一定数量的写入线程可以并发地修改Map。ConcurrentHashMap带来的结果是，在并发访问环境下将实现更高的吞吐量，而在单线程环境中只损失非常小的性能</p>
+</li>
+<li><p>CopyOnWriteArrayList 用于替代同步List，写入时复制（Copy-on-write）在每次修改时，都会创建并重新发布一个新的容器副本，从而实现可变性</p>
+</li>
+<li><p>阻塞队列（BlockingQueue，生产者-消费者模式）提供了可阻塞的put和take方法，以及支持定时的offer和poll方法（报错后可执行其他）；类库中其他多种实现 LinkedBlockingQueue和ArrayBlockingQueue是FIFO队列，PriorityBlockingQueue是按优先级排序的队列，SynchronousQueue不会为队列中元素维护存储空间，直接交付工作，从而降低了将数据从生产者移动到消费者的延迟</p>
+</li>
+<li><p>双端队列和工作密取：每个消费者都有各自的双端队列，如果一个消费者完成了自己双端队列中的全部工作，那么他可以从其他消费者双端队列末尾秘密地获取工作。工作密取非常适用于既是消费者也是生产者问题，当执行某个工作时可能导致出现更多的工作</p>
+</li>
+<li><p>闭锁可以延迟线程的进度直到其到达终止状态，CountDownLatch是一种灵活的闭锁实现</p>
+</li>
+<li><p>FutureTask可以用做闭锁</p>
+</li>
+<li><p>计数信号量用来控制同时访问某个特定资源的操作数量，或者同时执行某个指定操作的数量</p>
+<blockquote>
+<p>信号量（Semaphore）的用途，1. 二值信号量，互斥体（mutex） 2. 实现资源池 3.有界阻塞容器</p>
+</blockquote>
+</li>
+<li>栅栏与闭锁区别在于，所有线程必须同时到达栅栏位置，才能继续执行（闭锁是ABCD全部并行执行完毕后，E执行；栅栏是ABCD全部准备好后，一起并发执行）</li>
+</ul>
+<h1 id="任务执行"><a href="#任务执行" class="headerlink" title="任务执行"></a>任务执行</h1><ol>
+<li><p>在生产环境中，为每个任务分配一个线程存在缺陷，避免无限制创建线程,尽量少使用newCachedThreadPool</p>
+</li>
+<li><p>线程池的创建，调用Executors中的静态工厂方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">newFixedThreadPool: 每当提交一个任务是就创建一个线程，直到达到线程池的最大数量，这时线程池的规模将不再变化（异常的，会补充线程）</div><div class="line"></div><div class="line">newCachedThreadPool：可缓存线程池，多了回收，少了添加，规模没有任何限制</div><div class="line"></div><div class="line">newSingleThreadExecutor：单线程的Executor，确保依照任务在队列中的顺序来串行执行</div><div class="line"></div><div class="line">newScheduledThreadPool：创建固定长度的线程池，而且以延迟或定时的方式来执行任务，类似于Timer</div></pre></td></tr></table></figure>
+</li>
+<li><p>有关延迟任务与周期任务：Timer在执行所有定时任务时只会创建一个线程，如果某个任务的执行时间过长，那么将破坏其他TimerTask的定时准确性，而newScheduledThreadPool线程池可以弥补这个缺陷，提供多个线程来执行</p>
+</li>
+<li><p>Executor执行的任务有4个生命周期阶段：创建，提交，开始和完成。已提交但尚未开始的任务可以取消，但对于那些已经开始执行的任务，只有当它们能响应中断时，才能取消</p>
+</li>
+<li><p>为任务设置时效，在支持时间限制的Future.get中支持这种需求，当结果可用时，立即返回，如果在指定时限内没有计算出结果，将抛出TimeoutException</p>
+</li>
+<li><p>Executor任务执行框架将任务提交与执行策略解耦开来，同时还支持多种不同类型的执行策略</p>
+</li>
+</ol>
+<h1 id="取消与关闭"><a href="#取消与关闭" class="headerlink" title="取消与关闭"></a>取消与关闭</h1><ol>
+<li>线程中断是一种协作机制，线程可以通过这种机制来通知另一个线程，告诉它在合适的时候或者可能的情况下停止当前工作，并转而执行其他工作；通常，中断是实现取消的最合理方式</li>
+<li>每个线程都有一个boolean类型的中断状态，在中断线程时，这个线程中断状态将被设置为true,列举Thread中有关<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">interrupt：中断目标线程</div><div class="line"></div><div class="line">isInterrupted:  返回目标线程的中断状态</div><div class="line"></div><div class="line"><span class="keyword">static</span> interrupted：清除当前线程的中断状态，返回它之前的值</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="线程池的使用"><a href="#线程池的使用" class="headerlink" title="线程池的使用"></a>线程池的使用</h1><ol>
+<li><p>使用ThreadLocal的任务：只有当线程本地值的生命周期受限于任务的生命周期时，在线程池的线程中使用ThreadLocal才有意义，而在线程池的线程中不应该使用ThreadLocal在任务之间传递值</p>
+</li>
+<li><p>线程饥饿死锁：线程池中的任务需要无限期等待一些必须由池中其他任务才能提供的资源或条件，例如某个任务等待另一个任务的返回值或执行结果，那么除非线程池足够大，否则将发生线程饥饿死锁</p>
+</li>
+<li><p>设置线程池的大小：考虑部署的系统有多少个CPU；多大内存；任务是计算密集型；I/O密集型还是两者皆可；比如计算密集型任务，线程池大小为cpu数+1能实现最优，I/O密集型线程池的规模可以更大一些</p>
+</li>
+<li><p>若默认的执行策略，如newCachedThreadPool，newFixedThreadPool，newScheduledThreadExecutor 不能满足需求，可以通过ThreadPoolExecutor的构造函数来实例化一个对象</p>
+</li>
+<li><p>调用构造函数后再定制ThreadPoolExecutor，可以通过Setter来修改；如果Executor是通过Executors中的某个工厂方法创建的，那么可以将结果的类型转换为ThreadPoolExecutor以访问设置器</p>
+</li>
+<li><p>ThreadPoolExecutor是可扩展的，它提供了几个可以在子类化中改写的方法：beforeExecute,afterExecute，terminated</p>
+</li>
+<li><p>如果需要提交一个任务集并等待它们完成，那么可以使用ExecutorService.invokeAll，并且在所有任务都执行完成后调用CompletionService来获取结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">CompletionService&lt;Integer&gt; completionService = <span class="keyword">new</span> ExecutorCompletionService&lt;Integer&gt;(executor);</div><div class="line"><span class="comment">//向线程池提交任务</span></div><div class="line">completionService.submit(<span class="keyword">new</span> Runnable();</div><div class="line">completionService.take().get();</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="避免活跃性危险（有关死锁）"><a href="#避免活跃性危险（有关死锁）" class="headerlink" title="避免活跃性危险（有关死锁）"></a>避免活跃性危险（有关死锁）</h1><ol>
+<li><p>死锁的避免与诊断：支持定时的锁，通过JVM线程转储信息来分析死锁</p>
+</li>
+<li><p>Thread API中定义的线程优先级只是作为线程调度的参考，其中定义了10个优先级，JVM根据需要将它们映射到操作系统的调度优先级，这种映射是于特定平台相关的</p>
+</li>
+<li><p>避免使用线程优先级，因为这会增加平台依赖性，并可能导致活跃性问题，在大多数并发应用程序中，都可以使用默认的线程优先级</p>
+</li>
+<li><p>最常见的活跃性故障就是锁顺序死锁，在设计时应该避免产生锁顺序死锁，确保线程在获取多个锁时采用一致的顺序，最好的解决方法是在程序中始终使用开放调用（调用某个方法时不需要持有锁），这将大大减少需要同时持有多个锁的地方</p>
+</li>
+</ol>
+<h1 id="性能和可伸缩性"><a href="#性能和可伸缩性" class="headerlink" title="性能和可伸缩性"></a>性能和可伸缩性</h1><p>1.可伸缩性指的是增加计算资源时（例如CPU，内存，存储容量，或I/O带宽），程序的吞吐量或者处理能力能相应地增加</p>
+<p>2.在所有并发程序中都包含一些串行部分，如果你认为在程序中不存在串行部分，那么可以在仔细检查一遍<br>3.线程引入开销:<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">上下文切换：若可运行的线程数大于CPU的数量，那么操作系统会将某个正在运行的线程调度出来，从而使其他线程能够使用CPU，导致一次上下文切换</div><div class="line">内存同步：区分有竞争的同步和无竞争的同步非常重要</div><div class="line">阻塞：当在锁上发生竞争时，竞争失败的线程肯定会阻塞</div></pre></td></tr></table></figure></p>
+<ol>
+<li><p>在并发程序中，对可伸缩性的最主要威胁就是独占方式的资源锁。三种方式可以降低锁的竞争程度</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">减少锁的持有时间 ：缩小锁的范围</div><div class="line">降低锁的请求频率 ：减小锁的粒度（锁分解和锁分段）</div><div class="line">使用带有协调机制的独占锁，这些机制允许更高的并发性，比如ReadWriteLock实现一种在多个读取操作以及单个写入操作情况下的加锁规则；原子变量</div></pre></td></tr></table></figure>
+</li>
+<li><p>锁分段：锁分解技术进一步扩展为对一组独立对象上的锁进行分解，这种情况被称为锁分段，例如ConcurrentHashMap的实现中使用了一个包含16个锁的数组，每个锁保护所有散列通的1/16</p>
+</li>
+<li><p>监测CPU的利用率，没有得到充分利用的原因一般包括：负载不充足，I/O密集，外部限制（数据库或web服务），锁竞争</p>
+</li>
+</ol>
+<h1 id="并发程序测试"><a href="#并发程序测试" class="headerlink" title="并发程序测试"></a>并发程序测试</h1><ol>
+<li><p>并发测试大致分为两类：安全性测试，活跃性测试（相关的是性能测试，包括吞吐量，响应性，可伸缩性）</p>
+</li>
+<li><p>总结：并发程序的许多故障模式都是一些低概率事件，它们对于执行时序，负载情况以及其他难以重现的条件都非常敏感，而且在测试程序中还会引入额外的同步或执行时序限制，用java编写的程序在测试起来更加困难，因为动态编译，垃圾回收以及自动优化等操作都会影响与时间相关的测试结果，因此我们需要将传统的测试技术与代码审查和自动化分析工具结合起来</p>
+</li>
+</ol>
+<h1 id="显式锁"><a href="#显式锁" class="headerlink" title="显式锁"></a>显式锁</h1><ol>
+<li>在Java5.0之前，在协调对共享对象的访问时可以使用的机制只有synchronized和volatile，Java5.0增加了一种新的机制ReentrantLock是内置加锁机制不适用时的一种高级功能</li>
+<li><p>使用ReentrantLock来保护对象状态，代码如下：必须在finally块中释放锁</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Lock lock = <span class="keyword">new</span> ReentrantLock();</div><div class="line">lock.lock();</div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    System.out.println(<span class="string">"更新对象状态"</span>);</div><div class="line">    System.out.println(<span class="string">"捕获异常，并在必要时恢复不变形条件"</span>);</div><div class="line">&#125; <span class="keyword">finally</span> &#123;</div><div class="line">    lock.unlock();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>与内置加锁机制不同的是，Lock提供了一种无条件的，可轮询的，定时的以及可中断的锁获取操作，所有加锁和解锁的方法都是显式的</p>
+</li>
+<li>在一些内置锁无法满足需求的情况下，ReentrantLock可以作为一种高级工具。当需要一些高级功能时才应该使用ReentrantLock，这些功能包括：可定时的，可轮询的与可中断的锁获取操作，公平队列，以及非块结构的锁。否则，还是应该优先使用synchronized</li>
+<li>有关ReadWriteLock读-写锁：允许多个读操作同时进行，但每次只允许一个写操作，ReentrantReadWriteLock为这两种锁都提供了可重入的加锁定义</li>
+</ol>
+<h1 id="构建自定义的同步工具"><a href="#构建自定义的同步工具" class="headerlink" title="构建自定义的同步工具"></a>构建自定义的同步工具</h1><p>1.状态依赖性的管理：当前提条件未满足时，依赖状态的操作可以抛出一个异常或者返回一个错误状态（使其成为调用者的一个问题），也可以保持阻塞直到对象进入正确的状态</p>
+<ol>
+<li><p>条件队列API中发出通知的方法，即notify和notifyAll。在调用notify时，JVM会从这个条件队列上等待的多个线程中选择一个来唤醒，而调用notifyAll则会唤醒所有在这个条件队列上等待的线程，并且发出通知的线程应该尽快地释放锁，从而确保正在等待的线程尽可能快地解除阻塞</p>
+</li>
+<li><p>只有同时满足以下两个条件时，才能用单一的notify而不是notifyAll： 所有等待线程的类型都相同<br>单进单出</p>
+</li>
+<li><p>有关显式的Condition对象：Lock比内置加锁提供了更为丰富的功能，Condition同样比内置条件队列提供了更丰富的功能，在每个锁上可存在多个等待，条件等待可以是可中断的或不可中断的，基于时限的等待，以及公平的或非公平的队列操作</p>
+</li>
+<li><p>在使用显式的Condition和内置条件队列之间进行选择时，与在ReentrantLock和synchronized之间进行选择是一样的，如果需要一些高级功能，例如使用公平的队列操作或者在每个锁上对应多个等待线程集，那么应该优先使用Condition而不是内置条件队列</p>
+</li>
+<li><p>有关AbstractQueuedSynchronizer(AQS):是一个用于构建锁和同步器的框架，许多同步器都可以通过AQS很容易并且高效地构造出来，包括ReentrantLock，Semaphore，CountDownLatch，ReetrantReadWriteLock，SynchronousQueue，FutureTask</p>
+</li>
+<li><p>小结：有时候现有的库类不能提供足够的功能，在这种情况下，可以使用内置的条件队列，显式的Condition对象或者AbstractQueuedSynchronizer来构建自己的同步器</p>
+</li>
+</ol>
+<h1 id="原子变量与非阻塞同步机制"><a href="#原子变量与非阻塞同步机制" class="headerlink" title="原子变量与非阻塞同步机制"></a>原子变量与非阻塞同步机制</h1><p>1.硬件对并发的支持：比较并交换（CAS），Java5.0后引入底层的支持，原子变量中使用了这些底层的JVM支持为数字类型和引用类型提供一种高效的CAS操作，而在java.util.concurrent中的大多数类在实现时则直接或间接地使用了这些原子变量类</p>
+<p>2.原子变量是一种“更好的volatile”：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">有关volatile：</div><div class="line"></div><div class="line"><span class="number">1.</span> 不要将volatile用在getAndOperate场合，仅仅set或者get的场景是适合volatile的</div><div class="line"></div><div class="line"><span class="number">2.</span> 内存屏蔽的概念，是一个CPU指令，告诉CPU和编译器先于这个命令的必须先执行，后于这个命令的必须后执行，另一个作用是强制更新一次不同CPU的缓存</div><div class="line"></div><div class="line"><span class="number">3.</span> volatile与内存屏蔽的关系：从Load到store到内存屏障，一共<span class="number">4</span>步，其中最后一步jvm让这个最新的变量的值在所有线程可见，但中间的步骤是不安全的，非原子性</div><div class="line"></div><div class="line"><span class="number">4.</span> volatile保证对线程的可见性，但不保证原子性</div><div class="line"></div><div class="line">原子变量具有原子性和可变性是因为使用到CAS指令，结合volatile</div></pre></td></tr></table></figure></p>
+<ol>
+<li><p>在中低程度的竞争下，原子变量能提供更高的可伸缩性，而在高强度的竞争下，锁能够更有效地避免竞争。但实际情况中，原子变量在可伸缩性上要高于锁</p>
+</li>
+<li><p>构建非阻塞算法的技巧在于：将执行原子修改的范围缩小到单个变量上</p>
+</li>
+<li><p>非阻塞算法通过底层的并发原语（CAS）来维持线程的安全性，这些底层的原语通过原子变量类向外公开。</p>
+</li>
+</ol>
+<h1 id="java内存模型"><a href="#java内存模型" class="headerlink" title="java内存模型"></a>java内存模型</h1><ol>
+<li>Java并发注解</li>
+</ol>
+<ul>
+<li>类注解（@Immutable，@ThreadSafe，@NotThreadSafe）只是说明作用</li>
+<li>域注解</li>
+<li>方法注解（@GuardedBy（lock）这个方法被哪个锁保护着）</li>
+</ul>
+<ol>
+<li><p>有关静态域：静态初始化期间，内存写入操作将自动对所有线程可见，因此无论是在被构造期间还是被引用时，静态初始化的对象都不需要显式的同步</p>
+</li>
+<li><p>小结：Java内存模型说明了某个线程的内存操作在哪些情况下对于其他线程是可见的，其中包括确保这些操作是按照一种Happens-Before的偏序关系进行排序，而这种关系是基于内存操作和同步操作等级别来定义的，如果缺少充足的同步，那么当线程访问共享数据时，会发生一些非常奇怪的问题，然而使用@GuardedBy和安全发布，即使不考虑Happens-Before底层细节，也能确保线程安全性</p>
+</li>
+</ol>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2017/01/17/ScheduledThreadPoolExecutor的使用/" data-id="cj8oii3680009rt9o30v5lxkc" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2017/09/12/Java并发编程实战总结/" data-id="cj8oj12le000ay39oy9k1ojhf" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Scheduler/">Scheduler</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/并发编程/">并发编程</a></li></ul>
 
     </footer>
   </div>
@@ -113,10 +265,10 @@
 
 
   
-    <article id="post-才觉远去，便起回忆" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-线程池的使用" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/12/31/才觉远去，便起回忆/" class="article-date">
-  <time datetime="2016-12-31T12:04:15.000Z" itemprop="datePublished">2016-12-31</time>
+    <a href="/2017/02/27/线程池的使用/" class="article-date">
+  <time datetime="2017-02-27T07:26:36.000Z" itemprop="datePublished">2017-02-27</time>
 </a>
     
   </div>
@@ -127,7 +279,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/31/才觉远去，便起回忆/">2016、才觉远去，便起怀念</a>
+      <a class="article-title" href="/2017/02/27/线程池的使用/">线程池的使用</a>
     </h1>
   
 
@@ -135,23 +287,18 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>   一年的开始，总是伴着喜庆的色彩。1月份，往往很多公司都要开始准备年会了。作为公司最年轻的团队，也忘记了是哪个家伙想的，让我们年会上唱bigbang的loser😭。我和另外4个小伙伴不幸就被选上了，拼了，就算是为了我们这个团队，依稀的记得的那一晚，我们玩的很嗨。虽然还是在实习阶段，可是我已觉得我早已融入进这个团队了，和他们成为了好朋友。从大三暑期实习开始，我就已经知道我没有寒假和暑假了，这一年的春节，虽然在家里呆的时间也不长。对我来说是不同的，因为我自己可以赚钱了，拿着这些钱给父母买了些东西，可以外婆包红包了就像当初她给我们一样。</p>
-<p>   匆匆茫茫的回到了公司，重新开始了工作。元宵节，和几个大学一起过的，在一个城市，有些同学还是不错的，至少平时我们可以相互发发牢骚。感觉到了3月份，工作才慢慢进入正轨，这个时候的我也开始思考了毕业之后的去向了，思考着是继续留在实习的公司还是去重新找一家，最终考虑的结果是留在这个公司，因为这里有很多我熟悉的人和事。3月末，了解到团队中有些实习生要走了，有要去读研深造的，有要换公司的，在送别聚餐的那一晚，我们很多都喝多了。或许我们都知道有相聚就有离开，但是没想到这才是刚刚开始而已。</p>
-<p>   杭州的4月天是很舒服的，听说一个高中的同桌同学来到了浙大读研，我当初怎么没看出来你还有这个潜力。我们一起在杭州西湖旁边的山上踏着青，记得她说过，还是老同学在一起实在啊。是啊，高中时的那些同学们，我还记的和你们一起奋斗和玩耍的时光啊。五月初，我们团队自驾游去了安吉的天荒坪了，虽然那个周末天气不是很好，但我们还是玩的很开心的。回来的路上，我们在车上把后备箱的几瓶酒在路上全吹掉了，一种宿醉的感觉。</p>
-<p>   想到马上要回到学校，内心还是很激动过的，可能都知道大学四年就剩下这1个多月时间了，同学宿舍之间走动更加的频繁了。时间流逝的总是快的，做毕设、写论文、答辩、拍毕业照、毕业酒会。马上就要毕业了，谁又能想到答辩那天走出教室后，直到现在我都没有再进去过大学教室。是啊，要再见了，我的小伙伴们。</p>
-<p>   6月25号，从南昌来到杭州，其实内心还是很激动的，因为我知道我再也不是实习生了，我马上要转为公司的正式员工了。可是令我想不到的是很多事情都在改变，领导也不再是之前的领导，一年时间真的是习惯了你们的存在(后面在新的一家公司上班时，叫错了几次领导的名字😅)。接下来公司工作环境就变得有些诡异了，当时也没想太多，更深层次的东西我也想不到，只是感觉，这种工作状态还不如之前实习的那个团队，当工作失去激情，离离开也就不远了。好在，我并没有因为这样的状态而颓废，这段时间，本人开了博客，开始写写技术文章，学习新技术以充实自己，这段时间的知识积累，也对我后面找新的工作有了帮助。接下来杭州慢慢开始成为世界上最安全最干净的城市了，因为受全世界关注的G20要在杭州举行了，杭州真的很不错，我喜欢这座城。</p>
-<p>   离开，9月20号，因某些原因，从公司离开。接下来，很多的散伙饭，这让我想起了毕业时的场景，没有不散的宴席，谁会饿着肚子去呐喊，开始准备写简历去迎接新的工作了。面了6家企业，我最终还是选择了感觉最有发展前景的C公司，准备国庆后迎接新的环境。</p>
-<p>   深刻体会来到一家新的企业，都要给时间去适应的。10月基本上也就是去适应公司环境的过程了；公司发展迅速，项目时间安排紧，而这给我带来的影响就是经常加班了。可能是为了缓解压力，11月份公司安排一次团建，是去安吉，顿时有种熟悉的感觉。</p>
-<p>   一年过的真的很快啊，突然就到了一年的最后一个月了，这个月真是工作以来忙碌的一个月啊，就连今天这一年的最后一天，都在公司加班（😂，其实心根本不在状态）。还有就是这个月也是最难忘的，因为我遇到了一个让我心动的女孩，是的，那是心动的感觉。</p>
-<p>   在新的一年里，希望自己能养成看书的习惯吧，然后让自己运动起来，最后希望就是工作轻松些，似乎这也不太实际了，成长总要付出努力和汗水。</p>
+        <h1 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h1><h2 id="为什么要用线程池"><a href="#为什么要用线程池" class="headerlink" title="为什么要用线程池:"></a>为什么要用线程池:</h2><p>1.减少了创建和销毁线程的次数，每个工作线程都可以被重复利用，可执行多个任务。<br>2.可以根据系统的承受能力，调整线程池中工作线线程的数目，防止因为消耗过多的内存，而把服务器累趴下(每个线程需要大约1MB内存，线程开的越多，消耗的内存也就越大，最后死机)。</p>
+<p>Java里面线程池的顶级接口是Executor，但是严格意义上讲Executor并不是一个线程池，而只是一个执行线程的工具。真正的线程池接口是ExecutorService。</p>
+<h2 id="重要的类"><a href="#重要的类" class="headerlink" title="重要的类"></a>重要的类</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ExecutorServcie                 <span class="comment">//真正的线程池接口。</span></div><div class="line">ScheduledExecutorService	    <span class="comment">//能和Timer/TimerTask类似，解决那些需要任务重复执行的问题。</span></div><div class="line">ThreadPoolExecutor              <span class="comment">//ExecutorService的默认实现。</span></div><div class="line">ScheduledThreadPoolExecutor     <span class="comment">//继承ThreadPoolExecutor的ScheduledExecutorService接口实现，周期性任务调度的类实现</span></div></pre></td></tr></table></figure>
+<h2 id="线程池工具类"><a href="#线程池工具类" class="headerlink" title="线程池工具类"></a>线程池工具类</h2><p>要配置一个线程池是比较复杂的，尤其是对于线程池的原理不是很清楚的情况下，很有可能配置的线程池不是较优的，因此在Executors类里面提供了一些静态工厂，生成一些常用的线程池。<br><strong>1. newSingleThreadExecutor</strong><br>创建一个单线程的线程池。这个线程池只有一个线程在工作，也就是相当于单线程串行执行所有任务。如果这个唯一的线程因为异常结束，那么会有一个新的线程来替代它。此线程池保证所有任务的执行顺序按照任务的提交顺序执行。<br><strong>2. newFixedThreadPool</strong><br>创建固定大小的线程池。每次提交一个任务就创建一个线程，直到线程达到线程池的最大大小。线程池的大小一旦达到最大值就会保持不变，如果某个线程因为执行异常而结束，那么线程池会补充一个新线程。<br><strong>3. newCachedThreadPool</strong><br>创建一个可缓存的线程池。如果线程池的大小超过了处理任务所需要的线程，<br>那么就会回收部分空闲（60秒不执行任务）的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统（或者说JVM）能够创建的最大线程大小。<br><strong>4. newScheduledThreadPool</strong><br>创建一个大小无限的线程池。此线程池支持定时以及周期性执行任务的需求。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/12/31/才觉远去，便起回忆/" data-id="cj8oii384001ort9oa834p01l" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2017/02/27/线程池的使用/" data-id="cj8oj12mu0022y39oqz7e89uh" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/随记/">随记</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/并发编程/">并发编程</a></li></ul>
 
     </footer>
   </div>
@@ -160,10 +307,10 @@
 
 
   
-    <article id="post-设计模式之策略模式" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-使用heroku免费部署Java应用/设计模式之装饰者模式" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/12/31/设计模式之策略模式/" class="article-date">
-  <time datetime="2016-12-31T12:01:24.000Z" itemprop="datePublished">2016-12-31</time>
+    <a href="/2017/02/05/使用heroku免费部署Java应用/设计模式之装饰者模式/" class="article-date">
+  <time datetime="2017-02-05T03:40:30.000Z" itemprop="datePublished">2017-02-05</time>
 </a>
     
   </div>
@@ -174,7 +321,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/31/设计模式之策略模式/">设计模式之策略模式</a>
+      <a class="article-title" href="/2017/02/05/使用heroku免费部署Java应用/设计模式之装饰者模式/">设计模式之装饰者模式</a>
     </h1>
   
 
@@ -182,13 +329,53 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>策略模式定义了算法族，分别封装起来，让它们之间可以互相替换，此模式让算法的变化独立于使用算法的客户。</p>
-<h2 id="原则基础"><a href="#原则基础" class="headerlink" title="原则基础"></a>原则基础</h2><p>封装变化；多用组合、少用继承；针对接口编程，而不是针对实现编程。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure>
+        
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/12/31/设计模式之策略模式/" data-id="cj8oii388001xrt9owhp8l7jo" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2017/02/05/使用heroku免费部署Java应用/设计模式之装饰者模式/" data-id="cj8oj12no003gy39o3vp4zup7" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-设计模式之观察者模式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/21/设计模式之观察者模式/" class="article-date">
+  <time datetime="2017-01-21T12:32:53.000Z" itemprop="datePublished">2017-01-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/21/设计模式之观察者模式/">设计模式之观察者模式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>在对象之间定义一对多的依赖，这样一来，当一个对象改变状态，依赖它的对象都全部受到通知并自动更新。</p>
+<h2 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h2><ul>
+<li>使用此模式时，你可从被观察者处推（push）或拉（pull）数据。</li>
+<li>有多个观察者时，不可以依赖特定的通知次序。</li>
+<li>Java有多个观察者模式的实现，包括了通用的java.util.Observable,要注意这种实现带来的一些问题</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2017/01/21/设计模式之观察者模式/" data-id="cj8oj12mx002cy39oxqc0rnkr" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/设计模式/">设计模式</a></li></ul>
@@ -200,10 +387,10 @@
 
 
   
-    <article id="post-分布式系统" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-并发编程之多线程" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/11/25/分布式系统/" class="article-date">
-  <time datetime="2016-11-25T07:31:06.000Z" itemprop="datePublished">2016-11-25</time>
+    <a href="/2017/01/19/并发编程之多线程/" class="article-date">
+  <time datetime="2017-01-19T11:38:07.000Z" itemprop="datePublished">2017-01-19</time>
 </a>
     
   </div>
@@ -214,7 +401,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/25/分布式系统/">分布式系统</a>
+      <a class="article-title" href="/2017/01/19/并发编程之多线程/">并发编程之多线程</a>
     </h1>
   
 
@@ -222,75 +409,33 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="高吞吐，高并发，底延迟"><a href="#高吞吐，高并发，底延迟" class="headerlink" title="高吞吐，高并发，底延迟"></a>高吞吐，高并发，底延迟</h1><h1 id="分布式系统提高承载量的基本手段"><a href="#分布式系统提高承载量的基本手段" class="headerlink" title="分布式系统提高承载量的基本手段"></a>分布式系统提高承载量的基本手段</h1><pre><code>## 分层模型（路由，代理）
+        <h1 id="线程安全"><a href="#线程安全" class="headerlink" title="线程安全"></a>线程安全</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="number">1</span>、当多个线程访问访问某一个类(对象或方法)时，这个类或对象或方法始终能表现出正确的行为或我们想要的结果，那么这个类(对象或方法)</div><div class="line">就是线程安全的。</div><div class="line"><span class="number">2</span>、synchronized：可以在任意的对象及方法上加锁，而加锁的这段代码称之为互斥区或者临界区。</div></pre></td></tr></table></figure>
+<h1 id="线程和锁"><a href="#线程和锁" class="headerlink" title="线程和锁"></a>线程和锁</h1><p>多个线程多个锁:多个线程，每个线程都可以拿到自己指定的锁，分别获得锁之后，执行synchronized方法体的内容。</p>
+<h2 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h2><p>两个线程t1,t2分别依次start，访问两个对象的synchronized修饰的printNum方法，Code如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 关键字synchronized取得的锁都是对象锁，而不是把一段代码（方法）当做锁，</div><div class="line"> * 所以代码中哪个线程先执行synchronized关键字的方法，哪个线程就持有该方法所属对象的锁（Lock），</div><div class="line"> * </div><div class="line"> * 在静态方法上加synchronized关键字，表示锁定.class类，类一级别的锁（独占.class类）。</div><div class="line"> * <span class="doctag">@author</span> xujin</div><div class="line"> *</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MultiThread</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> num = <span class="number">0</span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">printNum</span><span class="params">(String tag)</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">if</span> (tag.equals(<span class="string">"a"</span>)) &#123;</div><div class="line">                num = <span class="number">100</span>;</div><div class="line">                System.out.println(<span class="string">"tag a, set num over!"</span>);</div><div class="line">                Thread.sleep(<span class="number">1000</span>);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                num = <span class="number">200</span>;</div><div class="line">                System.out.println(<span class="string">"tag b, set num over!"</span>);</div><div class="line">            &#125;</div><div class="line">            System.out.println(<span class="string">"tag "</span> + tag + <span class="string">", num = "</span> + num);</div><div class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 注意观察run方法输出顺序</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        <span class="comment">// 两个不同的对象</span></div><div class="line">        <span class="keyword">final</span> MultiThread m1 = <span class="keyword">new</span> MultiThread();</div><div class="line">        <span class="keyword">final</span> MultiThread m2 = <span class="keyword">new</span> MultiThread();</div><div class="line">        Thread t1 = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">                m1.printNum(<span class="string">"a"</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        Thread t2 = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">                m2.printNum(<span class="string">"b"</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        t1.start();</div><div class="line">        t2.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>执行结果如下:<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">tag a, set num over!</div><div class="line">tag b, set num over!</div><div class="line">tag b, num = <span class="number">200</span></div><div class="line">tag a, num = <span class="number">100</span></div></pre></td></tr></table></figure></p>
+<p>关键字synchronized取得的锁都是对象锁，而不是把一段代码（方法）当做锁，<br>所以代码中哪个线程先执行synchronized关键字的方法，哪个线程就持有该方法所属对象的锁（Lock）</p>
+<p>如果，在静态方法上printNum（）加一个synchronized关键字修饰的话，那这个线程调用printNum()获得锁，就是这个类级别的锁。这是时候无论你实例化出多少个对象m1,m2都是没有任何关系的。<br>这样测试的结果是<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">tag a, set num over!</div><div class="line">tag a, num = <span class="number">100</span></div><div class="line">tag b, set num over!</div><div class="line">tag b, num = <span class="number">200</span></div></pre></td></tr></table></figure></p>
+<p>小结：<br>关键字synchronized取得的锁都是对象锁，而不是把一段代码或方法当做锁，所以示例中代码中的哪个线程先执行synchronized关键字的方法，哪个线程就持有该方法对象的锁，也就是Lock,两个对象，线程获得的就是两个不同的锁，他们互不影响。<br>有一种情况则是相同的锁，即在静态方法上加synchronized关键字，表示锁定.class类，类一级别的锁独占.class类。</p>
+<h2 id="脏读"><a href="#脏读" class="headerlink" title="脏读"></a>脏读</h2><p>业务整体需要使用完整的synchronized，保持业务的原子性。</p>
+<p>在我们对对象中的一个方法加锁的时候，需要考虑业务的或程序的整体性，也就是为程序中的set和get方法同时加锁synchronized同步关键字，保证业务的(service层)的原子性，不然会出现数据错误，脏读。</p>
+<h2 id="synchronized的重入"><a href="#synchronized的重入" class="headerlink" title="synchronized的重入"></a>synchronized的重入</h2><h3 id="什么是synchronized的重入锁"><a href="#什么是synchronized的重入锁" class="headerlink" title="什么是synchronized的重入锁"></a>什么是synchronized的重入锁</h3><p>synchronized,它拥有强制原子性的内置锁机制,是一个重入锁,所以在使用synchronized时,当一个线程请求得到一个对象锁后再次请求此对象锁,可以再次得到该对象锁,就是说在一个synchronized方法/块的内部调用本类的其他synchronized方法/块时，是永远可以拿到锁。<br>当线程请求一个由其它线程持有的对象锁时，该线程会阻塞，而当线程请求由自己持有的对象锁时，如果该锁是重入锁,请求就会成功,否则阻塞</p>
+<p>简单的说:关键字synchronized具有锁重入的功能，也就是在使用synchronized时，当一个线程得到一个对象锁的锁后，再次请求此对象时可以再次得到该对象对应的锁。</p>
+<p>这里的对象锁只有一个,就是child对象的锁,当执行child.doSomething时，该线程获得child对象的锁，在doSomething方法内执行doAnotherThing时再次请求child对象的锁，因为synchronized是重入锁，所以可以得到该锁，继续在doAnotherThing里执行父类的doSomething方法时第三次请求child对象的锁，同理可得到，如果不是重入锁的话，那这后面这两次请求锁将会被一直阻塞，从而导致死锁。<br>所以在Java内部，同一线程在调用自己类中其他synchronized方法/块或调用父类的synchronized方法/块都不会阻碍该线程的执行，就是说同一线程对同一个对象锁是可重入的，而且同一个线程可以获取同一把锁多次，也就是可以多次重入。因为java线程是基于“每线程（per-thread）”，而不是基于“每调用（per-invocation）”的（java中线程获得对象锁的操作是以每线程为粒度的，per-invocation互斥体获得对象锁的操作是以每调用作为粒度的）</p>
+<p>其实现方法是为每个锁关联一个线程持有者和计数器，当计数器为0时表示该锁没有被任何线程持有，那么任何线程都可能获得该锁而调用相应的方法；当某一线程请求成功后，JVM会记下锁的持有线程，并且将计数器置为1；此时其它线程请求该锁，则必须等待；而该持有锁的线程如果再次请求这个锁，就可以再次拿到这个锁，同时计数器会递增；当线程退出同步代码块时，计数器会递减，如果计数器为0，则释放该锁。</p>
+<p>注意就是不要使用String的常量加锁，会出现死循环问题。</p>
+<h3 id="锁对象的改变问题"><a href="#锁对象的改变问题" class="headerlink" title="锁对象的改变问题:"></a>锁对象的改变问题:</h3><p>当使用一个对象进行加锁的时候，要注意对象本身发生变化的时候，那么持有的锁就不同。如果对象本身不发生改变，那么依然是同步的，即使是对象的属性发生了变化。</p>
+<p>同一对象属性的修改不会影响锁的情况</p>
+<p>如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ModifyLock</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> String name;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> name;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.name = name;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getAge</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> age;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(<span class="keyword">int</span> age)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.age = age;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">changeAttributte</span><span class="params">(String name, <span class="keyword">int</span> age)</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            System.out.println(<span class="string">"当前线程 : "</span> + Thread.currentThread().getName() + <span class="string">" 开始"</span>);</div><div class="line">            <span class="keyword">this</span>.setName(name);</div><div class="line">            <span class="keyword">this</span>.setAge(age);</div><div class="line">            System.out.println(<span class="string">"当前线程 : "</span> + Thread.currentThread().getName() + <span class="string">" 修改对象内容为： "</span> + <span class="keyword">this</span>.getName() + <span class="string">", "</span></div><div class="line">                    + <span class="keyword">this</span>.getAge());</div><div class="line">            Thread.sleep(<span class="number">2000</span>);</div><div class="line">            System.out.println(<span class="string">"当前线程 : "</span> + Thread.currentThread().getName() + <span class="string">" 结束"</span>);</div><div class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        <span class="keyword">final</span> ModifyLock modifyLock = <span class="keyword">new</span> ModifyLock();</div><div class="line">        Thread t1 = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">                modifyLock.changeAttributte(<span class="string">"许进"</span>, <span class="number">25</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;, <span class="string">"t1"</span>);</div><div class="line">        Thread t2 = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">                modifyLock.changeAttributte(<span class="string">"李四X"</span>, <span class="number">21</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;, <span class="string">"t2"</span>);</div><div class="line">        t1.start();</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Thread.sleep(<span class="number">100</span>);</div><div class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">        t2.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>运行结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">当前线程 : t1 开始</div><div class="line">当前线程 : t1 修改对象内容为： 许进, <span class="number">25</span></div><div class="line">当前线程 : t1 结束</div><div class="line">当前线程 : t2 开始</div><div class="line">当前线程 : t2 修改对象内容为： 李四X, <span class="number">21</span></div><div class="line">当前线程 : t2 结束</div></pre></td></tr></table></figure></p>
 
-    典型的的就是三层结构：接入，逻辑，存储
-
-## 并发模型（多线程，异步）
-    多线程
-    异步回调基于非阻塞的I/O操作（网络和文件）
-
-## 缓冲技术
-## 存储技术（NoSQL）
-</code></pre><h1 id="分布式系统在可管理性上造成的问题"><a href="#分布式系统在可管理性上造成的问题" class="headerlink" title="分布式系统在可管理性上造成的问题"></a>分布式系统在可管理性上造成的问题</h1><pre><code>## 硬件故障率
-
-## 资源利用率优化
-
-## 软件服务内容更新
-
- ## 数据统计和决策
-</code></pre><h1 id="解决分布式系统可管理性的基本手段"><a href="#解决分布式系统可管理性的基本手段" class="headerlink" title="解决分布式系统可管理性的基本手段"></a>解决分布式系统可管理性的基本手段</h1><pre><code>## 目录服务（ZooKeeper）
-
-## 消息队列服务（ActiveMQ、ZeroMQ、Jgroups）
-
-## 事务系统
-
-## 自动部署工具（Docker）
-
-## 日志服务（log4j）
-</code></pre><h1 id="分布式系统在开发效率上造成的问题和解决思路"><a href="#分布式系统在开发效率上造成的问题和解决思路" class="headerlink" title="分布式系统在开发效率上造成的问题和解决思路"></a>分布式系统在开发效率上造成的问题和解决思路</h1>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/11/25/分布式系统/" data-id="cj8oii383001lrt9owjaeiq5a" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2017/01/19/并发编程之多线程/" data-id="cj8oj12ms001yy39ovasy2p5x" class="article-share-link">Share</a>
       
       
-    </footer>
-  </div>
-  
-</article>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/并发编程/">并发编程</a></li></ul>
 
-
-  
-    <article id="post-spring-kafak集成学习" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/10/24/spring-kafak集成学习/" class="article-date">
-  <time datetime="2016-10-24T01:43:02.000Z" itemprop="datePublished">2016-10-24</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/24/spring-kafak集成学习/">spring-kafak集成学习</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/10/24/spring-kafak集成学习/" data-id="cj8oii37q001art9o9keh6pl0" class="article-share-link">Share</a>
-      
-      
     </footer>
   </div>
   
@@ -301,7 +446,7 @@
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/3/">__('next') &raquo;</a>
+    <a class="extend prev" rel="prev" href="/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/3/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -314,7 +459,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Codis/">Codis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heroku/">Heroku</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java基础/">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异常处理/">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/拦截器/">拦截器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/设计模式/">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/随记/">随记</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Codis/">Codis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heroku/">Heroku</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JDK内置工具/">JDK内置工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java基础/">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异常处理/">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/拦截器/">拦截器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/设计模式/">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/随记/">随记</a></li></ul>
     </div>
   </div>
 
@@ -324,7 +469,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Codis/" style="font-size: 10px;">Codis</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 12.5px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 17.5px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/并发编程/" style="font-size: 15px;">并发编程</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/拦截器/" style="font-size: 10px;">拦截器</a> <a href="/tags/日志/" style="font-size: 15px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a> <a href="/tags/设计模式/" style="font-size: 12.5px;">设计模式</a> <a href="/tags/随记/" style="font-size: 10px;">随记</a>
+      <a href="/tags/Codis/" style="font-size: 10px;">Codis</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/JDK内置工具/" style="font-size: 18px;">JDK内置工具</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 12px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 16px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/并发编程/" style="font-size: 14px;">并发编程</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/拦截器/" style="font-size: 10px;">拦截器</a> <a href="/tags/日志/" style="font-size: 14px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a> <a href="/tags/设计模式/" style="font-size: 12px;">设计模式</a> <a href="/tags/随记/" style="font-size: 10px;">随记</a>
     </div>
   </div>
 
@@ -333,7 +478,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
     </div>
   </div>
 
@@ -346,23 +491,23 @@
       <ul>
         
           <li>
-            <a href="/2017/09/12/Java并发编程实战总结/">Java并发编程实战总结</a>
+            <a href="/2017/10/12/其他JDK命令/">其他JDK命令</a>
           </li>
         
           <li>
-            <a href="/2017/02/27/线程池的使用/">线程池的使用</a>
+            <a href="/2017/10/12/jstat命令/">jstat命令</a>
           </li>
         
           <li>
-            <a href="/2017/02/05/使用heroku免费部署Java应用/设计模式之装饰者模式/">设计模式之装饰者模式</a>
+            <a href="/2017/10/12/jstack命令/">jstack命令</a>
           </li>
         
           <li>
-            <a href="/2017/01/21/设计模式之观察者模式/">设计模式之观察者模式</a>
+            <a href="/2017/10/12/jps命令/">jps命令</a>
           </li>
         
           <li>
-            <a href="/2017/01/19/并发编程之多线程/">并发编程之多线程</a>
+            <a href="/2017/10/12/jmap命令-Java-Memory-Map/">jmap命令(Java Memory Map)</a>
           </li>
         
       </ul>

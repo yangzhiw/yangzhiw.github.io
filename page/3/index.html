@@ -68,10 +68,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-Spring-MVC拦截器" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-ScheduledThreadPoolExecutor的使用" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/09/18/Spring-MVC拦截器/" class="article-date">
-  <time datetime="2016-09-18T11:45:36.000Z" itemprop="datePublished">2016-09-18</time>
+    <a href="/2017/01/17/ScheduledThreadPoolExecutor的使用/" class="article-date">
+  <time datetime="2017-01-17T07:40:58.000Z" itemprop="datePublished">2017-01-17</time>
 </a>
     
   </div>
@@ -82,7 +82,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/18/Spring-MVC拦截器/">Spring MVC拦截器</a>
+      <a class="article-title" href="/2017/01/17/ScheduledThreadPoolExecutor的使用/">ScheduledThreadPoolExecutor的使用</a>
     </h1>
   
 
@@ -90,20 +90,21 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h1><p>记录web请求的相关日志，可以做信息监控，统计，分析<br>检查web的访问权限，例如发现用户没有登录后，重定向到登录页面。<br>打开关闭数据库连接–预处理打开，后处理关闭，可以避免所有的业务方法中都编写相似的类。</p>
-<h1 id="Spring-MVC的请求流程"><a href="#Spring-MVC的请求流程" class="headerlink" title="Spring MVC的请求流程"></a>Spring MVC的请求流程</h1><img src="/2016/09/18/Spring-MVC拦截器/spring-mvc1.jpg" alt="Spring-MVC请求流程" title="Spring-MVC请求流程">
-<h1 id="HandlerInterceptor接口"><a href="#HandlerInterceptor接口" class="headerlink" title="HandlerInterceptor接口"></a>HandlerInterceptor接口</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public interface HandlerInterceptor &#123;</div><div class="line">    boolean preHandle(HttpServletRequest request, </div><div class="line">                      HttpServletResponse response, </div><div class="line">                      Object handler) throws Exception;</div><div class="line"></div><div class="line">    void postHandle(HttpServletRequest request, </div><div class="line">                    HttpServletResponse response, </div><div class="line">                    Object handler, ModelAndView modelAndView) throws Exception;</div><div class="line"></div><div class="line">    void afterCompletion(HttpServletRequest request, </div><div class="line">                         HttpServletResponse response, </div><div class="line">                         Object handler, Exception ex) throws Exception;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>1.preHandle()：预处理回调方法，若方法返回值为true，请求继续（调用下一个拦截器或处理器方法）；若方法返回值为false，请求处理流程中断，不会继续调用其他的拦截器或处理器方法，此时需要通过response产生响应；<br>2.postHandle()：后处理回调方法，实现处理器的后处理（但在渲染视图之前），此时可以通过modelAndView对模型数据进行处理或对视图进行处理<br>3.afterCompletion()：整个请求处理完毕回调方法，即在视图渲染完毕时调用</p>
-<h1 id="实例：用户登录检查"><a href="#实例：用户登录检查" class="headerlink" title="实例：用户登录检查"></a>实例：用户登录检查</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public class LoginInterceptor extends HandlerInterceptorAdapter &#123;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public boolean preHandle(HttpServletRequest request,</div><div class="line">                             HttpServletResponse response,</div><div class="line">                             Object handler) throws Exception &#123;</div><div class="line">        if (request.getSession().getAttribute(Constants.USER_SESSION_ATTR) != <span class="literal">null</span>) &#123;</div><div class="line">            return <span class="literal">true</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        response.sendRedirect(<span class="string">"/"</span>);</div><div class="line">        return <span class="literal">false</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="配置Interceptor"><a href="#配置Interceptor" class="headerlink" title="配置Interceptor"></a>配置Interceptor</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">@Configuration</div><div class="line">public class WebMvcConfig extends WebMvcConfigurerAdapter &#123;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void addInterceptors(InterceptorRegistry registry) &#123;</div><div class="line">        registry.addInterceptor(new LoginInterceptor())</div><div class="line">                .addPathPatterns(<span class="string">"/**"</span>)</div><div class="line">                .excludePathPatterns(<span class="string">"/account/*"</span>).excludePathPatterns(<span class="string">"/"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+        <p>Java Executor框架提供了ThreadPoolExecutor类去执行Callable和Runnable任务，这样避免了大量的复杂代码的操作，但是有时你需要定时去执行你的任务，这个时候你就要使用ScheduledThreadPoolExecutor类了。</p>
+<h1 id="先写个基本的任务"><a href="#先写个基本的任务" class="headerlink" title="先写个基本的任务"></a>先写个基本的任务</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Task</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">private</span> String name;</div><div class="line"> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Task</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.name = name;</div><div class="line">    &#125;</div><div class="line">     </div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> name;</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            System.out.println(<span class="string">"Doing a task during : "</span> + name + <span class="string">" - Time - "</span> + <span class="keyword">new</span> Date());</div><div class="line">        &#125; </div><div class="line">        <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="一段时间后执行"><a href="#一段时间后执行" class="headerlink" title="一段时间后执行"></a>一段时间后执行</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ScheduledThreadPoolExecutorExample</span></span></div><div class="line">&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span></div><div class="line">    &#123;</div><div class="line">        ScheduledExecutorService executor = Executors.newScheduledThreadPool(<span class="number">2</span>);</div><div class="line">        Task task1 = <span class="keyword">new</span> Task (<span class="string">"Demo Task 1"</span>);</div><div class="line">        Task task2 = <span class="keyword">new</span> Task (<span class="string">"Demo Task 2"</span>);</div><div class="line">         </div><div class="line">        System.out.println(<span class="string">"The time is : "</span> + <span class="keyword">new</span> Date());</div><div class="line">         </div><div class="line">        executor.schedule(task1, <span class="number">5</span> , TimeUnit.SECONDS);</div><div class="line">        executor.schedule(task2, <span class="number">10</span> , TimeUnit.SECONDS);</div><div class="line">         </div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">              executor.awaitTermination(<span class="number">1</span>, TimeUnit.DAYS);</div><div class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">              e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">         </div><div class="line">        executor.shutdown();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>The time is : Tue Jan 25 16:14:07 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:14:12 IST 2017<br>Doing a task during : Demo Task 2 - Time - Tue Jan 25 16:14:17 IST 2017</p>
+<h1 id="执行任务时间片的形式"><a href="#执行任务时间片的形式" class="headerlink" title="执行任务时间片的形式"></a>执行任务时间片的形式</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ScheduledThreadPoolExecutorExample</span></span></div><div class="line">&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span></div><div class="line">    &#123;</div><div class="line">        ScheduledExecutorService executor = Executors.newScheduledThreadPool(<span class="number">1</span>);</div><div class="line">        Task task1 = <span class="keyword">new</span> Task (<span class="string">"Demo Task 1"</span>);</div><div class="line">         </div><div class="line">        System.out.println(<span class="string">"The time is : "</span> + <span class="keyword">new</span> Date());</div><div class="line">         </div><div class="line">        ScheduledFuture&lt;?&gt; result = executor.scheduleAtFixedRate(task1, <span class="number">2</span>, <span class="number">5</span>, TimeUnit.SECONDS);</div><div class="line">         </div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            TimeUnit.MILLISECONDS.sleep(<span class="number">20000</span>);</div><div class="line">        &#125; </div><div class="line">        <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">         </div><div class="line">        executor.shutdown();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Output:</p>
+<p>The time is : Tue Jan 25 16:20:12 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:20:14 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:20:19 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:20:24 IST 2017<br>Doing a task during : Demo Task 1 - Time - Tue Jan 25 16:20:29 IST 2017</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/09/18/Spring-MVC拦截器/" data-id="cj8oii36q000rrt9oqu8kkqpa" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2017/01/17/ScheduledThreadPoolExecutor的使用/" data-id="cj8oj12lf000dy39o2yh9xubq" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/拦截器/">拦截器</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Scheduler/">Scheduler</a></li></ul>
 
     </footer>
   </div>
@@ -112,10 +113,10 @@
 
 
   
-    <article id="post-codis 配置" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-才觉远去，便起回忆" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/09/18/codis 配置/" class="article-date">
-  <time datetime="2016-09-18T01:54:12.000Z" itemprop="datePublished">2016-09-18</time>
+    <a href="/2016/12/31/才觉远去，便起回忆/" class="article-date">
+  <time datetime="2016-12-31T12:04:15.000Z" itemprop="datePublished">2016-12-31</time>
 </a>
     
   </div>
@@ -126,7 +127,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/18/codis 配置/">codis 配置</a>
+      <a class="article-title" href="/2016/12/31/才觉远去，便起回忆/">2016、才觉远去，便起怀念</a>
     </h1>
   
 
@@ -134,25 +135,23 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>@Configuration<br>public class CodisConfiguration {<br>    @Value(“${codis.zookeeper.clients}”)<br>    private String zkClients;<br>    @Value(“${codis.zookeeper.proxyDir}”)<br>    private String zkDir;<br>    @Value(“${codis.poolConfig.maxIdle}”)<br>    private int maxIdle;<br>    @Value(“${codis.poolConfig.maxTotal}”)<br>    private int maxTotal;</p>
-<pre><code>@Bean
-public JedisResourcePool jedisResourcePool() {
-    JedisPoolConfig poolConfig = new JedisPoolConfig();
-    poolConfig.setMaxIdle(maxIdle);
-    poolConfig.setMaxTotal(maxTotal);
-    poolConfig.setTestOnBorrow(true);
-    return RoundRobinJedisPool.create().curatorClient(zkClients, 30000).zkProxyDir(zkDir)
-            .poolConfig(poolConfig).build();
-}
-</code></pre><p>}</p>
+        <p>   一年的开始，总是伴着喜庆的色彩。1月份，往往很多公司都要开始准备年会了。作为公司最年轻的团队，也忘记了是哪个家伙想的，让我们年会上唱bigbang的loser😭。我和另外4个小伙伴不幸就被选上了，拼了，就算是为了我们这个团队，依稀的记得的那一晚，我们玩的很嗨。虽然还是在实习阶段，可是我已觉得我早已融入进这个团队了，和他们成为了好朋友。从大三暑期实习开始，我就已经知道我没有寒假和暑假了，这一年的春节，虽然在家里呆的时间也不长。对我来说是不同的，因为我自己可以赚钱了，拿着这些钱给父母买了些东西，可以外婆包红包了就像当初她给我们一样。</p>
+<p>   匆匆茫茫的回到了公司，重新开始了工作。元宵节，和几个大学一起过的，在一个城市，有些同学还是不错的，至少平时我们可以相互发发牢骚。感觉到了3月份，工作才慢慢进入正轨，这个时候的我也开始思考了毕业之后的去向了，思考着是继续留在实习的公司还是去重新找一家，最终考虑的结果是留在这个公司，因为这里有很多我熟悉的人和事。3月末，了解到团队中有些实习生要走了，有要去读研深造的，有要换公司的，在送别聚餐的那一晚，我们很多都喝多了。或许我们都知道有相聚就有离开，但是没想到这才是刚刚开始而已。</p>
+<p>   杭州的4月天是很舒服的，听说一个高中的同桌同学来到了浙大读研，我当初怎么没看出来你还有这个潜力。我们一起在杭州西湖旁边的山上踏着青，记得她说过，还是老同学在一起实在啊。是啊，高中时的那些同学们，我还记的和你们一起奋斗和玩耍的时光啊。五月初，我们团队自驾游去了安吉的天荒坪了，虽然那个周末天气不是很好，但我们还是玩的很开心的。回来的路上，我们在车上把后备箱的几瓶酒在路上全吹掉了，一种宿醉的感觉。</p>
+<p>   想到马上要回到学校，内心还是很激动过的，可能都知道大学四年就剩下这1个多月时间了，同学宿舍之间走动更加的频繁了。时间流逝的总是快的，做毕设、写论文、答辩、拍毕业照、毕业酒会。马上就要毕业了，谁又能想到答辩那天走出教室后，直到现在我都没有再进去过大学教室。是啊，要再见了，我的小伙伴们。</p>
+<p>   6月25号，从南昌来到杭州，其实内心还是很激动的，因为我知道我再也不是实习生了，我马上要转为公司的正式员工了。可是令我想不到的是很多事情都在改变，领导也不再是之前的领导，一年时间真的是习惯了你们的存在(后面在新的一家公司上班时，叫错了几次领导的名字😅)。接下来公司工作环境就变得有些诡异了，当时也没想太多，更深层次的东西我也想不到，只是感觉，这种工作状态还不如之前实习的那个团队，当工作失去激情，离离开也就不远了。好在，我并没有因为这样的状态而颓废，这段时间，本人开了博客，开始写写技术文章，学习新技术以充实自己，这段时间的知识积累，也对我后面找新的工作有了帮助。接下来杭州慢慢开始成为世界上最安全最干净的城市了，因为受全世界关注的G20要在杭州举行了，杭州真的很不错，我喜欢这座城。</p>
+<p>   离开，9月20号，因某些原因，从公司离开。接下来，很多的散伙饭，这让我想起了毕业时的场景，没有不散的宴席，谁会饿着肚子去呐喊，开始准备写简历去迎接新的工作了。面了6家企业，我最终还是选择了感觉最有发展前景的C公司，准备国庆后迎接新的环境。</p>
+<p>   深刻体会来到一家新的企业，都要给时间去适应的。10月基本上也就是去适应公司环境的过程了；公司发展迅速，项目时间安排紧，而这给我带来的影响就是经常加班了。可能是为了缓解压力，11月份公司安排一次团建，是去安吉，顿时有种熟悉的感觉。</p>
+<p>   一年过的真的很快啊，突然就到了一年的最后一个月了，这个月真是工作以来忙碌的一个月啊，就连今天这一年的最后一天，都在公司加班（😂，其实心根本不在状态）。还有就是这个月也是最难忘的，因为我遇到了一个让我心动的女孩，是的，那是心动的感觉。</p>
+<p>   在新的一年里，希望自己能养成看书的习惯吧，然后让自己运动起来，最后希望就是工作轻松些，似乎这也不太实际了，成长总要付出努力和汗水。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/09/18/codis 配置/" data-id="cj8oii36u000urt9ow9yuctne" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/12/31/才觉远去，便起回忆/" data-id="cj8oj12mt0020y39o28sajhny" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Codis/">Codis</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/随记/">随记</a></li></ul>
 
     </footer>
   </div>
@@ -161,10 +160,10 @@ public JedisResourcePool jedisResourcePool() {
 
 
   
-    <article id="post-二叉树的遍历" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-设计模式之策略模式" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/09/18/二叉树的遍历/" class="article-date">
-  <time datetime="2016-09-18T01:16:30.000Z" itemprop="datePublished">2016-09-18</time>
+    <a href="/2016/12/31/设计模式之策略模式/" class="article-date">
+  <time datetime="2016-12-31T12:01:24.000Z" itemprop="datePublished">2016-12-31</time>
 </a>
     
   </div>
@@ -175,7 +174,7 @@ public JedisResourcePool jedisResourcePool() {
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/18/二叉树的遍历/">二叉树的遍历</a>
+      <a class="article-title" href="/2016/12/31/设计模式之策略模式/">设计模式之策略模式</a>
     </h1>
   
 
@@ -183,13 +182,77 @@ public JedisResourcePool jedisResourcePool() {
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="中序遍历"><a href="#中序遍历" class="headerlink" title="中序遍历"></a>中序遍历</h1><p>从树的根节点开始，沿着其左孩子域向下移动，直到某一节点再无左节点，访问这个最左边的节点，接下来再从此节点的右孩子<br>开始进行中序遍历，当右子树遍历完了以后，退回到上一层的未访问节点继续二叉树遍历，直到书中所有节点被访问到为止。</p>
-<h1 id="先序遍历"><a href="#先序遍历" class="headerlink" title="先序遍历"></a>先序遍历</h1><p>对节点的访问时在其左、右子树之前进行的。遍历是从根节点开始的，遇到每个节点时，遍历过程为：<br>访问根节点<br>先序遍历其左子树<br>先序遍历其右子树</p>
-
+        <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>策略模式定义了算法族，分别封装起来，让它们之间可以互相替换，此模式让算法的变化独立于使用算法的客户。</p>
+<h2 id="原则基础"><a href="#原则基础" class="headerlink" title="原则基础"></a>原则基础</h2><p>封装变化；多用组合、少用继承；针对接口编程，而不是针对实现编程。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/09/18/二叉树的遍历/" data-id="cj8oii37t001drt9ozl6erafy" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/12/31/设计模式之策略模式/" data-id="cj8oj12mv0027y39oqvj7yf75" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/设计模式/">设计模式</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-分布式系统" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/25/分布式系统/" class="article-date">
+  <time datetime="2016-11-25T07:31:06.000Z" itemprop="datePublished">2016-11-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/25/分布式系统/">分布式系统</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="高吞吐，高并发，底延迟"><a href="#高吞吐，高并发，底延迟" class="headerlink" title="高吞吐，高并发，底延迟"></a>高吞吐，高并发，底延迟</h1><h1 id="分布式系统提高承载量的基本手段"><a href="#分布式系统提高承载量的基本手段" class="headerlink" title="分布式系统提高承载量的基本手段"></a>分布式系统提高承载量的基本手段</h1><pre><code>## 分层模型（路由，代理）
+
+    典型的的就是三层结构：接入，逻辑，存储
+
+## 并发模型（多线程，异步）
+    多线程
+    异步回调基于非阻塞的I/O操作（网络和文件）
+
+## 缓冲技术
+## 存储技术（NoSQL）
+</code></pre><h1 id="分布式系统在可管理性上造成的问题"><a href="#分布式系统在可管理性上造成的问题" class="headerlink" title="分布式系统在可管理性上造成的问题"></a>分布式系统在可管理性上造成的问题</h1><pre><code>## 硬件故障率
+
+## 资源利用率优化
+
+## 软件服务内容更新
+
+ ## 数据统计和决策
+</code></pre><h1 id="解决分布式系统可管理性的基本手段"><a href="#解决分布式系统可管理性的基本手段" class="headerlink" title="解决分布式系统可管理性的基本手段"></a>解决分布式系统可管理性的基本手段</h1><pre><code>## 目录服务（ZooKeeper）
+
+## 消息队列服务（ActiveMQ、ZeroMQ、Jgroups）
+
+## 事务系统
+
+## 自动部署工具（Docker）
+
+## 日志服务（log4j）
+</code></pre><h1 id="分布式系统在开发效率上造成的问题和解决思路"><a href="#分布式系统在开发效率上造成的问题和解决思路" class="headerlink" title="分布式系统在开发效率上造成的问题和解决思路"></a>分布式系统在开发效率上造成的问题和解决思路</h1>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/11/25/分布式系统/" data-id="cj8oj12mr001wy39o3p47amua" class="article-share-link">Share</a>
       
       
     </footer>
@@ -199,10 +262,10 @@ public JedisResourcePool jedisResourcePool() {
 
 
   
-    <article id="post-使用heroku免费部署Java应用" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-spring-kafak集成学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/08/29/使用heroku免费部署Java应用/" class="article-date">
-  <time datetime="2016-08-29T05:26:32.000Z" itemprop="datePublished">2016-08-29</time>
+    <a href="/2016/10/24/spring-kafak集成学习/" class="article-date">
+  <time datetime="2016-10-24T01:43:02.000Z" itemprop="datePublished">2016-10-24</time>
 </a>
     
   </div>
@@ -213,7 +276,7 @@ public JedisResourcePool jedisResourcePool() {
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/29/使用heroku免费部署Java应用/">使用Heroku免费部署Java应用</a>
+      <a class="article-title" href="/2016/10/24/spring-kafak集成学习/">spring-kafak集成学习</a>
     </h1>
   
 
@@ -221,84 +284,13 @@ public JedisResourcePool jedisResourcePool() {
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>Heroku是一个支持多种编程语言的云平台即服务。</p>
-<h1 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h1><p>1.注册Herku账号<br>2.在本地安装Java8<br>3.在本地安装Maven3</p>
-<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>安装本地客户端 Heroku-cli，<a href="https://devcenter.heroku.com/articles/heroku-command-line" target="_blank" rel="external">安装Heroku-cli</a></p>
-<p>然后打开命令行工具登录如：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt;heroku login</div><div class="line">Enter your Heroku credentials.</div><div class="line"><span class="attr">Email:</span> email@example.com</div><div class="line"><span class="attr">Password:</span></div></pre></td></tr></table></figure></p>
-<h1 id="部署应用"><a href="#部署应用" class="headerlink" title="部署应用"></a>部署应用</h1><p>这里我们使用官网给的应用<br>首先克隆git clone <a href="https://github.com/heroku/java-getting-started.git" target="_blank" rel="external">https://github.com/heroku/java-getting-started.git</a><br>cd到项目目录: cd java-getting-started<br>创建应用到Heroku上如：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt; heroku create</div><div class="line">Creating shielded-caverns<span class="bullet">-88393.</span>.. done, stack is cedar<span class="bullet">-14</span></div><div class="line"><span class="attr">http:</span>//shielded-caverns<span class="bullet">-88393.</span>herokuapp.com/ | https://git.heroku.com/shielded-caverns<span class="bullet">-88393.</span>git</div></pre></td></tr></table></figure></p>
-<p>shielded-caverns-88393 这是一个随机的数，可以到keroku的应用列表找到这个应用，然后去修改。</p>
-<h2 id="部署应用代码"><a href="#部署应用代码" class="headerlink" title="部署应用代码"></a>部署应用代码</h2><blockquote>
-<p>git push heroku master</p>
-</blockquote>
-<h2 id="访问"><a href="#访问" class="headerlink" title="访问"></a>访问</h2><blockquote>
-<p>heroku open</p>
-</blockquote>
-<h1 id="查看日志"><a href="#查看日志" class="headerlink" title="查看日志"></a>查看日志</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="attr">D:</span>\resource\java-getting-started&gt;heroku logs --tail</div><div class="line"><span class="number">2016</span><span class="bullet">-08</span><span class="bullet">-29</span>T02:<span class="number">37</span>:<span class="number">19.738508</span>+<span class="number">00</span>:<span class="number">00</span> heroku[api]: Release v2 created by yang993505@gmail.com</div><div class="line"><span class="number">2016</span><span class="bullet">-08</span><span class="bullet">-29</span>T02:<span class="number">37</span>:<span class="number">19.738508</span>+<span class="number">00</span>:<span class="number">00</span> heroku[api]: Enable Logplex by yang993505@gmail.com</div><div class="line"><span class="number">2016</span><span class="bullet">-08</span><span class="bullet">-29</span>T02:<span class="number">37</span>:<span class="number">45.907720</span>+<span class="number">00</span>:<span class="number">00</span> heroku[router]: at=info code=H81 desc=<span class="string">"Blank app"</span> method=GET path=<span class="string">"/"</span> h</div><div class="line">erns<span class="bullet">-88393.</span>herokuapp.com request_id=<span class="number">9872849</span>a-d62c<span class="bullet">-4053</span>-b744-b067e1270c3b fwd=<span class="string">"45.55.27.82"</span> dyno= connect</div><div class="line">s=<span class="number">502</span> bytes=</div></pre></td></tr></table></figure>
-<h1 id="定义Procfile"><a href="#定义Procfile" class="headerlink" title="定义Procfile"></a>定义Procfile</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attr">web:</span> java -jar target/helloworld.jar</div></pre></td></tr></table></figure>
-<h1 id="本地运行"><a href="#本地运行" class="headerlink" title="本地运行"></a>本地运行</h1><h2 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h2><p>mvn clean install</p>
-<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>heroku local web<br>打开浏览器输入localhost:5000即可访问</p>
-<h1 id="其他服务提供"><a href="#其他服务提供" class="headerlink" title="其他服务提供"></a>其他服务提供</h1><p>默认情况下,Heroku能够显示1500行日志。然而,它提供完整的日志流作为服务——和几个插件提供商所写的日志服务,<br>提供诸如日志持久性、搜索和电子邮件和短信提醒。</p>
-<p>下面,我们将提供一个日志插件,Papertrail。<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="attr">D:</span>\resource\java-getting-started&gt;heroku addons:create papertrail</div><div class="line">Creating papertrail on shielded-caverns<span class="bullet">-88393.</span>.. !</div><div class="line"> !    Please verify your account to install this add-on plan (please enter a credit card) For more information, see</div><div class="line"> !    https://devcenter.heroku.com/categories/billing Verify now at https://heroku.com/verify</div></pre></td></tr></table></figure></p>
-<p>这里提示要在heroku输入一个银行卡的信息。先不做这个演示了</p>
-<p>使用heroku addons可以查看已经装好的插件服务。</p>
-<h1 id="heroku终端"><a href="#heroku终端" class="headerlink" title="heroku终端"></a>heroku终端</h1><p>heroku run bash</p>
-<h1 id="设置变量"><a href="#设置变量" class="headerlink" title="设置变量"></a>设置变量</h1><p>heroku config:set ENERGY=”20 GeV”<br>查看变量<br>heroku config</p>
-<h1 id="使用数据库"><a href="#使用数据库" class="headerlink" title="使用数据库"></a>使用数据库</h1><p>数据库的使用也是需要安装服务的，详情见<br><a href="https://elements.heroku.com/addons#data-stores,&quot;&quot;" target="_blank" rel="external">安装数据库插件</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/29/使用heroku免费部署Java应用/" data-id="cj8oii382001jrt9otsm4e7r0" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Heroku/">Heroku</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Spring-Boot-中的统一异常处理" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/28/Spring-Boot-中的统一异常处理/" class="article-date">
-  <time datetime="2016-08-28T03:02:30.000Z" itemprop="datePublished">2016-08-28</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/28/Spring-Boot-中的统一异常处理/">Spring Boot 中的统一异常处理</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Spring Boot中默认带了error的映射，但是这个错误页面显示给用户并不是很友好。</p>
-<h1 id="统一异常处理"><a href="#统一异常处理" class="headerlink" title="统一异常处理"></a>统一异常处理</h1><h2 id="通过使用-ControllerAdvice定义统一异常处理的类，而不是在每个Controller中逐个定义。"><a href="#通过使用-ControllerAdvice定义统一异常处理的类，而不是在每个Controller中逐个定义。" class="headerlink" title="通过使用@ControllerAdvice定义统一异常处理的类，而不是在每个Controller中逐个定义。"></a>通过使用@ControllerAdvice定义统一异常处理的类，而不是在每个Controller中逐个定义。</h2><p>@ExceptionHandler用来定义函数针对的函数类型，最后将Exception对象和请求URL映射到URL中。</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">@ControllerAdvice</div><div class="line">class ExceptionTranslator &#123;</div><div class="line"></div><div class="line">    public static final String DEFAULT_ERROR_VIEW = <span class="string">"error"</span>;</div><div class="line"></div><div class="line">    @ExceptionHandler(value = Exception.class)</div><div class="line">    public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception &#123;</div><div class="line">        ModelAndView mav = new ModelAndView();</div><div class="line">        mav.addObject(<span class="string">"exception"</span>, e);</div><div class="line">        mav.addObject(<span class="string">"url"</span>, req.getRequestURL());</div><div class="line">        mav.setViewName(DEFAULT_ERROR_VIEW);</div><div class="line">        return mav;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="实现error-html页面展示"><a href="#实现error-html页面展示" class="headerlink" title="实现error.html页面展示"></a>实现error.html页面展示</h2><p>在templates目录下创建error.html。<br>例如：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html<span class="string">&gt;  </span></div><div class="line">&lt;html&gt;  </div><div class="line">&lt;head lang="en"&gt;  </div><div class="line">    &lt;meta charset="UTF-8" /&gt;</div><div class="line">    &lt;title&gt;统一异常处理&lt;/title&gt;</div><div class="line">&lt;/head&gt;  </div><div class="line">&lt;body&gt;  </div><div class="line">    &lt;h1&gt;Error Handler&lt;/h1&gt;</div><div class="line">    &lt;div th:text="$&#123;url&#125;"&gt;&lt;/div&gt;</div><div class="line">    &lt;div th:text="$&#123;exception.message&#125;"&gt;&lt;/div&gt;</div><div class="line">&lt;/body&gt;  </div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
-<h1 id="返回使用Json格式"><a href="#返回使用Json格式" class="headerlink" title="返回使用Json格式"></a>返回使用Json格式</h1><p>只需在@ExceptionHandler之后加入@ResponseBody，就能让处理函数return的内容转换为JSON格式</p>
-<h2 id="创建一个JSON返回对象，如："><a href="#创建一个JSON返回对象，如：" class="headerlink" title="创建一个JSON返回对象，如："></a>创建一个JSON返回对象，如：</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public class ErrorDTO implements Serializable &#123;</div><div class="line"></div><div class="line">    private static final long serialVersionUID = <span class="number">1</span>L;</div><div class="line"></div><div class="line">    private final String message;</div><div class="line">    private final String description;</div><div class="line"></div><div class="line">    private List&lt;FieldErrorDTO&gt; fieldErrors;</div><div class="line"></div><div class="line">    //getter和setter省略</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="可以为指定的Exception添加异常处理"><a href="#可以为指定的Exception添加异常处理" class="headerlink" title="可以为指定的Exception添加异常处理"></a>可以为指定的Exception添加异常处理</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">@ExceptionHandler(ConcurrencyFailureException.class)</div><div class="line">  @ResponseStatus(HttpStatus.CONFLICT)</div><div class="line">  @ResponseBody</div><div class="line">  public ErrorDTO processConcurencyError(ConcurrencyFailureException ex) &#123;</div><div class="line">      return new ErrorDTO(ErrorConstants.ERR_CONCURRENCY_FAILURE);</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-<p>ErrorConstants.ERR_CONCURRENCY_FAILURE 是定义的一个异常信息。</p>
-
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/28/Spring-Boot-中的统一异常处理/" data-id="cj8oii36l000hrt9ox4bi009k" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/10/24/spring-kafak集成学习/" data-id="cj8oj12mi001gy39o84n49p19" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异常处理/">异常处理</a></li></ul>
-
     </footer>
   </div>
   
@@ -309,7 +301,7 @@ public JedisResourcePool jedisResourcePool() {
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/page/2/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/">__('next') &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/2/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/4/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -322,7 +314,7 @@ public JedisResourcePool jedisResourcePool() {
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Codis/">Codis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heroku/">Heroku</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java基础/">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异常处理/">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/拦截器/">拦截器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/设计模式/">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/随记/">随记</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Codis/">Codis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heroku/">Heroku</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JDK内置工具/">JDK内置工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java基础/">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异常处理/">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/拦截器/">拦截器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/设计模式/">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/随记/">随记</a></li></ul>
     </div>
   </div>
 
@@ -332,7 +324,7 @@ public JedisResourcePool jedisResourcePool() {
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Codis/" style="font-size: 10px;">Codis</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 12.5px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 17.5px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/并发编程/" style="font-size: 15px;">并发编程</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/拦截器/" style="font-size: 10px;">拦截器</a> <a href="/tags/日志/" style="font-size: 15px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a> <a href="/tags/设计模式/" style="font-size: 12.5px;">设计模式</a> <a href="/tags/随记/" style="font-size: 10px;">随记</a>
+      <a href="/tags/Codis/" style="font-size: 10px;">Codis</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/JDK内置工具/" style="font-size: 18px;">JDK内置工具</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 12px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 16px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/并发编程/" style="font-size: 14px;">并发编程</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/拦截器/" style="font-size: 10px;">拦截器</a> <a href="/tags/日志/" style="font-size: 14px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a> <a href="/tags/设计模式/" style="font-size: 12px;">设计模式</a> <a href="/tags/随记/" style="font-size: 10px;">随记</a>
     </div>
   </div>
 
@@ -341,7 +333,7 @@ public JedisResourcePool jedisResourcePool() {
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
     </div>
   </div>
 
@@ -354,23 +346,23 @@ public JedisResourcePool jedisResourcePool() {
       <ul>
         
           <li>
-            <a href="/2017/09/12/Java并发编程实战总结/">Java并发编程实战总结</a>
+            <a href="/2017/10/12/其他JDK命令/">其他JDK命令</a>
           </li>
         
           <li>
-            <a href="/2017/02/27/线程池的使用/">线程池的使用</a>
+            <a href="/2017/10/12/jstat命令/">jstat命令</a>
           </li>
         
           <li>
-            <a href="/2017/02/05/使用heroku免费部署Java应用/设计模式之装饰者模式/">设计模式之装饰者模式</a>
+            <a href="/2017/10/12/jstack命令/">jstack命令</a>
           </li>
         
           <li>
-            <a href="/2017/01/21/设计模式之观察者模式/">设计模式之观察者模式</a>
+            <a href="/2017/10/12/jps命令/">jps命令</a>
           </li>
         
           <li>
-            <a href="/2017/01/19/并发编程之多线程/">并发编程之多线程</a>
+            <a href="/2017/10/12/jmap命令-Java-Memory-Map/">jmap命令(Java Memory Map)</a>
           </li>
         
       </ul>

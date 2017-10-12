@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>jstack命令 | 橘子不酸的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="介绍jstack用于打印出给定的java进程ID或corefile或远程调试服务的Java堆栈信息，如果是在64位机器上，需要指定选项”-J-d64”，Windows的jstack使用方式只支持以下的这种方式：jstack [-l] pid如果java程序崩溃生成core文件，jstack工具可以用来获得core文件的java stack和native stack的信息，从而可以轻松地知道java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jstack命令">
+<meta property="og:url" content="https://yangzhiw.github.io/2017/10/12/jstack命令/index.html">
+<meta property="og:site_name" content="橘子不酸的博客">
+<meta property="og:description" content="介绍jstack用于打印出给定的java进程ID或corefile或远程调试服务的Java堆栈信息，如果是在64位机器上，需要指定选项”-J-d64”，Windows的jstack使用方式只支持以下的这种方式：jstack [-l] pid如果java程序崩溃生成core文件，jstack工具可以用来获得core文件的java stack和native stack的信息，从而可以轻松地知道java">
+<meta property="og:updated_time" content="2017-10-12T13:49:09.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="jstack命令">
+<meta name="twitter:description" content="介绍jstack用于打印出给定的java进程ID或corefile或远程调试服务的Java堆栈信息，如果是在64位机器上，需要指定选项”-J-d64”，Windows的jstack使用方式只支持以下的这种方式：jstack [-l] pid如果java程序崩溃生成core文件，jstack工具可以用来获得core文件的java stack和native stack的信息，从而可以轻松地知道java">
+  
+    <link rel="alternate" href="/atom.xml" title="橘子不酸的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">橘子不酸的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一天进步一点</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://yangzhiw.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-jstack命令" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/10/12/jstack命令/" class="article-date">
+  <time datetime="2017-10-12T13:48:43.000Z" itemprop="datePublished">2017-10-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      jstack命令
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>jstack用于打印出给定的java进程ID或corefile或远程调试服务的Java堆栈信息，如果是在64位机器上，需要指定选项”-J-d64”，Windows的jstack使用方式只支持以下的这种方式：<br>jstack [-l] pid<br>如果java程序崩溃生成core文件，jstack工具可以用来获得core文件的java stack和native stack的信息，从而可以轻松地知道java程序是如何崩溃和在程序何处发生问题。另外，jstack工具还可以附属到正在运行的java程序中，看到当时运行的java程序的java stack和native stack的信息, 如果现在运行的java程序呈现hung的状态，jstack是非常有用的。</p>
+<h2 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h2><p>jstack [ option ] pid<br>jstack [ option ] executable core<br>jstack [ option ] [server-id@]remote-hostname-or-IP</p>
+<h2 id="常用参数说明"><a href="#常用参数说明" class="headerlink" title="常用参数说明"></a>常用参数说明</h2><ul>
+<li><p>options:<br>executable Java executable from which the core dump was produced.<br>(可能是产生core dump的java可执行程序)<br>core 将被打印信息的core dump文件<br>remote-hostname-or-IP 远程debug服务的主机名或ip<br>server-id 唯一id,假如一台主机上多个远程debug服务 </p>
+</li>
+<li><p>基本参数：<br>-F当’jstack [-l] pid’没有响应的时候强制打印栈信息<br>-l长列表. 打印关于锁的附加信息,例如属于java.util.concurrent的ownable synchronizers列表.<br>-m打印java和native c/c++框架的所有栈信息.<br>-h | -help打印帮助信息<br>pid 需要被打印配置信息的java进程id,可以用jps查询.</p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2017/10/12/jstack命令/" data-id="cj8oj12m10012y39ojscqg4d7" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JDK内置工具/">JDK内置工具</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/10/12/jstat命令/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          jstat命令
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/10/12/jps命令/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">jps命令</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Codis/">Codis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EnableJpaRepositorie注解/">EnableJpaRepositorie注解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heroku/">Heroku</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JDK内置工具/">JDK内置工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java基础/">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-Jpa/">Spring Data Jpa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logback/">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-AOP/">spring AOP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/异常处理/">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/拦截器/">拦截器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志/">日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编码/">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/设计模式/">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/随记/">随记</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Codis/" style="font-size: 10px;">Codis</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/EnableJpaRepositorie注解/" style="font-size: 10px;">EnableJpaRepositorie注解</a> <a href="/tags/Heroku/" style="font-size: 10px;">Heroku</a> <a href="/tags/JDK内置工具/" style="font-size: 18px;">JDK内置工具</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/JaveWeb/" style="font-size: 10px;">JaveWeb</a> <a href="/tags/Kafka/" style="font-size: 10px;">Kafka</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Scheduler/" style="font-size: 12px;">Scheduler</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 16px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 20px;">Spring Cloud</a> <a href="/tags/Spring-Data-Jpa/" style="font-size: 10px;">Spring Data Jpa</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/logback/" style="font-size: 10px;">logback</a> <a href="/tags/spring-AOP/" style="font-size: 10px;">spring AOP</a> <a href="/tags/并发编程/" style="font-size: 14px;">并发编程</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/拦截器/" style="font-size: 10px;">拦截器</a> <a href="/tags/日志/" style="font-size: 14px;">日志</a> <a href="/tags/编码/" style="font-size: 10px;">编码</a> <a href="/tags/设计模式/" style="font-size: 12px;">设计模式</a> <a href="/tags/随记/" style="font-size: 10px;">随记</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/10/12/其他JDK命令/">其他JDK命令</a>
+          </li>
+        
+          <li>
+            <a href="/2017/10/12/jstat命令/">jstat命令</a>
+          </li>
+        
+          <li>
+            <a href="/2017/10/12/jstack命令/">jstack命令</a>
+          </li>
+        
+          <li>
+            <a href="/2017/10/12/jps命令/">jps命令</a>
+          </li>
+        
+          <li>
+            <a href="/2017/10/12/jmap命令-Java-Memory-Map/">jmap命令(Java Memory Map)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
