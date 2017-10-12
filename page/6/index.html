@@ -94,7 +94,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/17/Security进行安全控制/" data-id="cj8oie66z000jp99o2tg791hp" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/17/Security进行安全控制/" data-id="cj8oii36g000frt9oh2eml4gp" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Security/">Spring Security</a></li></ul>
@@ -141,7 +141,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/16/JavaWeb基础/" data-id="cj8oie66q0008p99oosoel7im" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/16/JavaWeb基础/" data-id="cj8oii3600008rt9opm4o7ld4" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JaveWeb/">JaveWeb</a></li></ul>
@@ -179,55 +179,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/12/计算机网络知识复习/" data-id="cj8oie683001zp99oo039rlnc" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/12/计算机网络知识复习/" data-id="cj8oii388001urt9ozidh2asr" class="article-share-link">Share</a>
       
       
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-spring定时任务" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/08/10/spring定时任务/" class="article-date">
-  <time datetime="2016-08-10T02:29:47.000Z" itemprop="datePublished">2016-08-10</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/10/spring定时任务/">Spring定时任务</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="获取昨天时间"><a href="#获取昨天时间" class="headerlink" title="获取昨天时间"></a>获取昨天时间</h2><pre><code>Calendar c=Calendar.getInstance();
-c.add(Calendar.DAY_OF_MONTH,-1);   //日期月是0-11
-c.set(Calendar.HOUR_OF_DAY,0);     
-c.set(Calendar.MINUTE,0);
-c.set(Calendar.SECOND,0);
-c.set(Calendar.MILLISECOND,0);
-return c.getTime();
-</code></pre><h2 id="在类上加上注解"><a href="#在类上加上注解" class="headerlink" title="在类上加上注解"></a>在类上加上注解</h2><p>@Configuration<br>@EnableScheduling<br>@Scheduled(fixedRate = 5000) ：上一次开始执行时间点之后5秒再执行<br>@Scheduled(fixedDelay = 5000) ：上一次执行完毕时间点之后5秒再执行<br>@Scheduled(initialDelay=1000, fixedRate=5000) ：第一次延迟1秒后执行，之后按fixedRate的规则每5秒执行一次<br>@Scheduled(cron=”<em>/5 </em> <em> </em> <em> </em>“) ：通过cron表达式定义规则        </p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/10/spring定时任务/" data-id="cj8oie67r001gp99oecgvg9gs" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
-
     </footer>
   </div>
   
@@ -332,10 +286,56 @@ try {
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://yangzhiw.github.io/2016/08/10/获取文件流的编码/" data-id="cj8oie680001sp99ov7s74njv" class="article-share-link">Share</a>
+      <a data-url="https://yangzhiw.github.io/2016/08/10/获取文件流的编码/" data-id="cj8oii38c0022rt9ofxgssx9r" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/编码/">编码</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-spring定时任务" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/10/spring定时任务/" class="article-date">
+  <time datetime="2016-08-10T02:29:47.000Z" itemprop="datePublished">2016-08-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/10/spring定时任务/">Spring定时任务</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="获取昨天时间"><a href="#获取昨天时间" class="headerlink" title="获取昨天时间"></a>获取昨天时间</h2><pre><code>Calendar c=Calendar.getInstance();
+c.add(Calendar.DAY_OF_MONTH,-1);   //日期月是0-11
+c.set(Calendar.HOUR_OF_DAY,0);     
+c.set(Calendar.MINUTE,0);
+c.set(Calendar.SECOND,0);
+c.set(Calendar.MILLISECOND,0);
+return c.getTime();
+</code></pre><h2 id="在类上加上注解"><a href="#在类上加上注解" class="headerlink" title="在类上加上注解"></a>在类上加上注解</h2><p>@Configuration<br>@EnableScheduling<br>@Scheduled(fixedRate = 5000) ：上一次开始执行时间点之后5秒再执行<br>@Scheduled(fixedDelay = 5000) ：上一次执行完毕时间点之后5秒再执行<br>@Scheduled(initialDelay=1000, fixedRate=5000) ：第一次延迟1秒后执行，之后按fixedRate的规则每5秒执行一次<br>@Scheduled(cron=”<em>/5 </em> <em> </em> <em> </em>“) ：通过cron表达式定义规则        </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yangzhiw.github.io/2016/08/10/spring定时任务/" data-id="cj8oii37z001grt9o0lraw4o7" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Scheduler/">Scheduler</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
 
     </footer>
   </div>
